@@ -208,7 +208,7 @@ export default function NavigationBar() {
               onClick={handleSignIn}
               disabled={signingIn}
               className="btn-primary text-[13px] px-5 py-2 gap-2"
-              aria-label="Sign in with Google"
+              aria-label="Masuk dengan Google"
               whileHover={{ scale: 1.02, y: -1 }}
               whileTap={{ scale: 0.97, y: 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 22 }}
@@ -218,7 +218,7 @@ export default function NavigationBar() {
               ) : (
                 <LogIn size={13} aria-hidden="true" />
               )}
-              {signingIn ? "Signing in..." : "Sign in"}
+              {signingIn ? "Proses Masuk..." : "Masuk"}
             </m.button>
           )}
         </div>

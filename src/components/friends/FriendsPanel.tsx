@@ -184,10 +184,10 @@ function TopicPickerModal({
                 className="text-lg font-black tracking-tight"
                 style={{ fontFamily: "var(--font-outfit)" }}
               >
-                Challenge {targetFriendName}
+                Tantang {targetFriendName}
               </h3>
               <p className="text-[11px] text-slate-400">
-                Feynman Duel — Select a topic to duel on
+                Feynman Duel — Pilih topik duel kamu
               </p>
             </div>
           </div>
@@ -218,10 +218,10 @@ function TopicPickerModal({
             </div>
             <div>
               <h4 className="font-bold text-slate-100 text-base">
-                Challenge Sent!
+                Tantangan Terkirim!
               </h4>
               <p className="text-xs text-slate-400 mt-1">
-                Waiting for <span className="text-cyan-300 font-semibold">{targetFriendName}</span> to accept the duel on topic:
+                Menunggu <span className="text-cyan-300 font-semibold">{targetFriendName}</span> menerima duel untuk topik:
               </p>
               <div className="mt-2 inline-block px-3 py-1 rounded-lg bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 font-semibold text-xs">
                 {customTopic.trim() || selectedTopic}
@@ -234,7 +234,7 @@ function TopicPickerModal({
             {studyPlanTopics.length > 0 && (
               <div className="flex flex-col gap-2">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
-                  <BookOpen size={13} /> From Your Study Plan
+                  <BookOpen size={13} /> Dari Study Plan Kamu
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-36 overflow-y-auto pr-1">
                   {studyPlanTopics.map((topic) => (
@@ -261,7 +261,7 @@ function TopicPickerModal({
             {/* Core CS Topics */}
             <div className="flex flex-col gap-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
-                <Sparkles size={13} /> Standard Tech Topics
+                <Sparkles size={13} /> Topik Teknologi Standar
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-36 overflow-y-auto pr-1">
                 {DEFAULT_CS_TOPICS.map((topic) => (
@@ -287,7 +287,7 @@ function TopicPickerModal({
             {/* Custom Topic Input */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                Or Type a Custom Topic
+                Atau Tulis Topik Kustom
               </label>
               <input
                 type="text"
@@ -305,7 +305,7 @@ function TopicPickerModal({
                 onClick={onClose}
                 className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
               >
-                Cancel
+                Batal
               </button>
 
               <button
@@ -316,11 +316,11 @@ function TopicPickerModal({
               >
                 {loading ? (
                   <>
-                    <Loader2 size={14} className="animate-spin" /> Sending...
+                    <Loader2 size={14} className="animate-spin" /> Mengirim...
                   </>
                 ) : (
                   <>
-                    <Swords size={14} /> Send Challenge ⚔️
+                    <Swords size={14} /> Kirim Tantangan ⚔️
                   </>
                 )}
               </button>
@@ -504,7 +504,7 @@ export default function FriendsPanel() {
                       : "text-slate-400 hover:text-slate-200"
                   }`}
                 >
-                  Friends ({friends.length})
+                  Teman ({friends.length})
                 </button>
                 <button
                   type="button"
@@ -531,7 +531,7 @@ export default function FriendsPanel() {
                       : "text-slate-400 hover:text-slate-200"
                   }`}
                 >
-                  <UserPlus size={13} /> Add
+                  <UserPlus size={13} /> Tambah
                 </button>
               </div>
 
@@ -664,10 +664,10 @@ export default function FriendsPanel() {
                 >
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                      <UserPlus size={14} className="text-cyan-400" /> Send Friend Request
+                      <UserPlus size={14} className="text-cyan-400" /> Kirim Permintaan Pertemanan
                     </label>
                     <p className="text-[11px] text-slate-400">
-                      Enter the registered email address of your friend.
+                      Masukkan alamat email terdaftar dari teman kamu.
                     </p>
                   </div>
 
@@ -681,7 +681,7 @@ export default function FriendsPanel() {
                       required
                       value={addEmail}
                       onChange={(e) => setAddEmail(e.target.value)}
-                      placeholder="friend@example.com"
+                      placeholder="email.teman@example.com"
                       className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-400 transition-colors"
                     />
                   </div>
@@ -710,11 +710,11 @@ export default function FriendsPanel() {
                   >
                     {addLoading ? (
                       <>
-                        <Loader2 size={14} className="animate-spin" /> Sending...
+                        <Loader2 size={14} className="animate-spin" /> Mengirim...
                       </>
                     ) : (
                       <>
-                        <UserPlus size={14} /> Send Request
+                        <UserPlus size={14} /> Kirim Permintaan
                       </>
                     )}
                   </button>

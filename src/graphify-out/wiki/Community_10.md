@@ -1,17 +1,16 @@
 # Community 10
 
-> 8 nodes · cohesion 0.25
+> 7 nodes · cohesion 0.29
 
 ## Key Concepts
 
-- [layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L1) (5 connections)
-- [layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx#L1) (2 connections)
-- [metadata](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx#L4) (2 connections)
-- [DashboardLayout()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx#L23) (1 connections)
-- [inter](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L13) (1 connections)
-- [outfit](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L20) (1 connections)
-- [RootLayout()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L66) (1 connections)
-- [viewport](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L56) (1 connections)
+- [NavigationBar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L1) (6 connections)
+- [handleSignIn()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L30) (1 connections)
+- [isActive](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L101) (1 connections)
+- [navLinks](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L11) (1 connections)
+- [pathname](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L26) (1 connections)
+- [[signingIn, setSigningIn]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L28) (1 connections)
+- [{ user, loading, signInWithGoogle }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L27) (1 connections)
 
 ## Relationships
 
@@ -19,12 +18,11 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\NavigationBar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 14 (100%)
+- EXTRACTED: 12 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

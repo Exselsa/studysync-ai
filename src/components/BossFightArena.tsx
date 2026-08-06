@@ -609,11 +609,10 @@ export default function BossFightArena() {
             className="text-3xl sm:text-4xl font-black text-slate-50 tracking-tight"
             style={{ fontFamily: "var(--font-outfit)" }}
           >
-            Feynman Arena — Choose Mode
+            Feynman Arena — Pilih Mode
           </h1>
           <p className="text-sm text-slate-400 max-w-lg">
-            Master topics through simple explanations. Practice solo against the
-            AI Boss or challenge friends to live 1v1 Feynman Duels!
+            Kuasai materi lewat penjelasan sederhana. Latihan solo lawan AI Boss atau tantang teman kamu di 1v1 Feynman Duel!
           </p>
         </m.div>
 
@@ -633,7 +632,7 @@ export default function BossFightArena() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full bg-rose-950/80 border border-rose-500/30 text-rose-400">
-                  PVE SOLO PRACTICE
+                  LATIHAN SOLO PVE
                 </span>
                 <Skull size={20} className="text-rose-500" />
               </div>
@@ -644,9 +643,7 @@ export default function BossFightArena() {
                 VS AI Boss
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Battle the Knowledge Devourer solo. Explain concepts clearly to
-                deal damage, earn combos, and test your understanding against
-                abang ganteng!
+                Kalahkan Knowledge Devourer secara solo. Jelaskan konsep dengan jelas untuk memberi damage, dapatkan combo, dan uji pemahaman kamu bersama abang ganteng!
               </p>
             </div>
 
@@ -657,7 +654,7 @@ export default function BossFightArena() {
                 background: "linear-gradient(135deg, #dc2626 0%, #991b1b 100%)",
               }}
             >
-              <Swords size={15} /> Start AI Boss Fight
+              <Swords size={15} /> Mulai AI Boss Fight
             </button>
           </m.div>
 
@@ -676,7 +673,7 @@ export default function BossFightArena() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300">
-                  PVP FRIEND DUEL
+                  DUEL TEMAN PVP
                 </span>
                 <Users size={20} className="text-cyan-400" />
               </div>
@@ -684,11 +681,10 @@ export default function BossFightArena() {
                 className="text-2xl font-black text-slate-50 group-hover:text-cyan-300 transition-colors"
                 style={{ fontFamily: "var(--font-outfit)" }}
               >
-                VS Player (Duel)
+                VS Pemain (Duel)
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Challenge your friends to live 1v1 Feynman Duels on topics from
-                your Study Plan. Evaluated by Referee abang ganteng!
+                Tantang teman kamu ke 1v1 Feynman Duel langsung pada topik dari Study Plan kamu. Dinilai langsung oleh Wasit abang ganteng!
               </p>
             </div>
 
@@ -1347,15 +1343,15 @@ export default function BossFightArena() {
               </div>
               <div className="flex flex-col gap-1 max-w-sm">
                 <span className="text-sm font-extrabold text-slate-100 tracking-tight">
-                  Answer Submitted!
+                  Jawaban Terkirim!
                 </span>
                 <span className="text-xs text-slate-300 leading-relaxed">
-                  Waiting for your opponent to complete their explanation... The Referee will evaluate both answers synchronously as soon as both are in.
+                  Menunggu lawan kamu menyelesaikan penjelasannya... Wasit akan menilai kedua jawaban secara bersamaan setelah keduanya masuk.
                 </span>
               </div>
               <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/90 border border-cyan-500/40 text-[11px] font-semibold text-cyan-300 animate-pulse">
                 <Loader2 size={12} className="animate-spin text-cyan-400" />
-                <span>Synchronizing Dual Responses...</span>
+                <span>Menyingkronkan Jawaban Kedua Pemain...</span>
               </div>
             </m.div>
           )}
@@ -1376,14 +1372,14 @@ export default function BossFightArena() {
               htmlFor="boss-fight-attack-input"
               className="text-[11px] font-extrabold tracking-[0.14em] uppercase text-cyan-300"
             >
-              Feynman Explanation Attack
+              Serangan Penjelasan Feynman
             </label>
           </div>
           <span
             className="text-[10px]"
             style={{ color: "var(--color-silver-400)" }}
           >
-            {attackText.trim().split(/\s+/).filter(Boolean).length} words
+            {attackText.trim().split(/\s+/).filter(Boolean).length} kata
           </span>
         </div>
 
@@ -1394,7 +1390,7 @@ export default function BossFightArena() {
           value={attackText}
           onChange={(e) => setAttackText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`Explain '${currentQuestion}' as if to a 5-year-old child (use simple analogies like toy blocks, buckets, or recipes...)`}
+          placeholder={`Jelaskan '${currentQuestion}' seolah ke anak umur 5 tahun (gunakan analogi sederhana seperti balok mainan, ember, atau resep makanan...)`}
           disabled={isBusy || phase !== "battle"}
           rows={3}
           className="w-full resize-none outline-none text-[13px] leading-relaxed px-4 py-3 placeholder:italic disabled:opacity-50"
@@ -1403,7 +1399,7 @@ export default function BossFightArena() {
             color: "var(--color-silver-100)",
             fontFamily: "var(--font-inter)",
           }}
-          aria-label="Type your concept explanation to attack the opponent"
+          aria-label="Tulis penjelasan konsep kamu untuk menyerang lawan"
         />
 
         {/* Action Footer */}
@@ -1417,7 +1413,7 @@ export default function BossFightArena() {
           >
             {!isWaitingForOpponent ? (
               <>
-                Press{" "}
+                Tekan{" "}
                 <kbd
                   className="px-1.5 py-0.5 rounded text-[10px] font-mono"
                   style={{
@@ -1428,10 +1424,10 @@ export default function BossFightArena() {
                 >
                   Enter
                 </kbd>{" "}
-                to strike · abang ganteng evaluates simplicity & accuracy
+                untuk menyerang · abang ganteng menilai kesederhanaan & akurasi
               </>
             ) : (
-              <span>Waiting for opponent to submit answer...</span>
+              <span>Menunggu lawan menyerahkan jawaban...</span>
             )}
           </p>
 
@@ -1446,19 +1442,19 @@ export default function BossFightArena() {
           >
             {animPhase === "evaluating" ? (
               <>
-                <Loader2 size={14} className="animate-spin" /> Evaluating...
+                <Loader2 size={14} className="animate-spin" /> Menilai...
               </>
             ) : isWaitingForOpponent ? (
               <>
-                <Clock size={14} className="animate-spin" /> Waiting for Opponent...
+                <Clock size={14} className="animate-spin" /> Menunggu Lawan...
               </>
             ) : isBusy ? (
               <>
-                <Swords size={14} className="animate-bounce" /> Striking...
+                <Swords size={14} className="animate-bounce" /> Menyerang...
               </>
             ) : (
               <>
-                <Send size={14} /> Attack!
+                <Send size={14} /> Serang!
               </>
             )}
           </m.button>

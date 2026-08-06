@@ -86,7 +86,7 @@ function AuthLoadingScreen() {
               color: "var(--color-silver-100)",
             }}
           >
-            Verifying Session
+            Memverifikasi Sesi kamu...
           </p>
           <p
             className="text-[11px] tracking-wider uppercase"

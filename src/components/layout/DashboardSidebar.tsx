@@ -90,7 +90,7 @@ function DashboardSidebar() {
           className="px-3 mb-3 text-[10px] font-bold tracking-[0.14em] uppercase"
           style={{ color: "var(--color-silver-400)" }}
         >
-          Navigation
+          Navigasi
         </p>
 
         <nav role="list" aria-label="Dashboard sections">
@@ -253,7 +253,7 @@ function DashboardSidebar() {
               onClick={signOutUser}
               className="relative flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-[12px] font-medium transition-all duration-150 group"
               style={{ color: "var(--color-silver-400)" }}
-              aria-label="Sign out of StudySync AI"
+              aria-label="Keluar dari StudySync AI"
             >
               <span
                 className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-150"
@@ -270,7 +270,7 @@ function DashboardSidebar() {
                 aria-hidden="true"
               />
               <span className="relative z-10 group-hover:text-red-400 transition-colors duration-150">
-                Sign Out
+                Keluar
               </span>
             </button>
           </div>

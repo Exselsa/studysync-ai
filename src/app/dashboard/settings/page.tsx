@@ -5,12 +5,9 @@ import { m, AnimatePresence } from "framer-motion";
 import {
   User,
   Bell,
-  Palette,
   ShieldAlert,
   Save,
   Trash2,
-  Moon,
-  Sun,
   BrainCircuit,
   AlertTriangle,
   Check,
@@ -244,21 +241,17 @@ function ToggleSwitch({
   );
 }
 
-import { useTheme } from "next-themes";
-
 /* ------------------------------------------------------------------
    Settings Content
 ------------------------------------------------------------------ */
 function SettingsContent() {
   const { user } = useAuth();
-  const { theme, setTheme } = useTheme();
 
   // Profile state
   const [displayName, setDisplayName] = useState(user?.displayName ?? "");
   const [saved, setSaved] = useState(false);
 
   // Preference toggles
-  const isDark = theme === "dark" || theme === undefined;
   const [emailNotifs, setEmailNotifs]     = useState(true);
   const [planReminders, setPlanReminders] = useState(true);
   const [aiInsights, setAiInsights]       = useState(false);
@@ -301,10 +294,10 @@ function SettingsContent() {
             marginBottom: "0.25rem",
           }}
         >
-          Settings
+          Pengaturan
         </h1>
         <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)" }}>
-          Manage your account, preferences, and notifications.
+          Kelola akun, preferensi, dan notifikasi kamu.
         </p>
       </m.div>
 
@@ -317,8 +310,8 @@ function SettingsContent() {
       >
         <SettingsSection
           icon={User}
-          title="Profile Settings"
-          description="Your public identity within StudySync AI."
+          title="Pengaturan Profil"
+          description="Identitas publik kamu di StudySync AI."
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             {/* Avatar row */}
@@ -360,7 +353,7 @@ function SettingsContent() {
                   {user?.displayName ?? "Scholar"}
                 </p>
                 <p style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)", marginTop: "0.1rem" }}>
-                  Signed in with Google · Avatar managed by your Google account
+                  Masuk dengan Google · Foto profil dikelola oleh akun Google kamu
                 </p>
               </div>
             </div>
@@ -369,19 +362,19 @@ function SettingsContent() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               <SettingsField
                 id="settings-display-name"
-                label="Display Name"
+                label="Nama Tampilan"
                 value={displayName}
                 onChange={setDisplayName}
-                placeholder="Your name"
+                placeholder="Nama kamu"
               />
               <SettingsField
                 id="settings-email"
-                label="Email Address"
+                label="Alamat Email"
                 type="email"
                 value={user?.email ?? ""}
                 onChange={() => {}}
                 disabled
-                placeholder="your@email.com"
+                placeholder="email.kamu@example.com"
               />
             </div>
 
@@ -412,7 +405,7 @@ function SettingsContent() {
                     : "0 0 0 1px rgba(245,158,11,0.2)",
                   transition: "background 250ms ease, color 250ms ease",
                 }}
-                aria-label="Save profile changes"
+                aria-label="Simpan perubahan profil"
               >
                 <AnimatePresence mode="wait">
                   {saved ? (
@@ -423,7 +416,7 @@ function SettingsContent() {
                       exit={{ scale: 0 }}
                       style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}
                     >
-                      <Check size={13} aria-hidden="true" /> Saved!
+                      <Check size={13} aria-hidden="true" /> Tersimpan!
                     </m.span>
                   ) : (
                     <m.span
@@ -433,7 +426,7 @@ function SettingsContent() {
                       exit={{ scale: 0 }}
                       style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}
                     >
-                      <Save size={13} aria-hidden="true" /> Save Changes
+                      <Save size={13} aria-hidden="true" /> Simpan Perubahan
                     </m.span>
                   )}
                 </AnimatePresence>
@@ -442,83 +435,43 @@ function SettingsContent() {
           </div>
         </SettingsSection>
 
-        {/* ── 2. Preferences ── */}
-        <SettingsSection
-          icon={Palette}
-          title="Preferences"
-          description="Customise your StudySync AI experience."
-          accentColor="rgba(56,189,248,0.8)"
-        >
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            <ToggleSwitch
-              id="pref-dark-mode"
-              label="Dark Mode"
-              description="Use the dark theme across the entire app."
-              checked={isDark}
-              onToggle={() => setTheme(isDark ? "light" : "dark")}
-            />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                padding: "0.5rem 1rem",
-                borderRadius: "8px",
-                background: "rgba(56,189,248,0.06)",
-                border: "1px solid rgba(56,189,248,0.12)",
-              }}
-            >
-              {isDark ? (
-                <Moon size={12} style={{ color: "rgba(56,189,248,0.7)", flexShrink: 0 }} aria-hidden="true" />
-              ) : (
-                <Sun size={12} style={{ color: "rgba(245,158,11,0.7)", flexShrink: 0 }} aria-hidden="true" />
-              )}
-              <p style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
-                {isDark
-                  ? "Dark mode is active — optimised for late-night study sessions."
-                  : "Light mode is active — bright and focused for daytime studying."}
-              </p>
-            </div>
-          </div>
-        </SettingsSection>
-
-        {/* ── 3. Notifications ── */}
+        {/* ── 2. Notifications ── */}
         <SettingsSection
           icon={Bell}
-          title="Notifications"
-          description="Choose how and when StudySync AI contacts you."
+          title="Notifikasi"
+          description="Pilih bagaimana dan kapan StudySync AI mengontak kamu."
           accentColor="rgba(168,85,247,0.8)"
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             <ToggleSwitch
               id="pref-email-notifs"
-              label="Email Notifications"
-              description="Receive weekly study summaries and tips via email."
+              label="Notifikasi Email"
+              description="Dapatkan ringkasan belajar mingguan dan tips via email."
               checked={emailNotifs}
               onToggle={() => setEmailNotifs((v) => !v)}
             />
             <ToggleSwitch
               id="pref-plan-reminders"
-              label="Study Plan Reminders"
-              description="Get reminded when a task due date is approaching."
+              label="Pengingat Study Plan"
+              description="Dapatkan pengingat saat batas waktu tugas semakin dekat."
               checked={planReminders}
               onToggle={() => setPlanReminders((v) => !v)}
             />
             <ToggleSwitch
               id="pref-ai-insights"
-              label="AI Weekly Insights"
-              description="Let the AI Tutor send personalised study suggestions."
+              label="Wawasan Mingguan AI"
+              description="Biarkan AI Tutor mengirimkan saran belajar khusus buat kamu."
               checked={aiInsights}
               onToggle={() => setAiInsights((v) => !v)}
             />
           </div>
         </SettingsSection>
 
-        {/* ── 4. Danger Zone ── */}
+        {/* ── 3. Danger Zone ── */}
         <SettingsSection
           icon={ShieldAlert}
-          title="Danger Zone"
-          description="Permanent actions that cannot be undone."
+          title="Zona Bahaya"
+          description="Tindakan permanen yang tidak dapat dibatalkan."
           accentColor="rgba(239,68,68,0.8)"
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -536,11 +489,11 @@ function SettingsContent() {
               <AlertTriangle size={15} style={{ color: "rgba(239,68,68,0.7)", marginTop: "2px", flexShrink: 0 }} aria-hidden="true" />
               <div>
                 <p style={{ fontSize: "0.8125rem", fontWeight: 600, color: "rgba(239,68,68,0.85)", lineHeight: 1.4 }}>
-                  Delete Account
+                  Hapus Akun
                 </p>
                 <p style={{ fontSize: "0.75rem", color: "var(--color-silver-400)", marginTop: "0.2rem", lineHeight: 1.5 }}>
-                  Permanently deletes your account, all study plans, and progress data.
-                  This action is <strong style={{ color: "rgba(239,68,68,0.7)" }}>irreversible</strong>.
+                  Menghapus akun kamu secara permanen beserta seluruh study plan dan data progres.
+                  Tindakan ini <strong style={{ color: "rgba(239,68,68,0.7)" }}>tidak dapat dibatalkan</strong>.
                 </p>
               </div>
             </div>
@@ -571,10 +524,10 @@ function SettingsContent() {
                     color: "rgba(239,68,68,0.85)",
                     alignSelf: "flex-start",
                   }}
-                  aria-label="Begin account deletion"
+                  aria-label="Mulai penghapusan akun"
                 >
                   <Trash2 size={13} aria-hidden="true" />
-                  Delete My Account
+                  Hapus Akun Saya
                 </m.button>
               ) : (
                 <m.div
@@ -593,16 +546,16 @@ function SettingsContent() {
                   }}
                 >
                   <p style={{ fontSize: "0.8125rem", fontWeight: 600, color: "rgba(239,68,68,0.9)" }}>
-                    Are you absolutely sure?
+                    Kamu benar-benar yakin?
                   </p>
                   <p style={{ fontSize: "0.75rem", color: "var(--color-silver-400)" }}>
-                    Type <strong style={{ color: "var(--color-silver-200)" }}>DELETE</strong> in the field below to confirm.
+                    Ketik <strong style={{ color: "var(--color-silver-200)" }}>DELETE</strong> pada kolom di bawah untuk konfirmasi.
                   </p>
                   <input
                     id="settings-delete-confirm-input"
                     type="text"
-                    placeholder="Type DELETE to confirm"
-                    aria-label="Confirm account deletion"
+                    placeholder="Ketik DELETE untuk konfirmasi"
+                    aria-label="Konfirmasi penghapusan akun"
                     style={{
                       background: "rgba(0,0,0,0.25)",
                       border: "1px solid rgba(239,68,68,0.3)",
@@ -629,7 +582,7 @@ function SettingsContent() {
                         cursor: "pointer",
                       }}
                     >
-                      Cancel
+                      Batal
                     </button>
                     <button
                       type="button"
@@ -645,7 +598,7 @@ function SettingsContent() {
                         cursor: "pointer",
                       }}
                     >
-                      Permanently Delete
+                      Hapus Permanen
                     </button>
                   </div>
                 </m.div>

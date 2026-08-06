@@ -58,9 +58,9 @@ const coreFeatures = [
   {
     id: "feature-adaptive-planning",
     Icon: CalendarDays,
-    label: "Adaptive Scheduling",
+    label: "Penjadwalan Adaptif",
     description:
-      "Dynamic study blocks that re-optimize in real time around your availability, energy levels, and retention decay curves.",
+      "Blok belajar dinamis yang otomatis menyesuaikan dengan waktu luang, tingkat energi, dan kurva daya ingat kamu secara real-time.",
     accent: "rgba(245, 158, 11, 0.12)",
     accentBorder: "rgba(245, 158, 11, 0.22)",
     iconColor: "var(--color-gold-400)",
@@ -68,9 +68,9 @@ const coreFeatures = [
   {
     id: "feature-ai-tutor",
     Icon: BrainCircuit,
-    label: "AI Tutor Engine",
+    label: "Engine AI Tutor",
     description:
-      "Gemini-powered Socratic dialogue surfaces conceptual gaps and scaffolds deeper understanding through targeted questioning.",
+      "Diskusi interaktif berbasis Gemini yang membantu menemukan bagian materi yang belum paham melalui pertanyaan terarah.",
     accent: "rgba(56, 189, 248, 0.08)",
     accentBorder: "rgba(56, 189, 248, 0.18)",
     iconColor: "rgba(56, 189, 248, 0.9)",
@@ -78,9 +78,9 @@ const coreFeatures = [
   {
     id: "feature-progress-telemetry",
     Icon: TrendingUp,
-    label: "Progress Telemetry",
+    label: "Telemetri Progres",
     description:
-      "Granular session metrics, spaced-repetition intervals, and retention curve modeling updated after every study event.",
+      "Metrik sesi belajar yang detail, interval pengulangan berjarak, dan pemodelan daya ingat yang diperbarui setiap kali kamu belajar.",
     accent: "rgba(34, 197, 94, 0.08)",
     accentBorder: "rgba(34, 197, 94, 0.18)",
     iconColor: "rgba(34, 197, 94, 0.9)",
@@ -88,9 +88,9 @@ const coreFeatures = [
   {
     id: "feature-goal-targeting",
     Icon: Target,
-    label: "Goal Decomposition",
+    label: "Dekomposisi Target",
     description:
-      "Hierarchical objective trees that map each exam goal to atomic daily tasks, ensuring no topic is left undertrained.",
+      "Peta target ujian yang dipecah jadi tugas-tugas kecil harian, memastikan semua topik berhasil kamu kuasai.",
     accent: "rgba(168, 85, 247, 0.08)",
     accentBorder: "rgba(168, 85, 247, 0.18)",
     iconColor: "rgba(168, 85, 247, 0.9)",
@@ -98,9 +98,9 @@ const coreFeatures = [
   {
     id: "feature-analytics",
     Icon: BarChart3,
-    label: "Learning Analytics",
+    label: "Analitik Belajar",
     description:
-      "Predictive readiness scores, subject-level mastery heatmaps, and weekly cognitive load indexes.",
+      "Skor prediksi kesiapan ujian, peta penguasaan tiap subjek, dan indeks beban kognitif mingguan.",
     accent: "rgba(239, 68, 68, 0.08)",
     accentBorder: "rgba(239, 68, 68, 0.18)",
     iconColor: "rgba(239, 68, 68, 0.85)",
@@ -108,9 +108,9 @@ const coreFeatures = [
   {
     id: "feature-sessions",
     Icon: Clock,
-    label: "Session Intelligence",
+    label: "Intelegensi Sesi",
     description:
-      "Evidence-based Pomodoro variants calibrated to your focus profile. Interruption-aware rescheduling keeps you on track.",
+      "Varian Pomodoro ilmiah yang dikalibrasi dengan profil fokus kamu. Penjadwalan ulang otomatis menjaga kamu tetap teratur.",
     accent: "rgba(245, 158, 11, 0.08)",
     accentBorder: "rgba(245, 158, 11, 0.16)",
     iconColor: "var(--color-gold-300)",
@@ -121,10 +121,10 @@ const coreFeatures = [
    Stats Strip Data
 --------------------------------------------------------------- */
 const stats = [
-  { value: "94%", label: "Retention Improvement" },
-  { value: "3.2x", label: "Study Efficiency Gain" },
-  { value: "< 48h", label: "Adaptive Recalibration" },
-  { value: "A+", label: "Grade Trajectory" },
+  { value: "94%", label: "Peningkatan Daya Ingat" },
+  { value: "3.2x", label: "Efisiensi Belajar" },
+  { value: "< 48h", label: "Rekalibrasi Adaptif" },
+  { value: "A+", label: "Trajektori Nilai" },
 ];
 
 /* ---------------------------------------------------------------
@@ -134,23 +134,23 @@ const processSteps = [
   {
     step: "01",
     Icon: BookOpen,
-    title: "Map Your Curriculum",
+    title: "Petakan Kurikulum Kamu",
     detail:
-      "Upload syllabi, exam schedules, and learning objectives. The AI constructs a full knowledge graph of your coursework.",
+      "Unggah silabus, jadwal ujian, dan target belajar kamu. AI akan membuatkan graf pengetahuan lengkap dari materi kamu.",
   },
   {
     step: "02",
     Icon: Zap,
-    title: "Receive Your Precision Plan",
+    title: "Dapatkan Plan Presisi Kamu",
     detail:
-      "StudySync AI generates a day-by-day schedule, allocating time by subject weight, deadline proximity, and your cognitive peak hours.",
+      "StudySync AI membuatkan jadwal harian, membagi waktu berdasarkan bobot subjek, tenggat waktu, dan jam fokus terbaik kamu.",
   },
   {
     step: "03",
     Icon: Shield,
-    title: "Study with an AI Co-Pilot",
+    title: "Belajar Bersama AI Co-Pilot",
     detail:
-      "The AI Tutor joins every session, answering questions, testing recall, and continuously refining your plan based on performance data.",
+      "AI Tutor hadir di setiap sesi belajar untuk menjawab pertanyaan, menguji pemahaman, dan terus menyempurnakan plan kamu.",
   },
 ];
 
@@ -234,18 +234,18 @@ function HeroSection() {
             style={{ fontFamily: "var(--font-outfit)" }}
           >
             <span style={{ color: "var(--color-silver-50)" }}>
-              The Precision
+              Engine Belajar
             </span>
             <br />
             <span
               className="text-gradient-gold"
               style={{ fontFamily: "var(--font-outfit)" }}
             >
-              Study Engine
+              Presisi Cerdas
             </span>
             <br />
             <span style={{ color: "var(--color-silver-200)" }}>
-              Built for Results.
+              Untuk Hasil Terbaik.
             </span>
           </h1>
         </m.div>
@@ -256,10 +256,9 @@ function HeroSection() {
           style={{ color: "var(--color-silver-300)" }}
           variants={staggerItem}
         >
-          StudySync AI constructs a precision-engineered adaptive study plan
-          calibrated to your cognitive patterns, deadline topology, and
-          subject-level mastery — then refines it continuously through
-          AI-driven performance analysis.
+          StudySync AI menyusun study plan adaptif yang dirancang presisi sesuai
+          pola kognitif, jadwal ujian, dan tingkat penguasaan materi kamu — lalu
+          diperbarui terus-menerus lewat analisis performa AI.
         </m.p>
 
         {/* CTA Buttons */}
@@ -276,9 +275,9 @@ function HeroSection() {
               href="/dashboard"
               id="cta-get-started"
               className="btn-primary text-[15px] px-8 py-3.5"
-              aria-label="Launch StudySync AI — start your study plan"
+              aria-label="Mulai StudySync AI — buat study plan kamu"
             >
-              Launch StudySync AI
+              Mulai StudySync AI
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </m.div>
@@ -291,9 +290,9 @@ function HeroSection() {
               href="#how-it-works"
               id="cta-how-it-works"
               className="btn-ghost text-[15px] px-7 py-3.5"
-              aria-label="Learn how StudySync AI works"
+              aria-label="Pelajari cara kerja StudySync AI"
             >
-              How It Works
+              Cara Kerja
               <ChevronRight size={15} aria-hidden="true" />
             </Link>
           </m.div>
@@ -358,9 +357,9 @@ function FeatureGrid() {
       >
         <span
           className="badge-gold mb-4 inline-flex"
-          aria-label="Core capabilities"
+          aria-label="Fitur Utama"
         >
-          Core Capabilities
+          Fitur Utama
         </span>
         <h2
           id="features-heading"
@@ -370,15 +369,15 @@ function FeatureGrid() {
             color: "var(--color-silver-50)",
           }}
         >
-          Every feature built around{" "}
-          <span className="text-gradient-gold">academic precision</span>
+          Setiap fitur dirancang untuk{" "}
+          <span className="text-gradient-gold">presisi akademis</span>
         </h2>
         <p
           className="text-base max-w-xl mx-auto leading-relaxed"
           style={{ color: "var(--color-silver-300)" }}
         >
-          Not another to-do app. StudySync AI is a cognitive performance
-          platform engineered from first principles for serious learners.
+          Bukan sekadar aplikasi to-do biasa. StudySync AI adalah platform
+          performa kognitif yang dibangun khusus untuk pelajar yang serius.
         </p>
       </m.div>
 
@@ -473,9 +472,9 @@ function HowItWorksSection() {
       >
         <span
           className="badge-gold mb-4 inline-flex"
-          aria-label="Process overview"
+          aria-label="Cara kerja"
         >
-          How It Works
+          Cara Kerja
         </span>
         <h2
           id="how-it-works-heading"
@@ -485,15 +484,15 @@ function HowItWorksSection() {
             color: "var(--color-silver-50)",
           }}
         >
-          From enrollment to exam-ready in{" "}
-          <span className="text-gradient-gold">three steps</span>
+          Dari persiapan hingga siap ujian dalam{" "}
+          <span className="text-gradient-gold">tiga langkah</span>
         </h2>
         <p
           className="text-base max-w-lg mx-auto leading-relaxed"
           style={{ color: "var(--color-silver-300)" }}
         >
-          A structured onboarding pipeline that transforms raw course data into
-          a living, adaptive learning system.
+          Alur terstruktur yang mengubah materi pelajaran kamu menjadi sistem
+          belajar adaptif yang hidup.
         </p>
       </m.div>
 
@@ -616,17 +615,17 @@ function CtaSection() {
               color: "var(--color-silver-50)",
             }}
           >
-            Begin your most productive
+            Mulai semester paling produktif
             <br />
-            <span className="text-gradient-gold">semester yet.</span>
+            <span className="text-gradient-gold">kamu sekarang.</span>
           </h2>
 
           <p
             className="text-base max-w-md leading-relaxed"
             style={{ color: "var(--color-silver-300)" }}
           >
-            Join the closed beta and experience adaptive AI-driven study
-            planning engineered for academic excellence.
+            Gabung dalam demo dan rasakan pengalaman perencanaan belajar adaptif
+            berbasis AI yang dirancang untuk keunggulan akademis kamu.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -639,9 +638,9 @@ function CtaSection() {
                 href="/dashboard"
                 id="cta-section-get-started"
                 className="btn-primary text-[15px] px-9 py-3.5"
-                aria-label="Get started with StudySync AI"
+                aria-label="Mulai StudySync AI sekarang"
               >
-                Get Started
+                Mulai Sekarang
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </m.div>
@@ -650,9 +649,9 @@ function CtaSection() {
               href="#features"
               id="cta-section-features"
               className="btn-ghost text-[14px] px-7 py-3.5"
-              aria-label="View all features"
+              aria-label="Lihat semua fitur"
             >
-              View All Features
+              Lihat Semua Fitur
             </Link>
           </div>
 
@@ -660,12 +659,12 @@ function CtaSection() {
           <div
             className="flex items-center gap-6 pt-2"
             role="list"
-            aria-label="Trust indicators"
+            aria-label="Indikator keunggulan"
           >
             {[
-              { Icon: Shield, text: "Privacy-First Architecture" },
-              { Icon: Zap, text: "Real-Time Adaptation" },
-              { Icon: BrainCircuit, text: "Gemini AI Powered" },
+              { Icon: Shield, text: "Privasi Utama" },
+              { Icon: Zap, text: "Adaptasi Real-Time" },
+              { Icon: BrainCircuit, text: "Didukung Gemini AI" },
             ].map(({ Icon, text }) => (
               <div
                 key={text}

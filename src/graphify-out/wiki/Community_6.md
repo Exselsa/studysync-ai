@@ -1,22 +1,21 @@
 # Community 6
 
-> 13 nodes · cohesion 0.15
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L1) (13 connections)
-- [{ user }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/tutor/page.tsx#L357) (4 connections)
-- [[aiInsights, setAiInsights]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L264) (1 connections)
-- [[deleteConfirm, setDeleteConfirm]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L267) (1 connections)
-- [[displayName, setDisplayName]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L257) (1 connections)
-- [[emailNotifs, setEmailNotifs]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L262) (1 connections)
-- [handleSaveProfile()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L269) (1 connections)
-- [isDark](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L261) (1 connections)
-- [[planReminders, setPlanReminders]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L263) (1 connections)
-- [[saved, setSaved]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L258) (1 connections)
-- [sectionVariants](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L26) (1 connections)
-- [SettingsSection()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L36) (1 connections)
-- [{ theme, setTheme }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L254) (1 connections)
+- [liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L1) (11 connections)
+- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L50) (1 connections)
+- [handleClick()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L109) (1 connections)
+- [[isHovered, setIsHovered]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L53) (1 connections)
+- [isIcon](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L120) (1 connections)
+- [mount](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L63) (1 connections)
+- [parent](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L60) (1 connections)
+- [rippleIdRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L54) (1 connections)
+- [[ripples, setRipples]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L52) (1 connections)
+- [SHADER_COLOR_BACK](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L35) (1 connections)
+- [SHADER_COLOR_TINT](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L36) (1 connections)
+- [shaderMountRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L51) (1 connections)
 
 ## Relationships
 
@@ -24,12 +23,11 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\settings\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\tutor\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/tutor/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\ui\liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 28 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

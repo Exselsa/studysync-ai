@@ -1,20 +1,19 @@
 # Community 8
 
-> 11 nodes · cohesion 0.18
+> 10 nodes · cohesion 0.38
 
 ## Key Concepts
 
-- [AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L1) (4 connections)
-- [useAuth()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116) (3 connections)
-- [DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L1) (3 connections)
-- [ChallengeNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L14) (2 connections)
-- [DashboardSidebar()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L59) (2 connections)
-- [AuthContext](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L47) (1 connections)
-- [AuthProvider()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L57) (1 connections)
-- [googleProvider](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L52) (1 connections)
-- [ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L1) (1 connections)
-- [active](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L98) (1 connections)
-- [navItems](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L23) (1 connections)
+- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L1) (5 connections)
+- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts#L1) (5 connections)
+- [POST()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L102) (5 connections)
+- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L1) (4 connections)
+- [buildFallback()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L65) (3 connections)
+- [buildFallbackResponse()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L121) (3 connections)
+- [RESPONSE_SCHEMA](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L23) (3 connections)
+- [SYSTEM_INSTRUCTION](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L55) (3 connections)
+- [offsetDate()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L150) (2 connections)
+- [FALLBACK_QUESTIONS](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts#L79) (1 connections)
 
 ## Relationships
 
@@ -22,14 +21,14 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\chat\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\evaluate-duel\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\evaluate\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts)
 
 ## Audit Trail
 
-- EXTRACTED: 16 (80%)
-- INFERRED: 4 (20%)
+- EXTRACTED: 34 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

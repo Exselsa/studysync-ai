@@ -378,7 +378,7 @@ function PlanCard({
             >
               {plan.tasks.length === 0 ? (
                 <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)", textAlign: "center", padding: "0.75rem 0" }}>
-                  No tasks in this plan yet.
+                  Belum ada tugas di plan ini.
                 </p>
               ) : (
                 <AnimatePresence>
@@ -432,9 +432,9 @@ function StatsStrip({ plans }: { plans: StudyPlan[] }) {
   const avgPct     = plans.length ? Math.round(plans.reduce((s, p) => s + computeProgress(p.tasks), 0) / plans.length) : 0;
 
   const stats = [
-    { Icon: BookOpen,    label: "Total Plans",     value: String(plans.length)   },
-    { Icon: CheckCircle2, label: "Tasks Done",     value: `${doneTasks} / ${totalTasks}` },
-    { Icon: TrendingUp,  label: "Avg. Progress",   value: `${avgPct}%`           },
+    { Icon: BookOpen,    label: "Total Plan",     value: String(plans.length)   },
+    { Icon: CheckCircle2, label: "Tugas Selesai",  value: `${doneTasks} / ${totalTasks}` },
+    { Icon: TrendingUp,  label: "Rata-rata Progres", value: `${avgPct}%`           },
   ];
 
   return (
@@ -490,7 +490,7 @@ function PlanContent() {
       const data = await getStudyPlans(user.uid);
       setPlans(data);
     } catch {
-      setError("Failed to load study plans. Check your Firestore connection.");
+      setError("Gagal memuat study plan. Coba cek koneksi kamu ya.");
     } finally {
       setLoading(false);
     }
@@ -609,12 +609,12 @@ function PlanContent() {
               marginBottom: "0.25rem",
             }}
           >
-            Study Plan Board
+            Papan Study Plan
           </h1>
           <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)" }}>
             {plans.length === 0
-              ? "No plans yet — start a chat with the AI Tutor to generate one."
-              : `${plans.length} active plan${plans.length > 1 ? "s" : ""} · click tasks to mark complete`}
+              ? "Belum ada plan nih — yuk ngobrol sama AI Tutor buat bikin plan baru!"
+              : `${plans.length} plan aktif · klik tugas buat tandai selesai`}
           </p>
         </div>
 
@@ -623,7 +623,7 @@ function PlanContent() {
           type="button"
           id="plan-refresh"
           onClick={fetchPlans}
-          aria-label="Refresh study plans"
+          aria-label="Muat ulang study plan"
           style={{
             display: "flex",
             alignItems: "center",
@@ -642,7 +642,7 @@ function PlanContent() {
           onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)"; }}
         >
           <RefreshCw size={13} aria-hidden="true" />
-          Refresh
+          Muat Ulang
         </button>
       </m.div>
 
@@ -694,11 +694,11 @@ function PlanContent() {
           <Inbox size={36} style={{ color: "var(--color-silver-400)" }} aria-hidden="true" />
           <div style={{ textAlign: "center" }}>
             <p style={{ fontFamily: "var(--font-outfit)", fontWeight: 600, fontSize: "1rem", color: "var(--color-silver-200)", marginBottom: "0.35rem" }}>
-              No study plans yet
+              Belum ada study plan
             </p>
             <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)", lineHeight: 1.6 }}>
-              Open the <strong style={{ color: "var(--color-silver-300)" }}>AI Tutor</strong> and ask it to build a plan for you.<br />
-              It will appear here automatically.
+              Buka menu <strong style={{ color: "var(--color-silver-300)" }}>AI Tutor</strong> dan minta AI buatkan plan buat kamu.<br />
+              Plan akan otomatis muncul di sini.
             </p>
           </div>
         </m.div>

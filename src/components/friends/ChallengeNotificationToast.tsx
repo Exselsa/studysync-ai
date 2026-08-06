@@ -112,11 +112,11 @@ export default function ChallengeNotificationToast() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-rose-400 text-xs font-black uppercase tracking-wider">
               <Swords size={16} className="animate-pulse" />
-              <span>Incoming Feynman Duel Challenge!</span>
+              <span>Tantangan Feynman Duel Masuk!</span>
             </div>
 
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-950/80 border border-rose-500/30 text-rose-300">
-              ⚔️ Duel Match
+              ⚔️ Pertandingan Duel
             </span>
           </div>
 
@@ -125,7 +125,7 @@ export default function ChallengeNotificationToast() {
             <span className="font-extrabold text-cyan-300">
               {currentChallenge.challengerName}
             </span>{" "}
-            has challenged you to a Feynman Duel on topic:
+            telah menantang kamu untuk Feynman Duel pada topik:
             <div className="mt-2 px-3 py-2 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-200 font-bold text-sm text-center">
               &ldquo;{currentChallenge.topic}&rdquo;
             </div>
@@ -139,7 +139,7 @@ export default function ChallengeNotificationToast() {
               disabled={processingId !== null}
               className="px-3.5 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-slate-100 text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50 cursor-pointer"
             >
-              <X size={14} /> Decline ❌
+              <X size={14} /> Tolak ❌
             </button>
 
             <button
@@ -150,11 +150,11 @@ export default function ChallengeNotificationToast() {
             >
               {processingId === currentChallenge.id ? (
                 <>
-                  <Loader2 size={14} className="animate-spin" /> Accepting...
+                  <Loader2 size={14} className="animate-spin" /> Menerima...
                 </>
               ) : (
                 <>
-                  <Swords size={14} /> Accept ⚔️
+                  <Swords size={14} /> Terima ⚔️
                 </>
               )}
             </button>

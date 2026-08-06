@@ -1,16 +1,15 @@
 # Community 11
 
-> 7 nodes · cohesion 0.29
+> 6 nodes · cohesion 0.33
 
 ## Key Concepts
 
-- [NavigationBar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L1) (6 connections)
-- [handleSignIn()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L30) (1 connections)
-- [isActive](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L101) (1 connections)
-- [navLinks](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L11) (1 connections)
-- [pathname](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L26) (1 connections)
-- [[signingIn, setSigningIn]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L28) (1 connections)
-- [{ user, loading, signInWithGoogle }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L27) (1 connections)
+- [ProtectedRoute.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L1) (5 connections)
+- [containerVariants](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L26) (1 connections)
+- [isMountedRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L135) (1 connections)
+- [router](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L127) (1 connections)
+- [spinnerVariants](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L15) (1 connections)
+- [{ user, loading }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L126) (1 connections)
 
 ## Relationships
 
@@ -18,11 +17,11 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\NavigationBar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\ProtectedRoute.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
+- EXTRACTED: 10 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

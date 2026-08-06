@@ -47,11 +47,11 @@ interface Toast {
    Prompt Suggestions
 ------------------------------------------------------------------ */
 const SUGGESTIONS = [
-  { Icon: Calculator, text: "Help me prepare for my Calculus exam",   color: "rgba(56, 189, 248, 0.8)"  },
-  { Icon: BrainCircuit, text: "Create a Machine Learning study plan", color: "rgba(245, 158, 11, 0.8)"  },
-  { Icon: Code2,  text: "Review Algorithms & Data Structures",        color: "rgba(34, 197, 94, 0.8)"   },
-  { Icon: FlaskConical, text: "Help me study Organic Chemistry",      color: "rgba(168, 85, 247, 0.8)"  },
-  { Icon: BookOpen, text: "Build a 7-day exam preparation plan",      color: "rgba(239, 68, 68, 0.8)"   },
+  { Icon: Calculator, text: "Bantu aku persiapan ujian Kalkulus",       color: "rgba(56, 189, 248, 0.8)"  },
+  { Icon: BrainCircuit, text: "Buatkan study plan Machine Learning",    color: "rgba(245, 158, 11, 0.8)"  },
+  { Icon: Code2,  text: "Review Algoritma & Struktur Data",             color: "rgba(34, 197, 94, 0.8)"   },
+  { Icon: FlaskConical, text: "Bantu aku belajar Kimia Organik",        color: "rgba(168, 85, 247, 0.8)"  },
+  { Icon: BookOpen, text: "Buatkan plan 7 hari persiapan ujian",        color: "rgba(239, 68, 68, 0.8)"   },
 ] as const;
 
 /* ------------------------------------------------------------------
@@ -191,7 +191,7 @@ function ToastNotification({
               padding: 0,
             }}
           >
-            View in Plan Board
+            Lihat di Papan Plan
             <ExternalLink size={10} aria-hidden="true" />
           </button>
         )}
@@ -430,15 +430,15 @@ function TutorContent() {
           const docId = await saveStudyPlan(user.uid, data.studyPlan);
           pushToast({
             variant: "success",
-            title: "Study plan saved!",
-            body: `"${data.studyPlan.title}" is ready on your Plan Board.`,
+            title: "Study plan berhasil disimpan!",
+            body: `"${data.studyPlan.title}" sudah siap di Papan Plan kamu.`,
             planId: docId,
           });
         } catch {
           pushToast({
             variant: "error",
-            title: "Couldn't save plan",
-            body: "The plan was generated but failed to save to Firestore. Check your connection.",
+            title: "Gagal menyimpan plan",
+            body: "Plan berhasil dibuat tapi gagal disimpan ke Firestore. Cek koneksi kamu ya.",
           });
         }
       }
@@ -503,7 +503,7 @@ function TutorContent() {
         </div>
         <div>
           <h1 style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.125rem", color: "var(--color-silver-50)", lineHeight: 1.2 }}>AI Tutor</h1>
-          <p style={{ fontSize: "0.75rem", color: "var(--color-silver-400)" }}>Your adaptive study companion</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--color-silver-400)" }}>Teman belajar adaptif kamu</p>
         </div>
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.375rem", padding: "0.25rem 0.75rem", borderRadius: "9999px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
           <span style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(34,197,94,0.9)", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)", animation: "pulse-dot 2s ease-in-out infinite" }} />
@@ -534,8 +534,8 @@ function TutorContent() {
                   <BrainCircuit size={28} style={{ color: "var(--color-gold-400)" }} />
                 </div>
                 <div>
-                  <p style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.25rem", color: "var(--color-silver-50)" }}>Hello, {displayName}! 👋</p>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-silver-400)", marginTop: "0.25rem" }}>Ask me anything — I&apos;ll build your personalised study plan.</p>
+                  <p style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.25rem", color: "var(--color-silver-50)" }}>Halo, {displayName}! 👋</p>
+                  <p style={{ fontSize: "0.875rem", color: "var(--color-silver-400)", marginTop: "0.25rem" }}>Tanya apa saja ya — aku siap bantu buatkan study plan khusus buat kamu.</p>
                 </div>
               </m.div>
 
@@ -598,7 +598,7 @@ function TutorContent() {
           <textarea
             ref={inputRef}
             id="tutor-chat-input"
-            placeholder="Ask anything — e.g. 'Help me prepare for my Calculus exam'"
+            placeholder="Tanyakan apa saja — contoh: 'Bantu aku persiapan ujian Kalkulus'"
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
@@ -608,7 +608,7 @@ function TutorContent() {
             onKeyDown={handleKeyDown}
             disabled={isTyping}
             rows={1}
-            aria-label="Chat message input"
+            aria-label="Input pesan chat"
             style={{
               flex: 1, background: "transparent", border: "none", outline: "none",
               resize: "none", color: "var(--color-silver-50)",
@@ -621,16 +621,16 @@ function TutorContent() {
             onClick={() => sendMessage(input)}
             disabled={isTyping || !input.trim()}
             id="tutor-send-button"
-            aria-label="Send message"
+            aria-label="Kirim pesan"
           />
         </div>
 
         <p style={{ textAlign: "center", fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
-          Press{" "}
+          Tekan{" "}
           <kbd style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "4px", padding: "0 4px", fontFamily: "monospace" }}>Enter</kbd>
-          {" "}to send &nbsp;·&nbsp;{" "}
+          {" "}untuk kirim &nbsp;·&nbsp;{" "}
           <kbd style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "4px", padding: "0 4px", fontFamily: "monospace" }}>Shift+Enter</kbd>
-          {" "}for new line
+          {" "}untuk baris baru
         </p>
       </m.div>
 

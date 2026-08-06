@@ -2,27 +2,27 @@
   "hotspots": [
     {
       "label": "handleAttack()",
-      "risk": 0.621,
-      "type": "FUNCTION"
-    },
-    {
-      "label": "POST()",
-      "risk": 0.565,
+      "risk": 0.598,
       "type": "FUNCTION"
     },
     {
       "label": "ChallengeNotificationToast()",
-      "risk": 0.506,
+      "risk": 0.562,
+      "type": "FUNCTION"
+    },
+    {
+      "label": "POST()",
+      "risk": 0.543,
       "type": "FUNCTION"
     },
     {
       "label": "unsub",
-      "risk": 0.421,
+      "risk": 0.408,
       "type": "FUNCTION"
     },
     {
       "label": "submitMultiplayerTurn()",
-      "risk": 0.325,
+      "risk": 0.316,
       "type": "FUNCTION"
     }
   ],

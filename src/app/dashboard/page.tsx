@@ -40,10 +40,10 @@ const statCards: StatCard[] = [
   {
     id: "stat-streak",
     Icon: Flame,
-    label: "Current Streak",
+    label: "Streak Belajar",
     value: "14",
-    unit: "days",
-    delta: "+2 vs. last week",
+    unit: "hari",
+    delta: "+2 dibanding minggu lalu",
     deltaPositive: true,
     accent: "rgba(245, 158, 11, 0.10)",
     accentBorder: "rgba(245, 158, 11, 0.22)",
@@ -52,10 +52,10 @@ const statCards: StatCard[] = [
   {
     id: "stat-hours",
     Icon: Clock,
-    label: "Study Hours",
+    label: "Jam Belajar",
     value: "47.5",
-    unit: "hrs this month",
-    delta: "+8.2 vs. last month",
+    unit: "jam bulan ini",
+    delta: "+8.2 dibanding bulan lalu",
     deltaPositive: true,
     accent: "rgba(56, 189, 248, 0.08)",
     accentBorder: "rgba(56, 189, 248, 0.18)",
@@ -64,10 +64,10 @@ const statCards: StatCard[] = [
   {
     id: "stat-tasks",
     Icon: CheckSquare,
-    label: "Tasks Pending",
+    label: "Tugas Pending",
     value: "3",
-    unit: "due this week",
-    delta: "–5 completed today",
+    unit: "minggu ini",
+    delta: "–5 selesai hari ini",
     deltaPositive: true,
     accent: "rgba(34, 197, 94, 0.08)",
     accentBorder: "rgba(34, 197, 94, 0.18)",
@@ -76,10 +76,10 @@ const statCards: StatCard[] = [
 ];
 
 const quickStats = [
-  { Icon: TrendingUp, label: "Readiness Score",  value: "87%"    },
-  { Icon: Target,     label: "Goals On-Track",   value: "6 / 7"  },
-  { Icon: BookOpen,   label: "Topics Mastered",  value: "23"     },
-  { Icon: BarChart3,  label: "Avg. Focus Score", value: "91 / 100" },
+  { Icon: TrendingUp, label: "Skor Kesiapan",  value: "87%"    },
+  { Icon: Target,     label: "Target On-Track", value: "6 / 7"  },
+  { Icon: BookOpen,   label: "Topik Dikuasai", value: "23"     },
+  { Icon: BarChart3,  label: "Skor Fokus Rata-rata", value: "91 / 100" },
 ];
 
 /* ---------------------------------------------------------------
@@ -233,15 +233,15 @@ function DashboardContent() {
                 color: "var(--color-silver-50)",
               }}
             >
-              Welcome back,{" "}
-              <span className="text-gradient-gold">{displayName}.</span>
+              Selamat datang kembali,{" "}
+              <span className="text-gradient-gold">{displayName}!</span>
             </h1>
             <p
               className="text-[13px] leading-relaxed mt-0.5"
               style={{ color: "var(--color-silver-300)" }}
             >
-              Your adaptive study plan has been recalibrated. 3 priority tasks
-              await your attention today.
+              Study plan adaptif kamu sudah disesuaikan ulang. Ada 3 tugas utama
+              yang nunggu kamu hari ini.
             </p>
           </div>
 
@@ -253,10 +253,10 @@ function DashboardContent() {
             transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
           >
             <LiquidMetalButton
-              label="Start AI Session"
+              label="Mulai Sesi AI"
               viewMode="label"
               id="dashboard-start-ai-session"
-              aria-label="Start an AI-powered study session"
+              aria-label="Mulai sesi belajar dengan AI"
               onClick={() => router.push("/dashboard/tutor")}
             />
           </m.div>
@@ -285,7 +285,7 @@ function DashboardContent() {
             className="text-[11px] font-bold tracking-[0.12em] uppercase mb-4"
             style={{ color: "var(--color-silver-400)" }}
           >
-            Performance Snapshot
+            Ringkasan Performa
           </h2>
 
           <div className="glass-panel rounded-2xl px-6 py-5 grid grid-cols-2 sm:grid-cols-4 gap-6">
@@ -332,15 +332,16 @@ function DashboardContent() {
               className="text-[11px] font-bold tracking-[0.12em] uppercase"
               style={{ color: "var(--color-silver-400)" }}
             >
-              Priority Tasks — Today
+              Tugas Prioritas — Hari Ini
             </h2>
             <button
               type="button"
               id="dashboard-view-plan"
               className="btn-ghost text-[11px] px-3 py-1.5 gap-1"
-              aria-label="View full study plan"
+              aria-label="Lihat study plan lengkap"
+              onClick={() => router.push("/dashboard/plan")}
             >
-              View Plan
+              Lihat Plan
               <ArrowRight size={11} aria-hidden="true" />
             </button>
           </div>
@@ -350,24 +351,24 @@ function DashboardContent() {
               {
                 id: "task-review-ml",
                 subject: "Machine Learning",
-                task: "Review Chapter 7: Gradient Descent Variants",
-                due: "Due in 2 hours",
-                priority: "High",
+                task: "Review Bab 7: Varian Gradient Descent",
+                due: "Batas 2 jam lagi",
+                priority: "Tinggi",
                 priorityColor: "rgba(239, 68, 68, 0.85)",
               },
               {
                 id: "task-calc-problems",
                 subject: "Calculus III",
-                task: "Complete problem set: Vector Fields & Curl",
-                due: "Due tomorrow",
-                priority: "Medium",
+                task: "Selesaikan latihan soal: Medan Vektor & Curl",
+                due: "Batas besok",
+                priority: "Sedang",
                 priorityColor: "rgba(245, 158, 11, 0.85)",
               },
               {
                 id: "task-cs-flashcards",
                 subject: "Algorithms",
-                task: "Spaced repetition: Dynamic Programming patterns",
-                due: "Due in 3 days",
+                task: "Spaced repetition: Pola Dynamic Programming",
+                due: "Batas 3 hari lagi",
                 priority: "Normal",
                 priorityColor: "rgba(56, 189, 248, 0.85)",
               },
