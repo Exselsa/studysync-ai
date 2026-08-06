@@ -17,6 +17,7 @@ import {
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { getStudyPlans, type StudyPlan, type StudyTask } from "@/lib/firebase/db";
+import MaterialUploader from "@/components/study/MaterialUploader";
 
 /* ------------------------------------------------------------------
    Animation Variants
@@ -664,6 +665,11 @@ function PlanContent() {
           {error}
         </m.div>
       )}
+
+      {/* ---- Material Upload & Gemini AI Section ---- */}
+      <m.div variants={cardVariants}>
+        <MaterialUploader onPlanSaved={fetchPlans} />
+      </m.div>
 
       {/* ---- Stats strip ---- */}
       {plans.length > 0 && (
