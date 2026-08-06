@@ -1,0 +1,710 @@
+"use client";
+
+import { m, useReducedMotion, useScroll, useTransform, type Variants } from "framer-motion";
+import {
+  ArrowRight,
+  BrainCircuit,
+  CalendarDays,
+  TrendingUp,
+  Zap,
+  BookOpen,
+  Target,
+  BarChart3,
+  ChevronRight,
+  Shield,
+  Clock,
+} from "lucide-react";
+import Link from "next/link";
+import { useRef } from "react";
+
+/* ---------------------------------------------------------------
+   Animation Variants
+--------------------------------------------------------------- */
+const EASE_SMOOTH = [0.4, 0, 0.2, 1] as [number, number, number, number];
+
+/** Static fade-up variant — pass a custom `transition` prop at the call site to vary delay. */
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 28, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: EASE_SMOOTH },
+  },
+};
+
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+  },
+};
+
+const staggerItem: Variants = {
+  hidden: { opacity: 0, y: 24, filter: "blur(6px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.5, ease: EASE_SMOOTH },
+  },
+};
+
+/* ---------------------------------------------------------------
+   Feature Grid Data
+--------------------------------------------------------------- */
+const coreFeatures = [
+  {
+    id: "feature-adaptive-planning",
+    Icon: CalendarDays,
+    label: "Adaptive Scheduling",
+    description:
+      "Dynamic study blocks that re-optimize in real time around your availability, energy levels, and retention decay curves.",
+    accent: "rgba(245, 158, 11, 0.12)",
+    accentBorder: "rgba(245, 158, 11, 0.22)",
+    iconColor: "var(--color-gold-400)",
+  },
+  {
+    id: "feature-ai-tutor",
+    Icon: BrainCircuit,
+    label: "AI Tutor Engine",
+    description:
+      "Gemini-powered Socratic dialogue surfaces conceptual gaps and scaffolds deeper understanding through targeted questioning.",
+    accent: "rgba(56, 189, 248, 0.08)",
+    accentBorder: "rgba(56, 189, 248, 0.18)",
+    iconColor: "rgba(56, 189, 248, 0.9)",
+  },
+  {
+    id: "feature-progress-telemetry",
+    Icon: TrendingUp,
+    label: "Progress Telemetry",
+    description:
+      "Granular session metrics, spaced-repetition intervals, and retention curve modeling updated after every study event.",
+    accent: "rgba(34, 197, 94, 0.08)",
+    accentBorder: "rgba(34, 197, 94, 0.18)",
+    iconColor: "rgba(34, 197, 94, 0.9)",
+  },
+  {
+    id: "feature-goal-targeting",
+    Icon: Target,
+    label: "Goal Decomposition",
+    description:
+      "Hierarchical objective trees that map each exam goal to atomic daily tasks, ensuring no topic is left undertrained.",
+    accent: "rgba(168, 85, 247, 0.08)",
+    accentBorder: "rgba(168, 85, 247, 0.18)",
+    iconColor: "rgba(168, 85, 247, 0.9)",
+  },
+  {
+    id: "feature-analytics",
+    Icon: BarChart3,
+    label: "Learning Analytics",
+    description:
+      "Predictive readiness scores, subject-level mastery heatmaps, and weekly cognitive load indexes.",
+    accent: "rgba(239, 68, 68, 0.08)",
+    accentBorder: "rgba(239, 68, 68, 0.18)",
+    iconColor: "rgba(239, 68, 68, 0.85)",
+  },
+  {
+    id: "feature-sessions",
+    Icon: Clock,
+    label: "Session Intelligence",
+    description:
+      "Evidence-based Pomodoro variants calibrated to your focus profile. Interruption-aware rescheduling keeps you on track.",
+    accent: "rgba(245, 158, 11, 0.08)",
+    accentBorder: "rgba(245, 158, 11, 0.16)",
+    iconColor: "var(--color-gold-300)",
+  },
+];
+
+/* ---------------------------------------------------------------
+   Stats Strip Data
+--------------------------------------------------------------- */
+const stats = [
+  { value: "94%", label: "Retention Improvement" },
+  { value: "3.2x", label: "Study Efficiency Gain" },
+  { value: "< 48h", label: "Adaptive Recalibration" },
+  { value: "A+", label: "Grade Trajectory" },
+];
+
+/* ---------------------------------------------------------------
+   Process Steps
+--------------------------------------------------------------- */
+const processSteps = [
+  {
+    step: "01",
+    Icon: BookOpen,
+    title: "Map Your Curriculum",
+    detail:
+      "Upload syllabi, exam schedules, and learning objectives. The AI constructs a full knowledge graph of your coursework.",
+  },
+  {
+    step: "02",
+    Icon: Zap,
+    title: "Receive Your Precision Plan",
+    detail:
+      "StudySync AI generates a day-by-day schedule, allocating time by subject weight, deadline proximity, and your cognitive peak hours.",
+  },
+  {
+    step: "03",
+    Icon: Shield,
+    title: "Study with an AI Co-Pilot",
+    detail:
+      "The AI Tutor joins every session, answering questions, testing recall, and continuously refining your plan based on performance data.",
+  },
+];
+
+/* ---------------------------------------------------------------
+   Hero Section
+--------------------------------------------------------------- */
+function HeroSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const prefersReduced = useReducedMotion();
+
+  return (
+    <section
+      ref={containerRef}
+      className="relative flex flex-col items-center justify-center min-h-[90vh] px-6 pt-20 pb-16 overflow-hidden"
+      aria-labelledby="hero-heading"
+    >
+      {/* Parallax accent ring */}
+      {!prefersReduced && (
+        <m.div
+          className="absolute inset-0 pointer-events-none"
+          style={{ y: parallaxY, opacity: heroOpacity }}
+        >
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(245,158,11,0.06) 0%, rgba(13,31,82,0.4) 40%, transparent 70%)",
+              filter: "blur(1px)",
+            }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full"
+            style={{
+              border: "1px solid rgba(245,158,11,0.08)",
+              boxShadow: "0 0 80px rgba(245,158,11,0.04) inset",
+            }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] rounded-full"
+            style={{
+              border: "1px solid rgba(255,255,255,0.05)",
+            }}
+          />
+        </m.div>
+      )}
+
+      <m.div
+        className="relative z-10 flex flex-col items-center text-center max-w-4xl w-full gap-8"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Badge */}
+        <m.div variants={staggerItem}>
+          <span
+            className="badge-gold"
+            id="hero-badge"
+            aria-label="Powered by Gemini AI"
+          >
+            <Zap
+              size={10}
+              strokeWidth={2.5}
+              style={{ color: "var(--color-gold-300)" }}
+              aria-hidden="true"
+            />
+            AI Innovation Challenge — Phase 1 Demo
+          </span>
+        </m.div>
+
+        {/* Heading */}
+        <m.div variants={staggerItem} className="space-y-3">
+          <h1
+            id="hero-heading"
+            className="text-5xl sm:text-6xl lg:text-[5.25rem] font-bold tracking-[-0.03em] leading-[1.05]"
+            style={{ fontFamily: "var(--font-outfit)" }}
+          >
+            <span style={{ color: "var(--color-silver-50)" }}>
+              The Precision
+            </span>
+            <br />
+            <span
+              className="text-gradient-gold"
+              style={{ fontFamily: "var(--font-outfit)" }}
+            >
+              Study Engine
+            </span>
+            <br />
+            <span style={{ color: "var(--color-silver-200)" }}>
+              Built for Results.
+            </span>
+          </h1>
+        </m.div>
+
+        {/* Subheading */}
+        <m.p
+          className="text-lg sm:text-xl leading-relaxed max-w-2xl"
+          style={{ color: "var(--color-silver-300)" }}
+          variants={staggerItem}
+        >
+          StudySync AI constructs a precision-engineered adaptive study plan
+          calibrated to your cognitive patterns, deadline topology, and
+          subject-level mastery — then refines it continuously through
+          AI-driven performance analysis.
+        </m.p>
+
+        {/* CTA Buttons */}
+        <m.div
+          className="flex flex-col sm:flex-row items-center gap-3"
+          variants={staggerItem}
+        >
+          <m.div
+            whileHover={prefersReduced ? {} : { scale: 1.02, y: -2 }}
+            whileTap={prefersReduced ? {} : { scale: 0.97, y: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          >
+            <Link
+              href="/dashboard"
+              id="cta-get-started"
+              className="btn-primary text-[15px] px-8 py-3.5"
+              aria-label="Launch StudySync AI — start your study plan"
+            >
+              Launch StudySync AI
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </m.div>
+
+          <m.div
+            whileHover={prefersReduced ? {} : { scale: 1.01 }}
+            whileTap={prefersReduced ? {} : { scale: 0.98 }}
+          >
+            <Link
+              href="#how-it-works"
+              id="cta-how-it-works"
+              className="btn-ghost text-[15px] px-7 py-3.5"
+              aria-label="Learn how StudySync AI works"
+            >
+              How It Works
+              <ChevronRight size={15} aria-hidden="true" />
+            </Link>
+          </m.div>
+        </m.div>
+
+        {/* Stats strip */}
+        <m.div
+          className="w-full mt-4"
+          variants={staggerItem}
+          style={{ willChange: "opacity, transform" }}
+        >
+          <div
+            className="glass-panel rounded-2xl px-6 py-5 grid grid-cols-2 sm:grid-cols-4 gap-6"
+            role="list"
+            aria-label="Key performance statistics"
+          >
+            {stats.map(({ value, label }) => (
+              <div
+                key={label}
+                role="listitem"
+                className="flex flex-col items-center gap-1 text-center"
+              >
+                <span
+                  className="text-2xl sm:text-3xl font-bold tracking-tight text-gradient-gold"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  {value}
+                </span>
+                <span
+                  className="text-[11px] font-medium tracking-widest uppercase"
+                  style={{ color: "var(--color-silver-400)" }}
+                >
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </m.div>
+      </m.div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------
+   Feature Grid Section
+--------------------------------------------------------------- */
+function FeatureGrid() {
+  return (
+    <section
+      id="features"
+      className="relative px-6 py-24 max-w-7xl mx-auto w-full"
+      aria-labelledby="features-heading"
+    >
+      {/* Section header */}
+      <m.div
+        className="text-center mb-14"
+        variants={fadeUp}
+        custom={0}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+      >
+        <span
+          className="badge-gold mb-4 inline-flex"
+          aria-label="Core capabilities"
+        >
+          Core Capabilities
+        </span>
+        <h2
+          id="features-heading"
+          className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+          style={{
+            fontFamily: "var(--font-outfit)",
+            color: "var(--color-silver-50)",
+          }}
+        >
+          Every feature built around{" "}
+          <span className="text-gradient-gold">academic precision</span>
+        </h2>
+        <p
+          className="text-base max-w-xl mx-auto leading-relaxed"
+          style={{ color: "var(--color-silver-300)" }}
+        >
+          Not another to-do app. StudySync AI is a cognitive performance
+          platform engineered from first principles for serious learners.
+        </p>
+      </m.div>
+
+      {/* Feature grid */}
+      <m.div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
+        {coreFeatures.map(({ id, Icon, label, description, accent, accentBorder, iconColor }) => (
+          <m.article
+            key={id}
+            id={id}
+            className="card-glass p-6 flex flex-col gap-4 group cursor-default"
+            variants={staggerItem}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            aria-label={label}
+          >
+            {/* Icon container with skeuomorphic depth */}
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{
+                background: accent,
+                border: `1px solid ${accentBorder}`,
+                boxShadow:
+                  "0 1px 0 rgba(255,255,255,0.08) inset, 0 2px 6px rgba(0,0,0,0.35)",
+              }}
+              aria-hidden="true"
+            >
+              <Icon size={18} style={{ color: iconColor }} strokeWidth={1.75} />
+            </div>
+
+            <div className="space-y-2">
+              <h3
+                className="text-[14px] font-semibold tracking-wide"
+                style={{
+                  fontFamily: "var(--font-outfit)",
+                  color: "var(--color-silver-100)",
+                }}
+              >
+                {label}
+              </h3>
+              <p
+                className="text-[13px] leading-relaxed"
+                style={{ color: "var(--color-silver-400)" }}
+              >
+                {description}
+              </p>
+            </div>
+
+            {/* Hover reveal arrow */}
+            <div
+              className="mt-auto flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              aria-hidden="true"
+            >
+              <span
+                className="text-[11px] font-semibold tracking-widest uppercase"
+                style={{ color: iconColor }}
+              >
+                Explore
+              </span>
+              <ChevronRight size={11} style={{ color: iconColor }} />
+            </div>
+          </m.article>
+        ))}
+      </m.div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------
+   How It Works Section
+--------------------------------------------------------------- */
+function HowItWorksSection() {
+  return (
+    <section
+      id="how-it-works"
+      className="relative px-6 py-24 max-w-5xl mx-auto w-full"
+      aria-labelledby="how-it-works-heading"
+    >
+      {/* Divider */}
+      <div className="divider-glass mb-24" aria-hidden="true" />
+
+      <m.div
+        className="text-center mb-16"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+      >
+        <span
+          className="badge-gold mb-4 inline-flex"
+          aria-label="Process overview"
+        >
+          How It Works
+        </span>
+        <h2
+          id="how-it-works-heading"
+          className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+          style={{
+            fontFamily: "var(--font-outfit)",
+            color: "var(--color-silver-50)",
+          }}
+        >
+          From enrollment to exam-ready in{" "}
+          <span className="text-gradient-gold">three steps</span>
+        </h2>
+        <p
+          className="text-base max-w-lg mx-auto leading-relaxed"
+          style={{ color: "var(--color-silver-300)" }}
+        >
+          A structured onboarding pipeline that transforms raw course data into
+          a living, adaptive learning system.
+        </p>
+      </m.div>
+
+      <div className="flex flex-col gap-6" role="list" aria-label="Process steps">
+        {processSteps.map(({ step, Icon, title, detail }, index) => (
+          <m.div
+            key={step}
+            role="listitem"
+            className="glass-panel rounded-2xl p-7 flex flex-col sm:flex-row items-start sm:items-center gap-6"
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+          >
+            {/* Step number + icon */}
+            <div className="flex items-center gap-4 flex-shrink-0">
+              <span
+                className="text-[11px] font-bold tracking-widest tabular-nums"
+                style={{
+                  fontFamily: "var(--font-inter)",
+                  color: "var(--color-gold-400)",
+                }}
+                aria-label={`Step ${step}`}
+              >
+                {step}
+              </span>
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(245,158,11,0.05) 100%)",
+                  border: "1px solid rgba(245,158,11,0.20)",
+                  boxShadow:
+                    "0 1px 0 rgba(255,255,255,0.07) inset, 0 4px 12px rgba(0,0,0,0.4)",
+                }}
+                aria-hidden="true"
+              >
+                <Icon
+                  size={20}
+                  style={{ color: "var(--color-gold-400)" }}
+                  strokeWidth={1.5}
+                />
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="flex-1 space-y-1.5">
+              <h3
+                className="text-[15px] font-semibold"
+                style={{
+                  fontFamily: "var(--font-outfit)",
+                  color: "var(--color-silver-100)",
+                }}
+              >
+                {title}
+              </h3>
+              <p
+                className="text-[13px] leading-relaxed"
+                style={{ color: "var(--color-silver-400)" }}
+              >
+                {detail}
+              </p>
+            </div>
+
+            {/* Connector arrow */}
+            {index < processSteps.length - 1 && (
+              <ChevronRight
+                size={18}
+                className="hidden sm:block flex-shrink-0"
+                style={{ color: "rgba(255,255,255,0.12)" }}
+                aria-hidden="true"
+              />
+            )}
+          </m.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------
+   Final CTA Section
+--------------------------------------------------------------- */
+function CtaSection() {
+  return (
+    <section
+      className="relative px-6 py-24 max-w-4xl mx-auto w-full text-center"
+      aria-labelledby="cta-section-heading"
+    >
+      <div className="divider-glass mb-24" aria-hidden="true" />
+
+      <m.div
+        className="glass-panel rounded-3xl p-10 sm:p-16 relative overflow-hidden"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+      >
+        {/* Background orb for the CTA card */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(245,158,11,0.05) 0%, transparent 70%)",
+            filter: "blur(32px)",
+          }}
+          aria-hidden="true"
+        />
+
+        <div className="relative z-10 flex flex-col items-center gap-8">
+          <span className="badge-gold" aria-label="Available now">
+            Available Now — Phase 1
+          </span>
+
+          <h2
+            id="cta-section-heading"
+            className="text-3xl sm:text-5xl font-bold tracking-tight leading-tight"
+            style={{
+              fontFamily: "var(--font-outfit)",
+              color: "var(--color-silver-50)",
+            }}
+          >
+            Begin your most productive
+            <br />
+            <span className="text-gradient-gold">semester yet.</span>
+          </h2>
+
+          <p
+            className="text-base max-w-md leading-relaxed"
+            style={{ color: "var(--color-silver-300)" }}
+          >
+            Join the closed beta and experience adaptive AI-driven study
+            planning engineered for academic excellence.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <m.div
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.97, y: 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            >
+              <Link
+                href="/dashboard"
+                id="cta-section-get-started"
+                className="btn-primary text-[15px] px-9 py-3.5"
+                aria-label="Get started with StudySync AI"
+              >
+                Get Started
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </m.div>
+
+            <Link
+              href="#features"
+              id="cta-section-features"
+              className="btn-ghost text-[14px] px-7 py-3.5"
+              aria-label="View all features"
+            >
+              View All Features
+            </Link>
+          </div>
+
+          {/* Trust indicators */}
+          <div
+            className="flex items-center gap-6 pt-2"
+            role="list"
+            aria-label="Trust indicators"
+          >
+            {[
+              { Icon: Shield, text: "Privacy-First Architecture" },
+              { Icon: Zap, text: "Real-Time Adaptation" },
+              { Icon: BrainCircuit, text: "Gemini AI Powered" },
+            ].map(({ Icon, text }) => (
+              <div
+                key={text}
+                role="listitem"
+                className="flex items-center gap-1.5"
+              >
+                <Icon
+                  size={12}
+                  style={{ color: "var(--color-silver-400)" }}
+                  aria-hidden="true"
+                />
+                <span
+                  className="text-[11px] font-medium"
+                  style={{ color: "var(--color-silver-400)" }}
+                >
+                  {text}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </m.div>
+
+      {/* Footer spacer */}
+      <div className="h-12" aria-hidden="true" />
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------
+   Page Root
+--------------------------------------------------------------- */
+export default function HomePage() {
+  return (
+    <div className="flex flex-col items-center w-full">
+      <HeroSection />
+      <FeatureGrid />
+      <HowItWorksSection />
+      <CtaSection />
+    </div>
+  );
+}
