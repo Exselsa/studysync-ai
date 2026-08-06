@@ -646,7 +646,7 @@ export default function BossFightArena() {
               <p className="text-xs text-slate-300 leading-relaxed">
                 Battle the Knowledge Devourer solo. Explain concepts clearly to
                 deal damage, earn combos, and test your understanding against
-                Gemini 3.6 Flash!
+                abang ganteng!
               </p>
             </div>
 
@@ -688,7 +688,7 @@ export default function BossFightArena() {
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
                 Challenge your friends to live 1v1 Feynman Duels on topics from
-                your Study Plan. Evaluated by Referee Gemini 3.6 Flash!
+                your Study Plan. Evaluated by Referee abang ganteng!
               </p>
             </div>
 
@@ -979,8 +979,8 @@ export default function BossFightArena() {
               <Loader2 size={14} className="animate-spin text-cyan-400" />
               <span>
                 {isMultiplayer
-                  ? "Referee Gemini 3.6 Flash evaluating both 1v1 explanations..."
-                  : "Gemini 3.6 Flash evaluating explanation..."}
+                  ? "Referee abang ganteng evaluating both 1v1 explanations..."
+                  : "abang ganteng evaluating explanation..."}
               </span>
             </m.div>
           )}
@@ -1323,6 +1323,43 @@ export default function BossFightArena() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.25 }}
       >
+        {/* Waiting for Opponent Animated Overlay */}
+        <AnimatePresence>
+          {isWaitingForOpponent && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-20 rounded-2xl flex flex-col items-center justify-center p-6 text-center gap-3"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(3,11,34,0.95) 0%, rgba(6,182,212,0.22) 100%)",
+                backdropFilter: "blur(8px)",
+                border: "1px solid rgba(56,189,248,0.35)",
+                boxShadow: "0 15px 45px rgba(0,0,0,0.6)",
+              }}
+            >
+              <div className="relative flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center shadow-lg">
+                  <Clock size={24} className="text-cyan-300 animate-spin" />
+                </div>
+                <Swords size={14} className="absolute -bottom-1 -right-1 text-amber-400 animate-bounce" />
+              </div>
+              <div className="flex flex-col gap-1 max-w-sm">
+                <span className="text-sm font-extrabold text-slate-100 tracking-tight">
+                  Answer Submitted!
+                </span>
+                <span className="text-xs text-slate-300 leading-relaxed">
+                  Waiting for your opponent to complete their explanation... The Referee will evaluate both answers synchronously as soon as both are in.
+                </span>
+              </div>
+              <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/90 border border-cyan-500/40 text-[11px] font-semibold text-cyan-300 animate-pulse">
+                <Loader2 size={12} className="animate-spin text-cyan-400" />
+                <span>Synchronizing Dual Responses...</span>
+              </div>
+            </m.div>
+          )}
+        </AnimatePresence>
         {/* Label Header */}
         <div
           className="px-4 pt-3 pb-2 flex items-center justify-between"
@@ -1391,7 +1428,7 @@ export default function BossFightArena() {
                 >
                   Enter
                 </kbd>{" "}
-                to strike · Gemini 3.6 Flash evaluates simplicity & accuracy
+                to strike · abang ganteng evaluates simplicity & accuracy
               </>
             ) : (
               <span>Waiting for opponent to submit answer...</span>

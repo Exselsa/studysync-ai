@@ -105,11 +105,19 @@ export async function findUserByEmail(
   const normalizedEmail = email.trim().toLowerCase();
   if (!normalizedEmail) return null;
 
-  const q = query(
+  const qEmail = query(
     collection(db, "users"),
     where("email", "==", normalizedEmail)
   );
-  const snapshot = await getDocs(q);
+  let snapshot = await getDocs(qEmail);
+
+  if (snapshot.empty && !normalizedEmail.includes("@")) {
+    const qName = query(
+      collection(db, "users"),
+      where("displayName", "==", email.trim())
+    );
+    snapshot = await getDocs(qName);
+  }
 
   if (snapshot.empty) return null;
 
@@ -415,6 +423,40 @@ export function subscribeToChallengeStatus(
           ? data.createdAt.toDate().toISOString()
           : "",
     });
+  });
+}
+
+/**
+ * Subscribe to realtime accepted challenges targeting the logged in user as challengee.
+ */
+export function subscribeToUserAcceptedChallenges(
+  userId: string,
+  callback: (challenges: MatchChallenge[]) => void
+): Unsubscribe {
+  const q = query(
+    collection(db, "challenges"),
+    where("challengedId", "==", userId),
+    where("status", "==", "accepted")
+  );
+
+  return onSnapshot(q, (snap) => {
+    const list = snap.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        challengerId: data.challengerId,
+        challengerName: data.challengerName,
+        challengedId: data.challengedId,
+        challengedName: data.challengedName,
+        topic: data.topic,
+        status: data.status,
+        createdAt:
+          data.createdAt instanceof Timestamp
+            ? data.createdAt.toDate().toISOString()
+            : "",
+      };
+    });
+    callback(list);
   });
 }
 

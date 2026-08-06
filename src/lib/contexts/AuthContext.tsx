@@ -16,6 +16,7 @@ import {
   type User,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase/clientApp";
+import { saveUserProfile } from "@/lib/firebase/friends";
 
 /* ---------------------------------------------------------------
    Types
@@ -63,16 +64,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
      * persisted session from local storage before calling this the first time,
      * so `loading` remains true until the first callback fires.
      */
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        import("@/lib/firebase/friends")
-          .then(({ saveUserProfile }) => saveUserProfile(firebaseUser))
-          .catch((err) =>
-            console.warn("Failed to sync user profile to Firestore:", err)
-          );
+        try {
+          await saveUserProfile(firebaseUser);
+        } catch (err) {
+          console.warn("Failed to sync user profile to Firestore:", err);
+        }
+        setUser(firebaseUser);
+      } else {
+        setUser(null);
       }
+      setLoading(false);
     });
 
     // Cleanup the listener when the provider unmounts.
@@ -81,6 +84,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = useCallback(async (): Promise<User> => {
     const result = await signInWithPopup(auth, googleProvider);
+    if (result.user) {
+      try {
+        await saveUserProfile(result.user);
+      } catch (err) {
+        console.warn("Failed to sync user profile on sign in:", err);
+      }
+    }
     return result.user;
   }, []);
 

@@ -107,6 +107,8 @@ function TopicPickerModal({
     const unsub = subscribeToChallengeStatus(challengeId, (challenge) => {
       if (!challenge) return;
       if (challenge.status === "accepted") {
+        // Auto-close / unmount challenge modal
+        onClose();
         // Redirect to game page with matchId & topic
         router.push(
           `/dashboard/game?topic=${encodeURIComponent(
@@ -119,7 +121,7 @@ function TopicPickerModal({
       }
     });
     return unsub;
-  }, [challengeId, router, targetFriendName]);
+  }, [challengeId, router, targetFriendName, onClose]);
 
   async function handleSendChallenge() {
     const finalTopic = (customTopic.trim() || selectedTopic).trim();
@@ -367,9 +369,17 @@ export default function FriendsPanel() {
       setPendingRequests(list);
     });
 
+    const handleCloseModals = () => {
+      setChallengeFriend(null);
+      setIsOpen(false);
+    };
+
+    window.addEventListener("close-challenge-modals", handleCloseModals);
+
     return () => {
       unsubFriends();
       unsubPending();
+      window.removeEventListener("close-challenge-modals", handleCloseModals);
     };
   }, [user]);
 

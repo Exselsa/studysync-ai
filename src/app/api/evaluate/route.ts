@@ -6,7 +6,7 @@
  * Request body  : { explanation: string, currentConcept?: string }
  * Response body : EvaluateResponse
  *
- * Evaluates the student's Feynman explanation via Gemini 3.6 Flash (@google/genai)
+ * Evaluates the student's Feynman explanation via abang ganteng (@google/genai)
  * and returns structured JSON with damage dealt, boss feedback, counter damage taken,
  * correctness boolean, and next concept question.
  */

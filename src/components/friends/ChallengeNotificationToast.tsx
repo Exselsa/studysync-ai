@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Swords, Check, X, Sparkles, Shield, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import {
   subscribeToIncomingChallenges,
+  subscribeToUserAcceptedChallenges,
   respondToChallenge,
   type MatchChallenge,
 } from "@/lib/firebase/friends";
@@ -16,6 +17,7 @@ export default function ChallengeNotificationToast() {
   const router = useRouter();
   const [challenges, setChallenges] = useState<MatchChallenge[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const handledMatchesRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (!user) {
@@ -24,31 +26,60 @@ export default function ChallengeNotificationToast() {
     }
 
     // Subscribe to realtime pending challenges targeting user.uid
-    const unsubscribe = subscribeToIncomingChallenges(user.uid, (list) => {
+    const unsubscribePending = subscribeToIncomingChallenges(user.uid, (list) => {
       setChallenges(list);
     });
 
-    return unsubscribe;
-  }, [user]);
+    // Subscribe to realtime accepted challenges targeting user.uid to auto-navigate
+    const unsubscribeAccepted = subscribeToUserAcceptedChallenges(user.uid, (list) => {
+      list.forEach((acceptedChallenge) => {
+        if (!handledMatchesRef.current.has(acceptedChallenge.id)) {
+          handledMatchesRef.current.add(acceptedChallenge.id);
+
+          // Close any open challenge window/modal
+          window.dispatchEvent(new Event("close-challenge-modals"));
+
+          // Auto-navigate challengee to live game arena
+          router.push(
+            `/dashboard/game?topic=${encodeURIComponent(
+              acceptedChallenge.topic
+            )}&matchId=${acceptedChallenge.id}`
+          );
+        }
+      });
+    });
+
+    return () => {
+      unsubscribePending();
+      unsubscribeAccepted();
+    };
+  }, [user, router]);
 
   if (!user || challenges.length === 0) return null;
 
   const currentChallenge = challenges[0];
 
   const handleRespond = async (action: "accept" | "decline") => {
-    if (processingId) return;
+    if (processingId || !currentChallenge) return;
     setProcessingId(currentChallenge.id);
 
     try {
       await respondToChallenge(currentChallenge.id, action);
 
       if (action === "accept") {
-        // Redirect both to duel arena with topic & matchId
-        router.push(
-          `/dashboard/game?topic=${encodeURIComponent(
-            currentChallenge.topic
-          )}&matchId=${currentChallenge.id}`
-        );
+        if (!handledMatchesRef.current.has(currentChallenge.id)) {
+          handledMatchesRef.current.add(currentChallenge.id);
+
+          // Close any open challenge window/modal
+          window.dispatchEvent(new Event("close-challenge-modals"));
+
+          // Redirect both to duel arena with topic & matchId
+          router.push(
+            `/dashboard/game?topic=${encodeURIComponent(
+              currentChallenge.topic
+            )}&matchId=${currentChallenge.id}`
+          );
+        }
       }
     } catch (err) {
       console.error("Failed to respond to challenge:", err);

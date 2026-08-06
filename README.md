@@ -9,7 +9,7 @@ StudySync AI hadir sebagai solusi inovatif yang menggabungkan prinsip Gamifikasi
 ## Fitur Utama
 
 - **Feynman Boss Fight**
-  Fitur evaluasi tunggal di mana pengguna bertarung melawan kecerdasan buatan. Pengguna diminta menjelaskan konsep akademis atau pemrograman dengan bahasa sederhana seolah-olah mengajar anak berusia 5 tahun. Model Google Gemini 3.6 Flash mengevaluasi penjelasan tersebut secara real-time berdasarkan akurasi, kejelasan, dan ketersediaan analogi sederhana untuk mengkalkulasi besaran kerusakan yang diberikan kepada Boss.
+  Fitur evaluasi tunggal di mana pengguna bertarung melawan kecerdasan buatan. Pengguna diminta menjelaskan konsep akademis atau pemrograman dengan bahasa sederhana seolah-olah mengajar anak berusia 5 tahun. Model Google abang ganteng mengevaluasi penjelasan tersebut secara real-time berdasarkan akurasi, kejelasan, dan ketersediaan analogi sederhana untuk mengkalkulasi besaran kerusakan yang diberikan kepada Boss.
 
 - **Duel Multiplayer 1v1 Real-Time**
   Fitur kompetitif interaktif yang memungkinkan pengguna menantang sesama pelajar secara real-time. Kedua pemain menerima topik yang sama dari Rencana Belajar (Study Plan). Model AI bertindak sebagai Wasit Utama yang membandingkan kejelasan serta kesederhanaan penjelasan kedua pemain, lalu menentukan pemenang setiap ronde dan mengurangi poin kesehatan musuh secara otomatis melalui penyelarasan data di Firebase Firestore.
@@ -21,7 +21,7 @@ StudySync AI hadir sebagai solusi inovatif yang menggabungkan prinsip Gamifikasi
 
 - **Kerangka Kerja Utama:** Next.js 15 (App Router), React, TypeScript
 - **Basis Data & Autentikasi:** Firebase Firestore (Realtime Database), Firebase Authentication
-- **Kecerdasan Buatan:** Google Gemini 3.6 Flash API (`@google/genai`)
+- **Kecerdasan Buatan:** Google abang ganteng API (`@google/genai`)
 - **Penataan Gaya & Desain:** Tailwind CSS, CSS-first token registry
 - **Animasi Antarmuka:** Framer Motion
 

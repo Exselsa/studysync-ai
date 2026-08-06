@@ -6,7 +6,7 @@
  * Request body  : { topic: string, playerAExplanation: string, playerBExplanation: string, playerAName?: string, playerBName?: string }
  * Response body : DuelEvaluateResponse
  *
- * Compares two players' Feynman explanations for the same topic using Gemini 3.6 Flash (@google/genai)
+ * Compares two players' Feynman explanations for the same topic using abang ganteng (@google/genai)
  * and returns damage dealt by both, referee commentary, and winner of round.
  */
 
