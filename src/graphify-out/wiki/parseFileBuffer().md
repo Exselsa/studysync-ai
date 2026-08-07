@@ -1,6 +1,6 @@
 # parseFileBuffer()
 
-> God node · 5 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/utils/file-parser.ts#L15)
+> God node · 5 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/utils/file-parser.ts#L17)
 
 ## Call Trace Diagram
 
@@ -13,9 +13,9 @@ sequenceDiagram
     participant P4 as buildFallback()
     participant P5 as buildFallbackExplanation()
     participant P6 as buildFallbackStudyPlan()
-    participant P7 as extractTextFromDocx()
+    participant P7 as extractTextFromPdf()
     participant P8 as extractPrintableStrings()
-    participant P9 as extractTextFromPdf()
+    participant P9 as extractTextFromDocx()
     participant P10 as sanitizeText()
     P0->>+ P1: calls
     P1-->>- P0: return
@@ -45,10 +45,10 @@ sequenceDiagram
     P0-->>- P7: return
     P7->>+ P8: calls
     P8-->>- P7: return
-    P8->>+ P7: calls
-    P7-->>- P8: return
     P8->>+ P9: calls
     P9-->>- P8: return
+    P8->>+ P7: calls
+    P7-->>- P8: return
     P0->>+ P9: calls
     P9-->>- P0: return
     P0->>+ P10: calls
@@ -59,8 +59,8 @@ sequenceDiagram
 
 ### calls
 - [[POST()]] `INFERRED`
-- [[extractTextFromDocx()]] `EXTRACTED`
 - [[extractTextFromPdf()]] `EXTRACTED`
+- [[extractTextFromDocx()]] `EXTRACTED`
 - [[sanitizeText()]] `EXTRACTED`
 
 ### contains

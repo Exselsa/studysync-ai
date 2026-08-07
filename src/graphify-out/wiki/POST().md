@@ -8,9 +8,9 @@
 sequenceDiagram
     participant P0 as POST()
     participant P1 as parseFileBuffer()
-    participant P2 as extractTextFromDocx()
+    participant P2 as extractTextFromPdf()
     participant P3 as extractPrintableStrings()
-    participant P4 as extractTextFromPdf()
+    participant P4 as extractTextFromDocx()
     participant P5 as sanitizeText()
     participant P6 as buildFallbackResponse()
     participant P7 as offsetDate()

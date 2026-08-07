@@ -679,6 +679,38 @@ export async function forfeitMatchDueToDisconnect(
 }
 
 /**
+ * Surrender/forfeit an active 1v1 PvP duel.
+ */
+export async function surrenderMatch(
+  matchId: string,
+  surrenderingUserId: string
+): Promise<void> {
+  const matchRef = doc(db, "multiplayer_matches", matchId);
+  const snap = await getDoc(matchRef);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const isChallenger = surrenderingUserId === data.challengerId;
+  const winnerId = isChallenger ? data.opponentId : data.challengerId;
+  const surrenderingName = isChallenger
+    ? data.challengerName
+    : data.opponentName;
+  const reason = `${surrenderingName} menyerah dari pertandingan duel.`;
+
+  await updateDoc(matchRef, {
+    status: "finished",
+    winnerId,
+    refereeCommentary: reason,
+    lastActive: new Date().toISOString(),
+  }).catch(() => {});
+
+  const challengeRef = doc(db, "challenges", matchId);
+  await updateDoc(challengeRef, {
+    status: "finished",
+  }).catch(() => {});
+}
+
+/**
  * Submit player's answer in a 1v1 duel and check if both answers are ready for Gemini evaluation.
  */
 export async function submitDuelAnswer(

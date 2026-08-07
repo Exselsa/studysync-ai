@@ -13,6 +13,11 @@ import {
   AlertCircle,
   X,
   ExternalLink,
+  Sparkles,
+  GraduationCap,
+  School,
+  ArrowLeft,
+  ArrowRight,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
@@ -351,6 +356,381 @@ function MessageBubble({ msg }: { msg: Message }) {
 }
 
 /* ------------------------------------------------------------------
+   Guided Setup & Profile Wizard Types & Component
+------------------------------------------------------------------ */
+interface StudyProfileData {
+  level: "SMA" | "Kuliah";
+  major: string;
+  yearOrSemester: string;
+  subject: string;
+}
+
+const KULIAH_MAJORS = [
+  "Teknik Informatika",
+  "Sistem Informasi",
+  "Manajemen",
+  "Akuntansi",
+  "Psikologi",
+  "Hukum",
+  "Teknik Elektro",
+  "Kedokteran",
+];
+
+const SMA_MAJORS = [
+  "IPA / MIPA",
+  "IPS",
+  "Bahasa",
+  "SMK / Kejuruan",
+];
+
+const KULIAH_SEMESTERS = [
+  "Semester 1",
+  "Semester 2",
+  "Semester 3",
+  "Semester 4",
+  "Semester 5",
+  "Semester 6",
+  "Semester 7",
+  "Semester 8+",
+];
+
+const SMA_CLASSES = [
+  "Kelas 10 (X)",
+  "Kelas 11 (XI)",
+  "Kelas 12 (XII)",
+];
+
+function GuidedSetupModal({
+  onClose,
+  onComplete,
+}: {
+  onClose: () => void;
+  onComplete: (profile: StudyProfileData) => void;
+}) {
+  const [step, setStep] = useState<number>(1);
+  const [level, setLevel] = useState<"SMA" | "Kuliah" | null>(null);
+  const [selectedMajor, setSelectedMajor] = useState<string>("");
+  const [customMajor, setCustomMajor] = useState<string>("");
+  const [isCustomMajor, setIsCustomMajor] = useState<boolean>(false);
+  const [selectedYearOrSemester, setSelectedYearOrSemester] = useState<string>("");
+  const [subjectText, setSubjectText] = useState<string>("");
+
+  const finalMajor = isCustomMajor ? customMajor.trim() : selectedMajor;
+
+  const canProceedStep2 = Boolean(finalMajor);
+  const canProceedStep3 = Boolean(selectedYearOrSemester);
+  const canProceedStep4 = Boolean(subjectText.trim());
+
+  const handleSelectLevel = (lvl: "SMA" | "Kuliah") => {
+    setLevel(lvl);
+    setSelectedMajor("");
+    setCustomMajor("");
+    setIsCustomMajor(false);
+    setSelectedYearOrSemester("");
+    setStep(2);
+  };
+
+  const handleFinish = () => {
+    if (!level || !finalMajor || !selectedYearOrSemester || !subjectText.trim()) return;
+    onComplete({
+      level,
+      major: finalMajor,
+      yearOrSemester: selectedYearOrSemester,
+      subject: subjectText.trim(),
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+      <m.div
+        initial={{ opacity: 0, scale: 0.95, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 12 }}
+        className="max-w-lg w-full rounded-3xl p-6 sm:p-7 flex flex-col gap-5 border shadow-2xl relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, rgba(6,16,46,0.96) 0%, rgba(3,11,34,0.98) 100%)",
+          borderColor: "rgba(245,158,11,0.3)",
+          boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(245,158,11,0.1)",
+        }}
+      >
+        {/* Header & Step Dots */}
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400">
+              <Sparkles size={16} />
+            </div>
+            <div>
+              <h3 className="text-sm font-extrabold text-slate-100" style={{ fontFamily: "var(--font-outfit)" }}>
+                Atur Profil Belajar ✨
+              </h3>
+              <p className="text-[11px] text-slate-400">Langkah {step} dari 4</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            {[1, 2, 3, 4].map((s) => (
+              <div
+                key={s}
+                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                  s === step
+                    ? "bg-amber-400 w-5 shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                    : s < step
+                    ? "bg-amber-500/40"
+                    : "bg-slate-700/50"
+                }`}
+              />
+            ))}
+            <button
+              type="button"
+              onClick={onClose}
+              className="ml-2 text-slate-400 hover:text-slate-200 transition-colors p-1 cursor-pointer"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Step 1: Jenjang Pendidikan */}
+        {step === 1 && (
+          <div className="flex flex-col gap-4 py-1">
+            <div>
+              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+                Pilih Jenjang Pendidikan Kamu
+              </h4>
+              <p className="text-xs text-slate-300">
+                Pilih tingkat studi kamu agar abang ganteng bisa menyesuaikan tingkat kesulitan dan gaya penjelasan.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
+              <button
+                type="button"
+                onClick={() => handleSelectLevel("Kuliah")}
+                className="flex flex-col gap-2.5 p-4 rounded-2xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/50 text-left transition-all cursor-pointer group active:scale-95"
+              >
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-300 group-hover:scale-110 transition-transform">
+                  <GraduationCap size={22} />
+                </div>
+                <div>
+                  <h5 className="text-sm font-bold text-slate-100 group-hover:text-amber-300 transition-colors">
+                    Kuliah / Perguruan Tinggi
+                  </h5>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Mahasiswa (S1, D3, D4) dengan materi perkuliahan spesifik.
+                  </p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectLevel("SMA")}
+                className="flex flex-col gap-2.5 p-4 rounded-2xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/50 text-left transition-all cursor-pointer group active:scale-95"
+              >
+                <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-300 group-hover:scale-110 transition-transform">
+                  <School size={22} />
+                </div>
+                <div>
+                  <h5 className="text-sm font-bold text-slate-100 group-hover:text-amber-300 transition-colors">
+                    SMA / Sederajat
+                  </h5>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Siswa SMA, SMK, MA, atau sederajat.
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Jurusan */}
+        {step === 2 && (
+          <div className="flex flex-col gap-4 py-1">
+            <div>
+              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+                {level === "Kuliah" ? "Pilih Jurusan Perkulihan Kamu" : "Pilih Peminatan / Jurusan Sekolah"}
+              </h4>
+              <p className="text-xs text-slate-300">
+                Pilih preset jurusan atau ketik manual jika tidak ada di daftar.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-1 py-1">
+              {(level === "Kuliah" ? KULIAH_MAJORS : SMA_MAJORS).map((mName) => {
+                const active = !isCustomMajor && selectedMajor === mName;
+                return (
+                  <button
+                    key={mName}
+                    type="button"
+                    onClick={() => {
+                      setIsCustomMajor(false);
+                      setSelectedMajor(mName);
+                    }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      active
+                        ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20"
+                        : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/70"
+                    }`}
+                  >
+                    {mName}
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCustomMajor(true);
+                  setSelectedMajor("");
+                }}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isCustomMajor
+                    ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20"
+                    : "bg-slate-900/80 hover:bg-slate-800 text-amber-300 border border-amber-500/40"
+                }`}
+              >
+                ✏️ Input Manual...
+              </button>
+            </div>
+
+            {isCustomMajor && (
+              <div className="mt-1">
+                <input
+                  type="text"
+                  placeholder="Masukkan nama jurusan kamu..."
+                  value={customMajor}
+                  onChange={(e) => setCustomMajor(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-amber-400/40 text-slate-100 text-xs outline-none focus:ring-1 focus:ring-amber-400"
+                  autoFocus
+                />
+              </div>
+            )}
+
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-bold cursor-pointer"
+              >
+                <ArrowLeft size={14} /> Kembali
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                disabled={!canProceedStep2}
+                className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer transition-all"
+              >
+                Lanjut <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Semester / Kelas */}
+        {step === 3 && (
+          <div className="flex flex-col gap-4 py-1">
+            <div>
+              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+                {level === "Kuliah" ? "Saat Ini Kamu Semester Berapa?" : "Saat Ini Kamu Kelas Berapa?"}
+              </h4>
+              <p className="text-xs text-slate-300">
+                Informasi ini membantu abang ganteng menyesuaikan kedalaman konteks.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 py-1">
+              {(level === "Kuliah" ? KULIAH_SEMESTERS : SMA_CLASSES).map((item) => {
+                const active = selectedYearOrSemester === item;
+                return (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setSelectedYearOrSemester(item)}
+                    className={`py-3 px-3 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                      active
+                        ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20 ring-2 ring-amber-400/50"
+                        : "bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700/70"
+                    }`}
+                  >
+                    {item}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-bold cursor-pointer"
+              >
+                <ArrowLeft size={14} /> Kembali
+              </button>
+              <button
+                type="button"
+                onClick={() => setStep(4)}
+                disabled={!canProceedStep3}
+                className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer transition-all"
+              >
+                Lanjut <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Mata Kuliah / Mata Pelajaran */}
+        {step === 4 && (
+          <div className="flex flex-col gap-4 py-1">
+            <div>
+              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+                {level === "Kuliah" ? "Mata Kuliah / Topik Utama" : "Mata Pelajaran / Topik Utama"}
+              </h4>
+              <p className="text-xs text-slate-300">
+                Tulis nama mata kuliah atau topik spesifik yang mau kamu bahas bersama abang ganteng.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <input
+                type="text"
+                placeholder={
+                  level === "Kuliah"
+                    ? "Contoh: Persamaan Diferensial, Pemrograman Web, Akuntansi Keuangan..."
+                    : "Contoh: Fisika - Hukum Newton, Matematika Wajib, Biologi Sel..."
+                }
+                value={subjectText}
+                onChange={(e) => setSubjectText(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-amber-400 text-slate-100 text-xs outline-none focus:ring-1 focus:ring-amber-400 transition-all"
+                autoFocus
+              />
+              <p className="text-[11px] text-slate-400 italic">
+                Tips: Kamu bisa mengganti topik belajar kapan saja nanti.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-bold cursor-pointer"
+              >
+                <ArrowLeft size={14} /> Kembali
+              </button>
+              <button
+                type="button"
+                onClick={handleFinish}
+                disabled={!canProceedStep4}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-lg disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+              >
+                <Sparkles size={14} /> Mulai Sesi Tutor ✨
+              </button>
+            </div>
+          </div>
+        )}
+      </m.div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------
    Tutor Page Content
 ------------------------------------------------------------------ */
 function TutorContent() {
@@ -359,6 +739,8 @@ function TutorContent() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [showWizard, setShowWizard] = useState<boolean>(false);
+  const [activeProfile, setActiveProfile] = useState<StudyProfileData | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -384,7 +766,7 @@ function TutorContent() {
   /* ----------------------------------------------------------------
      Send message → /api/chat → Firestore
   ---------------------------------------------------------------- */
-  async function sendMessage(text: string) {
+  async function sendMessage(text: string, profileOverride?: StudyProfileData) {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
 
@@ -403,12 +785,17 @@ function TutorContent() {
     }
     setIsTyping(true);
 
+    const currentProfile = profileOverride || activeProfile;
+
     try {
       /* ── 1. Call API route ── */
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed }),
+        body: JSON.stringify({
+          message: trimmed,
+          userProfile: currentProfile || undefined,
+        }),
       });
 
       if (!res.ok) throw new Error(`API returned ${res.status}`);
@@ -505,9 +892,20 @@ function TutorContent() {
           <h1 style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.125rem", color: "var(--color-silver-50)", lineHeight: 1.2 }}>AI Tutor</h1>
           <p style={{ fontSize: "0.75rem", color: "var(--color-silver-400)" }}>Teman belajar adaptif kamu</p>
         </div>
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.375rem", padding: "0.25rem 0.75rem", borderRadius: "9999px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(34,197,94,0.9)", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)", animation: "pulse-dot 2s ease-in-out infinite" }} />
-          <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: "rgba(34,197,94,0.9)", letterSpacing: "0.06em" }}>ONLINE</span>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <button
+            type="button"
+            id="tutor-setup-profile-btn"
+            onClick={() => setShowWizard(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/35 text-amber-300 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
+          >
+            <Sparkles size={13} className="text-amber-400" />
+            <span>Atur Profil Belajar</span>
+          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", padding: "0.25rem 0.75rem", borderRadius: "9999px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(34,197,94,0.9)", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)", animation: "pulse-dot 2s ease-in-out infinite" }} />
+            <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: "rgba(34,197,94,0.9)", letterSpacing: "0.06em" }}>ONLINE</span>
+          </div>
         </div>
       </m.div>
 
@@ -538,6 +936,28 @@ function TutorContent() {
                   <p style={{ fontSize: "0.875rem", color: "var(--color-silver-400)", marginTop: "0.25rem" }}>Tanya apa saja ya — aku siap bantu buatkan study plan khusus buat kamu.</p>
                 </div>
               </m.div>
+
+              {/* Template Prompt Featured Card */}
+              <m.button
+                type="button"
+                id="tutor-guided-setup-card"
+                variants={itemVariants}
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowWizard(true)}
+                className="flex items-center justify-between w-full max-w-xl p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-slate-900/40 border border-amber-400/35 hover:border-amber-400/60 shadow-lg cursor-pointer transition-all text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 shrink-0">
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-100">Pakai Template Prompt / Guided Setup ✨</p>
+                    <p className="text-xs text-slate-300">Atur jurusan & tingkat pendidikan kamu untuk penjelasan AI Tutor yang presisi</p>
+                  </div>
+                </div>
+                <ChevronRight size={18} className="text-amber-400 shrink-0" />
+              </m.button>
 
               <m.div
                 variants={containerVariants}
@@ -644,6 +1064,24 @@ function TutorContent() {
           50%      { opacity: 0.5; }
         }
       `}</style>
+
+      {/* Guided Setup Modal */}
+      <AnimatePresence>
+        {showWizard && (
+          <GuidedSetupModal
+            onClose={() => setShowWizard(false)}
+            onComplete={(profileData) => {
+              setShowWizard(false);
+              setActiveProfile(profileData);
+              const promptText =
+                profileData.level === "Kuliah"
+                  ? `Halo abang ganteng! Aku mahasiswa ${profileData.yearOrSemester} jurusan ${profileData.major}. Saat ini aku lagi fokus mempelajari mata kuliah ${profileData.subject}. Tolong bantu buatkan penjelasan dan study plan khusus buat profil belajar aku ya!`
+                  : `Halo abang ganteng! Aku siswa ${profileData.yearOrSemester} jurusan ${profileData.major}. Saat ini aku lagi fokus mempelajari mata pelajaran ${profileData.subject}. Tolong bantu buatkan penjelasan dan study plan khusus buat profil belajar aku ya!`;
+              sendMessage(promptText, profileData);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

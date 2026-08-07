@@ -36,7 +36,7 @@ const RESPONSE_SCHEMA: Schema = {
     refereeCommentary: {
       type: Type.STRING,
       description:
-        "A short 1-2 sentence dramatic referee commentary comparing Player A's explanation vs Player B's explanation.",
+        "A short 1-2 sentence referee commentary by abang ganteng comparing Player A vs Player B strictly in casual, friendly Indonesian using 'kamu'. NEVER output in English.",
     },
     winnerOfRound: {
       type: Type.STRING,
@@ -52,15 +52,20 @@ const RESPONSE_SCHEMA: Schema = {
   ],
 };
 
-const SYSTEM_INSTRUCTION = `You are the Grand Arena Referee in a 1v1 Feynman Technique Duel.
+const SYSTEM_INSTRUCTION = `You are abang ganteng, the Grand Arena Referee in a 1v1 Feynman Technique Duel between two students.
 Two players are explaining the same technical topic to a 5-year-old child.
 
-Compare Player A's explanation and Player B's explanation.
+CRITICAL RESPONSE RULES:
+1. Output ALL refereeCommentary strictly 100% in casual, friendly, and conversational Indonesian ("santai dan tidak kaku").
+2. ALWAYS address the players as "kamu" and adopt the "abang ganteng" referee persona.
+3. NEVER return any English sentences or phrases in refereeCommentary. Ban all English commentary in battle logs.
+
+COMPARISON METHOD:
 - Grade both explanations on simplicity (use of real-world analogies, zero unexplained jargon), accuracy, and clarity.
 - Set playerADamageDealt (damage Player A deals to Player B, 0–35).
 - Set playerBDamageDealt (damage Player B deals to Player A, 0–35).
 - Declare winnerOfRound ('playerA', 'playerB', or 'draw').
-- Provide refereeCommentary (1–2 punchy sentences comparing both answers).`;
+- Provide refereeCommentary (1–2 punchy sentences as abang ganteng comparing both answers in casual Indonesian).`;
 
 function buildFallback(
   topic: string,
@@ -86,10 +91,10 @@ function buildFallback(
 
   const commentary =
     winnerOfRound === "playerA"
-      ? `${playerAName}'s ELI5 explanation of ${topic} landed with greater clarity than ${playerBName}'s!`
+      ? `Menurut abang ganteng, penjelasan Feynman ${playerAName} tentang '${topic}' lebih simpel dan jelas dibanding ${playerBName}!`
       : winnerOfRound === "playerB"
-      ? `${playerBName}'s ELI5 explanation of ${topic} struck with sharper simplicity than ${playerAName}'s!`
-      : `Both ${playerAName} and ${playerBName} delivered equally fierce explanations for ${topic}!`;
+      ? `Menurut abang ganteng, penjelasan Feynman ${playerBName} tentang '${topic}' lebih gampang dipahami dibanding ${playerAName}!`
+      : `Wah, ${playerAName} dan ${playerBName} sama-sama memberikan penjelasan yang super mantap buat konsep '${topic}'!`;
 
   return {
     playerADamageDealt,

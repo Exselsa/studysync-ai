@@ -39,7 +39,7 @@ const RESPONSE_SCHEMA: Schema = {
     bossFeedback: {
       type: Type.STRING,
       description:
-        "A short, in-character reaction from the Knowledge Devourer boss (1–2 sentences). Furious/terrified when hurt, taunting when attack is weak.",
+        "A short 1-2 sentence reaction from abang ganteng strictly in casual, friendly Indonesian ('santai dan tidak kaku', using 'kamu'). NEVER output in English.",
     },
     playerDamageTaken: {
       type: Type.NUMBER,
@@ -54,7 +54,7 @@ const RESPONSE_SCHEMA: Schema = {
     nextConceptQuestion: {
       type: Type.STRING,
       description:
-        "A fresh CS/tech concept title for the next round (e.g. 'Database Indexing', 'Recursion', 'Binary Search', 'Machine Learning Overfitting').",
+        "A fresh CS/tech concept title for the next round (e.g. 'Persamaan Diferensial', 'Dynamic Programming', 'Binary Search', 'Database Indexing').",
     },
   },
   required: [
@@ -66,15 +66,18 @@ const RESPONSE_SCHEMA: Schema = {
   ],
 };
 
-const SYSTEM_INSTRUCTION = `You are the Knowledge Devourer, a fearsome academic boss in a Feynman Technique battle game.
-The player must explain complex technical concepts to you as if teaching a 5-year-old child (simple analogies, zero un-explained jargon).
+const SYSTEM_INSTRUCTION = `You are abang ganteng, the smart and encouraging AI Referee & Boss Evaluator in a Feynman Technique battle game.
+Your task is to evaluate the player's explanation of a complex topic as if teaching a 5-year-old child (simple analogies, zero unexplained jargon).
 
-Evaluate the user's explanation strictly but fairly.
-- Accurate & simple (good ELI5 analogy): high damageDealt (20-35), low playerDamageTaken (0-5), isCorrect = true.
-- Partially correct or contains heavy jargon: medium damageDealt (5-15), medium playerDamageTaken (10-18), isCorrect = false.
-- Wrong or gibberish: damageDealt = 0, high playerDamageTaken (20-30), isCorrect = false.
+CRITICAL RESPONSE RULES:
+1. Output ALL bossFeedback reactions strictly 100% in casual, friendly, and conversational Indonesian ("santai dan tidak kaku").
+2. ALWAYS address the player as "kamu" and act as "abang ganteng" (encouraging, energetic, witty, friendly).
+3. NEVER return any English sentences or phrases in bossFeedback. Ban all English feedback in battle logs.
 
-Always provide a short, punchy bossFeedback reaction, and suggest a compelling tech/CS concept for nextConceptQuestion.`;
+EVALUATION CRITERIA:
+- Accurate & simple (great ELI5 analogy): high damageDealt (20-35), low playerDamageTaken (0-5), isCorrect = true. Give high praise as abang ganteng (e.g. "Mantap banget! Penjelasan kamu simpel dan bikin konsep ini gampang dipaham!").
+- Partially correct or contains heavy jargon: medium damageDealt (5-15), medium playerDamageTaken (10-18), isCorrect = false. Give constructive advice as abang ganteng (e.g. "Hmm, penjelasannya udah lumayan tapi masih agak kaku nih. Coba pakai analogi sehari-hari ya!").
+- Wrong or gibberish: damageDealt = 0, high playerDamageTaken (20-30), isCorrect = false. Give encouraging push as abang ganteng (e.g. "Aduh, penjelasannya masih belum pas nih. Yuk coba pelajari lagi dasar konsepnya!").`;
 
 const FALLBACK_QUESTIONS = [
   "Binary Search Trees",
@@ -100,8 +103,8 @@ function buildFallback(explanation: string, currentConcept: string): EvaluateRes
   return {
     damageDealt,
     bossFeedback: isGood
-      ? `Gah! Your simple explanation of ${currentConcept} pierces through my dark shield!`
-      : `Hmph! Your weak words on ${currentConcept} failed to pierce my dark defenses!`,
+      ? `Mantap! Penjelasan kamu tentang '${currentConcept}' gampang banget dipahami sama abang ganteng!`
+      : `Penjelasan kamu untuk '${currentConcept}' masih agak bingung nih. Coba pakai analogi yang lebih sederhana ya!`,
     playerDamageTaken,
     isCorrect: isGood,
     nextConceptQuestion: nextQ,

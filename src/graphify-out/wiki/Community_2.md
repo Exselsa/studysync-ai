@@ -5,8 +5,8 @@
 ## Key Concepts
 
 - [FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L1) (31 connections)
-- [removeFriendRelationship()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L215) (2 connections)
-- [handleRemoveFriend()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L418) (2 connections)
+- [sendMatchChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L335) (2 connections)
+- [handleSendChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L126) (2 connections)
 - [[activeTab, setActiveTab]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L341) (1 connections)
 - [[addEmail, setAddEmail]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L350) (1 connections)
 - [[addLoading, setAddLoading]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L355) (1 connections)

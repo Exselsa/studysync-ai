@@ -104,43 +104,44 @@ const RESPONSE_SCHEMA: Schema = {
 /* ----------------------------------------------------------------
    System instruction — defines the AI tutor persona
 ---------------------------------------------------------------- */
-const SYSTEM_INSTRUCTION = `You are an expert academic tutor named StudySync AI. Your role is to:
+const BASE_SYSTEM_INSTRUCTION = `You are an expert, friendly AI tutor named "abang ganteng". Your role is to:
 1. Understand what the student needs to study or prepare for.
-2. Respond with encouragement and a clear, personalised study plan.
-3. Generate 3–6 highly specific, actionable tasks with realistic descriptions.
-4. Assign unique random UUID v4 strings for each task's 'id' field.
-5. Keep the 'status' field of every task set to exactly "pending".
-6. Keep the initial 'progress' value at 0.
-7. Match the 'subject' field to the main academic discipline.
-8. Use markdown (##, **, >) in the 'reply' field for visual structure.
-9. ALWAYS generate a studyPlan — even for vague requests.`;
+2. Respond with warm encouragement in casual, friendly Indonesian ("santai dan tidak kaku", using "kamu").
+3. ALWAYS address the student as "kamu" and refer to yourself as "abang ganteng". NEVER use the word "Gemini".
+4. Generate 3–6 highly specific, actionable tasks with realistic descriptions.
+5. Assign unique random UUID v4 strings for each task's 'id' field.
+6. Keep the 'status' field of every task set to exactly "pending".
+7. Keep the initial 'progress' value at 0.
+8. Match the 'subject' field to the main academic discipline.
+9. Use markdown (##, **, >) in the 'reply' field for visual structure.
+10. ALWAYS generate a studyPlan — even for vague requests.`;
 
 /* ----------------------------------------------------------------
    Fallback response — used when Gemini fails or key is missing
 ---------------------------------------------------------------- */
 function buildFallbackResponse(message: string): ChatResponse {
   const lc = message.toLowerCase();
-  const isCalc = lc.includes("calculus") || lc.includes("calc");
+  const isCalc = lc.includes("kalkulus") || lc.includes("calculus");
   const isML = lc.includes("machine learning") || lc.includes("ml");
 
-  const subject = isCalc ? "Calculus" : isML ? "Machine Learning" : "General";
+  const subject = isCalc ? "Kalkulus" : isML ? "Machine Learning" : "Materi Pembelajaran";
   const title = isCalc
-    ? "Calculus Exam Prep — 5-Day Sprint"
+    ? "Persiapan Ujian Kalkulus — Plan 5 Hari"
     : isML
-    ? "Machine Learning Mastery Plan"
-    : "7-Day Adaptive Study Plan";
+    ? "Mastery Plan Machine Learning"
+    : "Study Plan Adaptif 7 Hari";
 
   return {
-    reply: `## 📚 ${title}\n\nHere's your personalised study plan, saved to your board. Let's get started!\n\n> 💡 Tip: Click each task to mark it complete as you progress.`,
+    reply: `## 📚 ${title}\n\nNih, abang ganteng udah buatkan study plan khusus buat kamu dan langsung tersimpan di Papan Plan kamu. Yuk mulai belajar bertahap!\n\n> 💡 Tips: Centang setiap tugas setelah kamu menyelesaikannya ya.`,
     studyPlan: {
       title,
       subject,
       progress: 0,
       tasks: [
-        { id: crypto.randomUUID(), title: "Phase 1 — Foundation Review", description: "Identify key concepts and review prerequisites.", status: "pending", completed: false, dueDate: offsetDate(1) },
-        { id: crypto.randomUUID(), title: "Phase 2 — Core Learning", description: "Study the main material using active note-taking and the Feynman technique.", status: "pending", completed: false, dueDate: offsetDate(3) },
-        { id: crypto.randomUUID(), title: "Phase 3 — Practice Problems", description: "Solve 20 practice problems under timed conditions to build exam readiness.", status: "pending", completed: false, dueDate: offsetDate(5) },
-        { id: crypto.randomUUID(), title: "Phase 4 — Mock Exam", description: "Complete a full timed mock exam and review all incorrect answers thoroughly.", status: "pending", completed: false, dueDate: offsetDate(7) },
+        { id: crypto.randomUUID(), title: "Tahap 1 — Review Konsep Dasar", description: "Pahami istilah dan konsep utama dari materi ini.", status: "pending", completed: false, dueDate: offsetDate(1) },
+        { id: crypto.randomUUID(), title: "Tahap 2 — Pendalaman dengan Analogi", description: "Pelajari materi menggunakan metode Feynman bersama abang ganteng.", status: "pending", completed: false, dueDate: offsetDate(3) },
+        { id: crypto.randomUUID(), title: "Tahap 3 — Latihan Soal & Kasus", description: "Kerjakan soal latihan untuk menguji tingkat pemahaman kamu.", status: "pending", completed: false, dueDate: offsetDate(5) },
+        { id: crypto.randomUUID(), title: "Tahap 4 — Evaluasi & Rangkuman Akhir", description: "Review bagian yang masih kurang dan siapkan diri menghadapi ujian.", status: "pending", completed: false, dueDate: offsetDate(7) },
       ],
     },
   };
@@ -158,9 +159,18 @@ function offsetDate(days: number): string {
 ---------------------------------------------------------------- */
 export async function POST(request: NextRequest): Promise<Response> {
   /* ── 1. Validate request ── */
-  let body: { message?: unknown };
+  let body: {
+    message?: unknown;
+    userProfile?: {
+      level?: string;
+      major?: string;
+      yearOrSemester?: string;
+      subject?: string;
+    };
+  };
+
   try {
-    body = (await request.json()) as { message?: unknown };
+    body = (await request.json()) as typeof body;
   } catch {
     return Response.json(
       { error: "Invalid JSON in request body." },
@@ -188,11 +198,17 @@ export async function POST(request: NextRequest): Promise<Response> {
   try {
     const ai = new GoogleGenAI({ apiKey });
 
+    let systemInstruction = BASE_SYSTEM_INSTRUCTION;
+    if (body.userProfile) {
+      const { level, major, yearOrSemester, subject } = body.userProfile;
+      systemInstruction += `\n\nPROFIL BELAJAR SISWA:\n- Jenjang: ${level || "Umum"}\n- Jurusan/Peminatan: ${major || "Umum"}\n- Semester/Kelas: ${yearOrSemester || "Umum"}\n- Topik/Mata Kuliah: ${subject || "Materi Umum"}\nCatatan: Sesuaikan seluruh penjelasan, analogi, dan tugas study plan agar sangat spesifik dengan latar belakang jurusan & jenjang pendidikan ini.`;
+    }
+
     const result = await ai.models.generateContent({
       model: "gemini-3.6-flash",
       contents: userMessage,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
+        systemInstruction,
         responseMimeType: "application/json",
         responseSchema: RESPONSE_SCHEMA,
         temperature: 0.7,

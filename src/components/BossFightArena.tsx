@@ -21,6 +21,7 @@ import {
   ArrowLeft,
   Clock,
   Award,
+  Flag,
 } from "lucide-react";
 import type { EvaluateResponse } from "@/app/api/evaluate/route";
 import type { DuelEvaluateResponse } from "@/app/api/evaluate-duel/route";
@@ -33,6 +34,7 @@ import {
   commitDuelEvaluation,
   updateMatchHeartbeat,
   forfeitMatchDueToDisconnect,
+  surrenderMatch,
   getMatchStatus,
   type MultiplayerMatch,
 } from "@/lib/firebase/friends";
@@ -229,6 +231,23 @@ export default function BossFightArena() {
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
   const [waitingSeconds, setWaitingSeconds] = useState(30);
   const [opponentInactive, setOpponentInactive] = useState(false);
+  const [showSurrenderModal, setShowSurrenderModal] = useState(false);
+
+  const handleBackToSelect = useCallback(() => {
+    setGameMode("select");
+    setMultiplayerMatch(null);
+    setBossHp(BOSS_MAX_HP);
+    setPlayerHp(PLAYER_MAX_HP);
+    setBattleLog([]);
+    setCombo(0);
+    setPhase("battle");
+    setAnimPhase("idle");
+    setAttackText("");
+    setIsWaitingForOpponent(false);
+    setOpponentInactive(false);
+    setShowSurrenderModal(false);
+    router.push("/dashboard/game");
+  }, [router]);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
@@ -853,26 +872,41 @@ export default function BossFightArena() {
       }`}
     >
       {/* Mode Bar Navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <button
           type="button"
-          onClick={() => setGameMode("select")}
-          className="text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer"
+          id="boss-fight-back-to-select"
+          onClick={handleBackToSelect}
+          className="text-xs font-bold text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer px-3 py-1.5 rounded-full bg-slate-900/60 border border-slate-800 hover:border-slate-700"
         >
           <ArrowLeft size={14} /> Back to Mode Select
         </button>
 
-        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
-          {gameMode === "vs_player" ? (
-            <>
-              <Users size={13} className="text-cyan-400" /> 1v1 PvP Friend Duel
-            </>
-          ) : (
-            <>
-              <Skull size={13} className="text-rose-400" /> Solo AI Boss
-            </>
+        <div className="flex items-center gap-2">
+          {gameMode === "vs_player" && phase === "battle" && (
+            <button
+              type="button"
+              id="boss-fight-surrender-btn"
+              onClick={() => setShowSurrenderModal(true)}
+              className="text-xs font-black text-rose-300 hover:text-white bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+              title="Menyerah dari pertandingan duel ini"
+            >
+              <Flag size={13} className="text-rose-400" /> Menyerah
+            </button>
           )}
-        </span>
+
+          <span className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
+            {gameMode === "vs_player" ? (
+              <>
+                <Users size={13} className="text-cyan-400" /> 1v1 PvP Friend Duel
+              </>
+            ) : (
+              <>
+                <Skull size={13} className="text-rose-400" /> Solo AI Boss
+              </>
+            )}
+          </span>
+        </div>
       </div>
 
       {/* Title Header */}
@@ -1379,19 +1413,19 @@ export default function BossFightArena() {
                 >
                   {isVictory
                     ? isMultiplayer
-                      ? "1v1 Duel Champion!"
-                      : "Victory Achieved!"
+                      ? "Juara Duel 1v1! 🏆"
+                      : "Kemenangan Telak! 🎉"
                     : isMultiplayer
-                    ? "Defeated in Duel!"
-                    : "Devoured by Ignorance!"}
+                    ? "Terkalahkan di Duel! ⚔️"
+                    : "Belum Berhasil Kalahkan Boss!"}
                 </h2>
                 <p
                   className="text-[13px] mt-2 leading-relaxed"
                   style={{ color: "var(--color-silver-300)" }}
                 >
                   {isVictory
-                    ? `You vanquished ${opponentName} with superior Feynman explanations!`
-                    : `${opponentName} out-explained you in this Feynman duel. Review your concepts and strike back!`}
+                    ? `Kamu berhasil mengalahkan ${opponentName} dengan penjelasan Feynman super simpel!`
+                    : `${opponentName} berhasil menang di duel Feynman ini. Yuk pelajari lagi materi kamu dan tanding lagi bersama abang ganteng!`}
                 </p>
               </div>
 
@@ -1453,15 +1487,77 @@ export default function BossFightArena() {
 
                 <button
                   type="button"
-                  onClick={() => router.push("/dashboard")}
+                  onClick={handleBackToSelect}
                   className="flex-1 py-3.5 rounded-xl text-[14px] font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-200"
                   style={{ fontFamily: "var(--font-outfit)" }}
                 >
-                  <ArrowLeft size={16} /> Dashboard
+                  <ArrowLeft size={16} /> Menu Game
                 </button>
               </div>
             </m.div>
           </m.div>
+        )}
+      </AnimatePresence>
+
+      {/* Surrender Confirmation Modal */}
+      <AnimatePresence>
+        {showSurrenderModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+            <m.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 text-center border shadow-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(153,27,27,0.35) 0%, rgba(3,11,34,0.96) 100%)",
+                borderColor: "rgba(239,68,68,0.45)",
+                boxShadow: "0 20px 50px rgba(0,0,0,0.8)",
+              }}
+            >
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center mx-auto text-rose-400 shadow-lg">
+                <Flag size={28} />
+              </div>
+
+              <div>
+                <h3
+                  className="text-xl font-black text-slate-50"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  Yakin mau menyerah? 🏳️
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Pertandingan 1v1 duel ini akan langsung selesai dan lawan kamu akan dinyatakan sebagai pemenang.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSurrenderModal(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900/80 hover:bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  id="boss-fight-confirm-surrender"
+                  onClick={async () => {
+                    setShowSurrenderModal(false);
+                    if (matchId && user) {
+                      await surrenderMatch(matchId, user.uid);
+                    }
+                    setPlayerHp(0);
+                    setPhase("defeat");
+                    setIsWaitingForOpponent(false);
+                  }}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                >
+                  <Flag size={14} /> Ya, Menyerah
+                </button>
+              </div>
+            </m.div>
+          </div>
         )}
       </AnimatePresence>
 
