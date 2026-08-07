@@ -7,10 +7,12 @@ export interface ParsedFileResult {
   fileName: string;
   fileType: string;
   charCount: number;
+  fileBase64?: string;
+  isPdf?: boolean;
 }
 
 /**
- * Extracts plain text from TXT, MD, PDF, or DOCX file buffers.
+ * Extracts plain text and base64 payloads from TXT, MD, PDF, or DOCX file buffers.
  */
 export async function parseFileBuffer(
   buffer: Buffer,
@@ -19,13 +21,24 @@ export async function parseFileBuffer(
 ): Promise<ParsedFileResult> {
   const ext = fileName.split(".").pop()?.toLowerCase() || "";
   let extractedText = "";
+  let fileBase64: string | undefined = undefined;
+  let isPdf = false;
 
-  if (ext === "txt" || ext === "md" || mimeType.includes("text/")) {
+  if (ext === "pdf" || mimeType.includes("pdf")) {
+    isPdf = true;
+    fileBase64 = buffer.toString("base64");
+    const rawExtracted = extractTextFromPdf(buffer);
+    const isCleanText =
+      rawExtracted &&
+      rawExtracted.length > 20 &&
+      !rawExtracted.includes("berkas materi kamu berisikan data format biner");
+    extractedText = isCleanText
+      ? rawExtracted
+      : `[Dokumen PDF Slide Materi: ${fileName}]`;
+  } else if (ext === "txt" || ext === "md" || mimeType.includes("text/")) {
     extractedText = buffer.toString("utf-8");
   } else if (ext === "docx" || mimeType.includes("officedocument.wordprocessingml")) {
     extractedText = extractTextFromDocx(buffer);
-  } else if (ext === "pdf" || mimeType.includes("pdf")) {
-    extractedText = extractTextFromPdf(buffer);
   } else {
     // Default fallback attempt as UTF-8
     extractedText = buffer.toString("utf-8");
@@ -37,8 +50,10 @@ export async function parseFileBuffer(
   return {
     text: sanitizedText,
     fileName,
-    fileType: mimeType || ext,
+    fileType: mimeType || (isPdf ? "application/pdf" : ext),
     charCount: sanitizedText.length,
+    fileBase64,
+    isPdf,
   };
 }
 

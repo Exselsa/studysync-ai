@@ -44,6 +44,12 @@ import FriendsPanel from "@/components/friends/FriendsPanel";
    --------------------------------------------------------------- */
 export type GameMode = "select" | "vs_boss" | "vs_player";
 
+export interface StudyTopicItem {
+  id: string;
+  title: string;
+  concepts: string[];
+}
+
 export type AnimPhase =
   | "idle"
   | "evaluating"
@@ -198,6 +204,11 @@ export default function BossFightArena() {
   );
   const [multiplayerMatch, setMultiplayerMatch] =
     useState<MultiplayerMatch | null>(null);
+
+  const [userTopics, setUserTopics] = useState<StudyTopicItem[]>([]);
+  const [selectedTopicTitle, setSelectedTopicTitle] = useState<string>(
+    urlTopic || "Computer Science"
+  );
 
   // Core Game State
   const [bossHp, setBossHp] = useState(BOSS_MAX_HP);
@@ -375,15 +386,31 @@ export default function BossFightArena() {
     }
   }, [matchId, urlTopic, user]);
 
-  // Fetch Study Plan concepts if logged in
+  // Fetch Study Plan topics & concepts if logged in
   useEffect(() => {
-    if (urlTopic && urlTopic.trim()) return;
+    if (urlTopic && urlTopic.trim()) {
+      setSelectedTopicTitle(urlTopic.trim());
+      return;
+    }
     if (!user) {
-      const randomConcept =
-        DEFAULT_CS_CONCEPTS[
-          Math.floor(Math.random() * DEFAULT_CS_CONCEPTS.length)
-        ];
-      setCurrentQuestion(randomConcept);
+      const defaultTopics: StudyTopicItem[] = [
+        { id: "cs", title: "Computer Science", concepts: DEFAULT_CS_CONCEPTS },
+        {
+          id: "alg",
+          title: "Algoritma & Pemrograman",
+          concepts: [
+            "Binary Search Trees",
+            "Dynamic Programming",
+            "Recursion & Call Stack",
+            "Big O Time Complexity",
+          ],
+        },
+      ];
+      setUserTopics(defaultTopics);
+      if (!matchId) {
+        setSelectedTopicTitle("Computer Science");
+        setCurrentQuestion(DEFAULT_CS_CONCEPTS[Math.floor(Math.random() * DEFAULT_CS_CONCEPTS.length)]);
+      }
       return;
     }
 
@@ -391,30 +418,63 @@ export default function BossFightArena() {
     async function fetchPlans() {
       try {
         const plans = await getStudyPlans(userId);
-        const extracted: string[] = [];
-        plans.forEach((plan) => {
-          if (plan.subject) extracted.push(plan.subject);
-          plan.tasks?.forEach((t) => {
-            if (t.title) extracted.push(t.title);
+        if (plans.length > 0) {
+          const topicsList: StudyTopicItem[] = plans.map((plan) => {
+            const title = plan.subject || plan.title || "Study Plan";
+            const taskTitles = (plan.tasks || [])
+              .map((t) => t.title)
+              .filter(Boolean);
+            const concepts = Array.from(new Set([title, ...taskTitles]));
+            return {
+              id: plan.id,
+              title,
+              concepts: concepts.length > 0 ? concepts : [title],
+            };
           });
-        });
 
-        if (extracted.length > 0) {
-          const uniqueConcepts = Array.from(new Set(extracted));
-          setStudyPlanConcepts(uniqueConcepts);
-          if (!matchId) {
-            const picked =
-              uniqueConcepts[
-                Math.floor(Math.random() * uniqueConcepts.length)
+          setUserTopics(topicsList);
+          const allExtractedConcepts = topicsList.flatMap((t) => t.concepts);
+          setStudyPlanConcepts(Array.from(new Set(allExtractedConcepts)));
+
+          if (!urlTopic && !matchId) {
+            const initialTopic = topicsList[0];
+            setSelectedTopicTitle(initialTopic.title);
+            const initialConcept =
+              initialTopic.concepts[
+                Math.floor(Math.random() * initialTopic.concepts.length)
               ];
-            setCurrentQuestion(picked);
+            setCurrentQuestion(initialConcept);
           }
-        } else if (!matchId) {
-          const randomConcept =
-            DEFAULT_CS_CONCEPTS[
-              Math.floor(Math.random() * DEFAULT_CS_CONCEPTS.length)
-            ];
-          setCurrentQuestion(randomConcept);
+        } else {
+          const defaultTopics: StudyTopicItem[] = [
+            { id: "cs", title: "Computer Science", concepts: DEFAULT_CS_CONCEPTS },
+            {
+              id: "alg",
+              title: "Algoritma & Pemrograman",
+              concepts: [
+                "Binary Search Trees",
+                "Dynamic Programming",
+                "Recursion & Call Stack",
+                "Big O Time Complexity",
+              ],
+            },
+            {
+              id: "web",
+              title: "Web Development",
+              concepts: [
+                "HTTP REST APIs",
+                "Event Loop in JavaScript",
+                "Asynchronous Promises",
+              ],
+            },
+          ];
+          setUserTopics(defaultTopics);
+          if (!urlTopic && !matchId) {
+            setSelectedTopicTitle("Computer Science");
+            setCurrentQuestion(
+              DEFAULT_CS_CONCEPTS[Math.floor(Math.random() * DEFAULT_CS_CONCEPTS.length)]
+            );
+          }
         }
       } catch (err) {
         console.warn("Could not fetch user study plans for boss fight:", err);
@@ -424,18 +484,33 @@ export default function BossFightArena() {
     fetchPlans();
   }, [matchId, urlTopic, user]);
 
-  // Handle Reroll Topic
+  // Handle switching active Study Topic from Dropdown
+  const handleTopicChange = useCallback((newTopicTitle: string) => {
+    setSelectedTopicTitle(newTopicTitle);
+    const matchedTopic = userTopics.find((t) => t.title === newTopicTitle);
+    const pool =
+      matchedTopic && matchedTopic.concepts.length > 0
+        ? matchedTopic.concepts
+        : DEFAULT_CS_CONCEPTS;
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+    setCurrentQuestion(picked);
+  }, [userTopics]);
+
+  // Handle Reroll Question within currently selected topic
   const handleRerollQuestion = useCallback(() => {
     if (isBusy || phase !== "battle" || gameMode === "vs_player") return;
+    const matchedTopic = userTopics.find((t) => t.title === selectedTopicTitle);
     const pool =
-      studyPlanConcepts.length > 0 ? studyPlanConcepts : DEFAULT_CS_CONCEPTS;
+      matchedTopic && matchedTopic.concepts.length > 0
+        ? matchedTopic.concepts
+        : DEFAULT_CS_CONCEPTS;
     const filtered = pool.filter((q) => q !== currentQuestion);
     const nextQ =
       filtered.length > 0
         ? filtered[Math.floor(Math.random() * filtered.length)]
         : pool[Math.floor(Math.random() * pool.length)];
     setCurrentQuestion(nextQ);
-  }, [currentQuestion, isBusy, phase, gameMode, studyPlanConcepts]);
+  }, [currentQuestion, isBusy, phase, gameMode, selectedTopicTitle, userTopics]);
 
   // Auto-scroll battle log
   useEffect(() => {
@@ -606,8 +681,11 @@ export default function BossFightArena() {
     setAnimPhase("idle");
     setAttackText("");
     setIsWaitingForOpponent(false);
+    const matchedTopic = userTopics.find((t) => t.title === selectedTopicTitle);
     const pool =
-      studyPlanConcepts.length > 0 ? studyPlanConcepts : DEFAULT_CS_CONCEPTS;
+      matchedTopic && matchedTopic.concepts.length > 0
+        ? matchedTopic.concepts
+        : DEFAULT_CS_CONCEPTS;
     setCurrentQuestion(pool[Math.floor(Math.random() * pool.length)]);
     setTimeout(() => inputRef.current?.focus(), 100);
   }
@@ -838,22 +916,36 @@ export default function BossFightArena() {
               style={{ color: "var(--color-silver-400)" }}
             >
               {isMultiplayer
-                ? "Simultaneous 1v1 duel — Referee Gemini evaluates both answers!"
+                ? "Simultaneous 1v1 duel — Referee abang ganteng evaluates both answers!"
                 : "Master topics by explaining them simply to deal damage!"}
             </p>
           </div>
         </div>
 
-        {/* Study Plan Status Badge */}
-        {studyPlanConcepts.length > 0 ? (
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-[11px] text-cyan-300 font-semibold">
-            <BookOpen size={13} className="text-cyan-400" />
-            <span>Active Study Plan ({studyPlanConcepts.length} topics)</span>
+        {/* Study Plan Topic Switcher Dropdown */}
+        {!isMultiplayer ? (
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-xs text-cyan-300 shadow-md">
+            <BookOpen size={13} className="text-cyan-400 shrink-0" />
+            <span className="text-[11px] font-bold text-slate-300 hidden sm:inline">Pilih Topik:</span>
+            <select
+              id="boss-fight-topic-select"
+              value={selectedTopicTitle}
+              onChange={(e) => handleTopicChange(e.target.value)}
+              disabled={isBusy || phase !== "battle"}
+              className="bg-transparent text-xs font-extrabold text-cyan-200 outline-none cursor-pointer border-none py-0 pr-2 focus:ring-0 disabled:opacity-50"
+              aria-label="Pilih Topik Belajar"
+            >
+              {userTopics.map((topic) => (
+                <option key={topic.id} value={topic.title} className="bg-slate-900 text-slate-100 font-sans">
+                  {topic.title}
+                </option>
+              ))}
+            </select>
           </div>
         ) : (
-          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/60 border border-slate-700/50 text-[11px] text-slate-300 font-semibold">
-            <Sparkles size={13} className="text-amber-400" />
-            <span>Core CS Concepts</span>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-[11px] text-cyan-300 font-semibold">
+            <BookOpen size={13} className="text-cyan-400" />
+            <span>Topik Match: {multiplayerMatch?.topic || selectedTopicTitle}</span>
           </div>
         )}
       </m.div>
@@ -1112,28 +1204,29 @@ export default function BossFightArena() {
             key={currentQuestion}
             transition={{ duration: 0.4 }}
           >
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 flex items-center gap-1.5">
-                <Sparkles size={13} className="text-amber-400" /> Duel Concept:
+            <div className="flex items-center justify-between mb-1 gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 flex items-center gap-1.5 truncate">
+                <Sparkles size={13} className="text-amber-400 shrink-0" /> Konsep Duel ({selectedTopicTitle}):
               </span>
               {!isMultiplayer && (
                 <button
                   type="button"
+                  id="boss-fight-reroll-question"
                   onClick={handleRerollQuestion}
                   disabled={isBusy || phase !== "battle"}
-                  className="text-[10px] font-bold text-slate-400 hover:text-cyan-300 flex items-center gap-1 transition-colors disabled:opacity-50"
-                  title="Reroll concept"
+                  className="text-[10px] font-bold text-slate-300 hover:text-cyan-300 flex items-center gap-1.5 transition-colors disabled:opacity-50 px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-700/70 hover:border-cyan-500/40 cursor-pointer shrink-0"
+                  title="Ganti soal dalam topik ini"
                 >
-                  <RefreshCw size={11} /> Reroll Topic
+                  <RefreshCw size={11} className="text-cyan-400" /> Ganti Soal
                 </button>
               )}
             </div>
             <h3 className="text-sm sm:text-base font-bold text-slate-100 leading-snug">
-              &ldquo;Explain{" "}
+              &ldquo;Jelaskan{" "}
               <span className="text-cyan-300 underline underline-offset-4 decoration-cyan-400/50 font-black">
                 {currentQuestion}
               </span>{" "}
-              to me as if I&apos;m 5 years old!&rdquo;
+              seolah-olah saya anak umur 5 tahun!&rdquo;
             </h3>
             <div
               className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px]"
@@ -1482,7 +1575,7 @@ export default function BossFightArena() {
           value={attackText}
           onChange={(e) => setAttackText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`Jelaskan '${currentQuestion}' seolah ke anak umur 5 tahun (gunakan analogi sederhana seperti balok mainan, ember, atau resep makanan...)`}
+          placeholder={`Jelaskan '${currentQuestion}' (${selectedTopicTitle}) seolah ke anak umur 5 tahun (gunakan analogi sederhana seperti balok mainan, ember, atau resep makanan...)`}
           disabled={isBusy || phase !== "battle"}
           rows={3}
           className="w-full resize-none outline-none text-[13px] leading-relaxed px-4 py-3 placeholder:italic disabled:opacity-50"

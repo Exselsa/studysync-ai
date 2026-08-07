@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
 
     let materialText = "";
     let materialTitle = "";
+    let fileBase64: string | undefined = undefined;
+    let mimeType = "text/plain";
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
@@ -50,12 +52,17 @@ export async function POST(req: NextRequest) {
       if (file) {
         if (!materialTitle) materialTitle = file.name;
         const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
         const parsed = await parseFileBuffer(
-          Buffer.from(arrayBuffer),
+          buffer,
           file.name || "study-material",
           file.type || ""
         );
         materialText = parsed.text;
+        if (parsed.fileBase64) {
+          fileBase64 = parsed.fileBase64;
+          mimeType = parsed.fileType || file.type || "application/pdf";
+        }
       }
     } else if (contentType.includes("application/json")) {
       const body = await req.json();
@@ -65,9 +72,15 @@ export async function POST(req: NextRequest) {
       if (body.title && typeof body.title === "string") {
         materialTitle = body.title.trim();
       }
+      if (body.fileBase64 && typeof body.fileBase64 === "string") {
+        fileBase64 = body.fileBase64;
+      }
+      if (body.mimeType && typeof body.mimeType === "string") {
+        mimeType = body.mimeType;
+      }
     }
 
-    if (!materialText || materialText.trim().length === 0) {
+    if (!materialText && !fileBase64) {
       return NextResponse.json(
         { error: "Teks materi pelajaran tidak boleh kosong. Sertakan teks atau file ya." },
         { status: 400 }
@@ -78,7 +91,7 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       console.warn("[/api/study-materials/explain] GEMINI_API_KEY missing — returning fallback explanation.");
-      const fallback = buildFallbackExplanation(materialText, materialTitle);
+      const fallback = buildFallbackExplanation(materialText || "PDF Slide Deck", materialTitle);
       return NextResponse.json({ success: true, result: fallback });
     }
 
@@ -86,15 +99,18 @@ export async function POST(req: NextRequest) {
     try {
       const ai = new GoogleGenAI({ apiKey });
 
-      const prompt = `
-Berikut adalah teks materi pelajaran/kuliah dari siswa:
+      const promptText = `
+Berikut adalah berkas materi pelajaran/kuliah dari siswa:
 
 Judul Materi (opsional): ${materialTitle || "Materi Pembelajaran"}
 ---
-${materialText.slice(0, 30000)}
+${(materialText || "Dokumen PDF terlampir").slice(0, 30000)}
 ---
 
 Jelaskan materi ini secara sederhana (Feynman style).
+Pastikan kamu membaca seluruh berkas PDF (termasuk rumus matematika seperti Persamaan Diferensial, slide, dan grafik) secara lengkap dan mengekstrak konsep akademik utama secara spesifik.
+NEVER output generic statements like 'berkas materi kamu berisikan data format biner'.
+
 Sertakan:
 1. Ringkasan Kunci (2-3 kalimat)
 2. 3-5 Konsep Penting dengan analogi sehari-hari dan contoh nyata
@@ -104,9 +120,20 @@ Sertakan:
 Gunakan Bahasa Indonesia yang santai, ramah, dan tidak kaku (selalu pakai 'kamu').
 `;
 
+      const contentsParts: any[] = [promptText];
+
+      if (fileBase64 && (mimeType.includes("pdf") || mimeType.includes("octet-stream"))) {
+        contentsParts.push({
+          inlineData: {
+            data: fileBase64.replace(/^data:[^;]+;base64,/, ""),
+            mimeType: "application/pdf",
+          },
+        });
+      }
+
       const response = await ai.models.generateContent({
         model: "gemini-3.6-flash",
-        contents: prompt,
+        contents: contentsParts,
         config: {
           systemInstruction: EXPLAIN_MATERIAL_SYSTEM_INSTRUCTION,
           responseMimeType: "application/json",

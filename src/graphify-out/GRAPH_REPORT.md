@@ -1,12 +1,12 @@
 # Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-07)
 
 ## Corpus Check
-- 33 files · ~64,214 words
+- 33 files · ~66,494 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 292 nodes · 313 edges · 21 communities detected
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
+- 308 nodes · 333 edges · 21 communities detected
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -42,7 +42,7 @@
 7. `saveStudyPlan()` - 4 edges
 8. `getStudyPlans()` - 4 edges
 9. `sendFriendRequest()` - 4 edges
-10. `RESPONSE_SCHEMA` - 3 edges
+10. `router` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --calls--> `buildFallbackExplanation()`  [INFERRED]
@@ -53,30 +53,30 @@
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\tutor\page.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
 - `POST()` --calls--> `parseFileBuffer()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts
-- `fetchPlans()` --calls--> `getStudyPlans()`  [INFERRED]
-  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\BossFightArena.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
+- `handleToggleTask` --calls--> `updateStudyPlanTasks()`  [INFERRED]
+  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
 
 ## Communities
 
 ### Community 0 - "Community 0"
 
-Cohesion: 0.06
-Nodes (34): [aiInsights, setAiInsights], containerVariants, dateString, [deleteConfirm, setDeleteConfirm], dismissToast, displayName, [displayName, setDisplayName], EASE (+26 more)
+Cohesion: 0.04
+Nodes (40): [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, setBattleLog], BOSS_MAX_HP, [bossHp, setBossHp], [combo, setCombo], [currentQuestion, setCurrentQuestion], DEFAULT_CS_CONCEPTS (+32 more)
 
 ### Community 1 - "Community 1"
 
-Cohesion: 0.05
-Nodes (32): [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, setBattleLog], BOSS_MAX_HP, [bossHp, setBossHp], [combo, setCombo], [currentQuestion, setCurrentQuestion], DEFAULT_CS_CONCEPTS (+24 more)
+Cohesion: 0.06
+Nodes (37): [aiInsights, setAiInsights], allPendingTasks, containerVariants, dateString, [deleteConfirm, setDeleteConfirm], dismissToast, displayName, [displayName, setDisplayName] (+29 more)
 
 ### Community 2 - "Community 2"
 
 Cohesion: 0.07
-Nodes (22): accent, [actionLoading, setActionLoading], avgPct, cardVariants, circ, [collapsed, setCollapsed], completedCount, dash (+14 more)
+Nodes (27): removeFriendRelationship(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId], [customTopic, setCustomTopic] (+19 more)
 
 ### Community 3 - "Community 3"
 
 Cohesion: 0.07
-Nodes (25): [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId], [customTopic, setCustomTopic], DEFAULT_CS_TOPICS (+17 more)
+Nodes (20): accent, [actionLoading, setActionLoading], avgPct, cardVariants, circ, [collapsed, setCollapsed], completedCount, dash (+12 more)
 
 ### Community 4 - "Community 4"
 
@@ -91,12 +91,12 @@ Nodes (23): [days, setDays], [dragActive, setDragActive], EASE, [error, setError
 ### Community 6 - "Community 6"
 
 Cohesion: 0.09
-Nodes (14): handleAttack(), handleKeyDown(), acceptFriendRequest(), commitDuelEvaluation(), findUserByEmail(), removeFriendRelationship(), saveUserProfile(), sendFriendRequest() (+6 more)
+Nodes (12): handleAttack(), handleKeyDown(), acceptFriendRequest(), commitDuelEvaluation(), findUserByEmail(), saveUserProfile(), sendFriendRequest(), sendMatchChallenge() (+4 more)
 
 ### Community 7 - "Community 7"
 
-Cohesion: 0.15
-Nodes (12): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+4 more)
+Cohesion: 0.12
+Nodes (14): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+6 more)
 
 ### Community 8 - "Community 8"
 
@@ -105,13 +105,13 @@ Nodes (10): containerRef, [isHovered, setIsHovered], isIcon, mount, parent, ripp
 
 ### Community 9 - "Community 9"
 
-Cohesion: 0.18
-Nodes (7): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems
+Cohesion: 0.22
+Nodes (8): fetchPlans(), getStudyPlans(), saveStudyPlan(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore(), handleToggleTask
 
 ### Community 10 - "Community 10"
 
-Cohesion: 0.24
-Nodes (6): fetchPlans(), getStudyPlans(), saveStudyPlan(), userPlansCollection(), loadTopics(), handleSaveToFirestore()
+Cohesion: 0.18
+Nodes (7): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems
 
 ### Community 11 - "Community 11"
 
@@ -164,7 +164,7 @@ Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **174 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+169 more)
+- **184 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+179 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 16`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

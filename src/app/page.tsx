@@ -72,7 +72,7 @@ const coreFeatures = [
     Icon: BrainCircuit,
     label: "Engine AI Tutor",
     description:
-      "Diskusi interaktif berbasis Gemini yang membantu menemukan bagian materi yang belum paham melalui pertanyaan terarah.",
+      "Diskusi interaktif bersama abang ganteng yang membantu menemukan bagian materi yang belum paham melalui pertanyaan terarah.",
     accent: "rgba(56, 189, 248, 0.08)",
     accentBorder: "rgba(56, 189, 248, 0.18)",
     iconColor: "rgba(56, 189, 248, 0.9)",
@@ -232,7 +232,7 @@ function HeroSection() {
           <span
             className="badge-gold"
             id="hero-badge"
-            aria-label="Powered by Gemini AI"
+            aria-label="Powered by abang ganteng"
           >
             <Zap
               size={10}
@@ -700,7 +700,7 @@ function CtaSection() {
             {[
               { Icon: Shield, text: "Privasi Utama" },
               { Icon: Zap, text: "Adaptasi Real-Time" },
-              { Icon: BrainCircuit, text: "Didukung Gemini AI" },
+              { Icon: BrainCircuit, text: "Didukung abang ganteng" },
             ].map(({ Icon, text }) => (
               <div
                 key={text}

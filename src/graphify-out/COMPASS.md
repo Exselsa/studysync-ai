@@ -13,7 +13,7 @@
 7. `saveStudyPlan()` (4 edges)
 8. `getStudyPlans()` (4 edges)
 9. `sendFriendRequest()` (4 edges)
-10. `RESPONSE_SCHEMA` (3 edges)
+10. `router` (3 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 

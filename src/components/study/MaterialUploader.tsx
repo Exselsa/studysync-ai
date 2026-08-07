@@ -133,6 +133,9 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
 
     try {
       let extractedText = pastedText.trim();
+      let fileBase64: string | undefined = undefined;
+      let mimeType: string = "text/plain";
+      let isPdf: boolean = false;
 
       // Step 1: Parse file if file selected
       if (selectedFile) {
@@ -151,17 +154,23 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
         }
 
         extractedText = parseData.text;
+        fileBase64 = parseData.fileBase64;
+        mimeType = parseData.fileType || selectedFile.type || "application/pdf";
+        isPdf = parseData.isPdf || false;
       }
 
-      // Step 2: Call Gemini AI endpoint
+      // Step 2: Call AI endpoint
       if (mode === "generate-plan") {
-        setLoadingStep("Gemini AI sedang menyusun Study Plan adaptif kamu...");
+        setLoadingStep("abang ganteng sedang menyusun Study Plan adaptif kamu...");
         const res = await fetch("/api/study-materials/generate-plan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             text: extractedText,
             days: Number(days),
+            fileBase64,
+            mimeType,
+            isPdf,
           }),
         });
 
@@ -171,13 +180,16 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
         }
         setPlanResult(data.result);
       } else {
-        setLoadingStep("Gemini AI sedang menyederhanakan & merangkum materi...");
+        setLoadingStep("abang ganteng sedang menyederhanakan & merangkum materi...");
         const res = await fetch("/api/study-materials/explain", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             text: extractedText,
             title: selectedFile?.name || "Materi Kuliah",
+            fileBase64,
+            mimeType,
+            isPdf,
           }),
         });
 

@@ -25,6 +25,8 @@ export async function POST(req: NextRequest) {
     const contentType = req.headers.get("content-type") || "";
 
     let materialText = "";
+    let fileBase64: string | undefined = undefined;
+    let mimeType = "text/plain";
     let days = 3;
 
     if (contentType.includes("multipart/form-data")) {
@@ -38,24 +40,35 @@ export async function POST(req: NextRequest) {
 
       if (file) {
         const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
         const parsed = await parseFileBuffer(
-          Buffer.from(arrayBuffer),
+          buffer,
           file.name || "study-material",
           file.type || ""
         );
         materialText = parsed.text;
+        if (parsed.fileBase64) {
+          fileBase64 = parsed.fileBase64;
+          mimeType = parsed.fileType || file.type || "application/pdf";
+        }
       }
     } else if (contentType.includes("application/json")) {
       const body = await req.json();
       if (body.text && typeof body.text === "string") {
         materialText = body.text.trim();
       }
+      if (body.fileBase64 && typeof body.fileBase64 === "string") {
+        fileBase64 = body.fileBase64;
+      }
+      if (body.mimeType && typeof body.mimeType === "string") {
+        mimeType = body.mimeType;
+      }
       if (body.days && typeof body.days === "number") {
         days = Math.max(1, Math.min(30, body.days));
       }
     }
 
-    if (!materialText || materialText.trim().length === 0) {
+    if (!materialText && !fileBase64) {
       return NextResponse.json(
         { error: "Teks materi pelajaran tidak boleh kosong. Sertakan teks atau file ya." },
         { status: 400 }
@@ -66,7 +79,7 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       console.warn("[/api/study-materials/generate-plan] GEMINI_API_KEY missing — returning fallback plan.");
-      const fallback = buildFallbackStudyPlan(materialText, days);
+      const fallback = buildFallbackStudyPlan(materialText || "PDF Slide Deck", days);
       return NextResponse.json({ success: true, result: fallback });
     }
 
@@ -74,20 +87,34 @@ export async function POST(req: NextRequest) {
     try {
       const ai = new GoogleGenAI({ apiKey });
 
-      const prompt = `
-Berikut adalah teks materi pelajaran/kuliah dari siswa:
+      const promptText = `
+Berikut adalah berkas materi pelajaran/kuliah dari siswa:
 
+Ringkasan/Judul Teks:
 ---
-${materialText.slice(0, 30000)}
+${(materialText || "Dokumen PDF terlampir").slice(0, 30000)}
 ---
 
 Buatkan structured study plan untuk target durasi: ${days} hari.
+Pastikan kamu membaca seluruh berkas PDF (termasuk rumus matematika, slide, dan grafik) secara lengkap dan mengekstrak konsep akademik utama secara spesifik.
+NEVER output generic statements like 'berkas materi kamu berisikan data format biner'.
 Pastikan output memenuhi schema JSON dan seluruh teks ditulis dalam Bahasa Indonesia yang santai, ramah, dan tidak kaku (gunakan 'kamu').
 `;
 
+      const contentsParts: any[] = [promptText];
+
+      if (fileBase64 && (mimeType.includes("pdf") || mimeType.includes("octet-stream"))) {
+        contentsParts.push({
+          inlineData: {
+            data: fileBase64.replace(/^data:[^;]+;base64,/, ""),
+            mimeType: "application/pdf",
+          },
+        });
+      }
+
       const response = await ai.models.generateContent({
         model: "gemini-3.6-flash",
-        contents: prompt,
+        contents: contentsParts,
         config: {
           systemInstruction: GENERATE_PLAN_SYSTEM_INSTRUCTION,
           responseMimeType: "application/json",
