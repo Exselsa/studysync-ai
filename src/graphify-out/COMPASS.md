@@ -4,16 +4,16 @@
 > This is a token-optimized summary. For deep logic, see GRAPH_REPORT.md.
 
 ## Core Abstractions (God Nodes)
-1. `POST()` (5 edges)
-2. `EASE` (4 edges)
-3. `{ user }` (4 edges)
-4. `sendMessage()` (4 edges)
-5. `handleAttack()` (4 edges)
-6. `getStudyPlans()` (4 edges)
-7. `sendFriendRequest()` (4 edges)
-8. `RESPONSE_SCHEMA` (3 edges)
-9. `SYSTEM_INSTRUCTION` (3 edges)
-10. `buildFallbackResponse()` (3 edges)
+1. `POST()` (11 edges)
+2. `parseFileBuffer()` (5 edges)
+3. `EASE` (4 edges)
+4. `{ user }` (4 edges)
+5. `sendMessage()` (4 edges)
+6. `handleAttack()` (4 edges)
+7. `saveStudyPlan()` (4 edges)
+8. `getStudyPlans()` (4 edges)
+9. `sendFriendRequest()` (4 edges)
+10. `RESPONSE_SCHEMA` (3 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 

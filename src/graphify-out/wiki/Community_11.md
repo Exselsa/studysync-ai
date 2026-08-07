@@ -1,15 +1,17 @@
 # Community 11
 
-> 6 nodes · cohesion 0.33
+> 8 nodes · cohesion 0.25
 
 ## Key Concepts
 
-- [ProtectedRoute.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L1) (5 connections)
-- [containerVariants](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L26) (1 connections)
-- [isMountedRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L135) (1 connections)
-- [router](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L127) (1 connections)
-- [spinnerVariants](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L15) (1 connections)
-- [{ user, loading }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx#L126) (1 connections)
+- [layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L1) (5 connections)
+- [layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx#L1) (2 connections)
+- [metadata](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx#L4) (2 connections)
+- [DashboardLayout()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx#L23) (1 connections)
+- [inter](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L13) (1 connections)
+- [outfit](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L20) (1 connections)
+- [RootLayout()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L66) (1 connections)
+- [viewport](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx#L56) (1 connections)
 
 ## Relationships
 
@@ -17,11 +19,12 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\ProtectedRoute.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/ProtectedRoute.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/layout.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\layout.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/layout.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 10 (100%)
+- EXTRACTED: 14 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

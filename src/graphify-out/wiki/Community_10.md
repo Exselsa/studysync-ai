@@ -1,16 +1,19 @@
 # Community 10
 
-> 7 nodes · cohesion 0.29
+> 10 nodes · cohesion 0.24
 
 ## Key Concepts
 
-- [NavigationBar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L1) (6 connections)
-- [handleSignIn()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L30) (1 connections)
-- [isActive](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L101) (1 connections)
-- [navLinks](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L11) (1 connections)
-- [pathname](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L26) (1 connections)
-- [[signingIn, setSigningIn]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L28) (1 connections)
-- [{ user, loading, signInWithGoogle }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx#L27) (1 connections)
+- [db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L1) (6 connections)
+- [getStudyPlans()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L99) (4 connections)
+- [saveStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L78) (4 connections)
+- [userPlansCollection()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L70) (3 connections)
+- [fetchPlans()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L332) (2 connections)
+- [loadTopics()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L79) (2 connections)
+- [handleSaveToFirestore()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L206) (2 connections)
+- [resetStudyPlanTasks()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L167) (1 connections)
+- [updateStudyPlanStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L152) (1 connections)
+- [updateStudyPlanTasks()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L133) (1 connections)
 
 ## Relationships
 
@@ -18,12 +21,15 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\NavigationBar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/NavigationBar.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\BossFightArena.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\study\MaterialUploader.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts)
 
 ## Audit Trail
 
-- EXTRACTED: 12 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 19 (73%)
+- INFERRED: 7 (27%)
 - AMBIGUOUS: 0 (0%)
 
 ---

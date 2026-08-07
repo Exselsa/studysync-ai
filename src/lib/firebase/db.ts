@@ -15,6 +15,8 @@ import {
   orderBy,
   serverTimestamp,
   Timestamp,
+  doc,
+  updateDoc,
   type DocumentData,
   type QueryDocumentSnapshot,
 } from "firebase/firestore";
@@ -44,6 +46,8 @@ export interface StudyPlan {
   tasks: StudyTask[];
   /** 0–100 */
   progress: number;
+  /** "active" | "completed" | "archived" */
+  status?: "active" | "completed" | "archived";
   /** ISO string derived from Firestore Timestamp on read */
   createdAt: string;
 }
@@ -56,6 +60,7 @@ interface StudyPlanDoc {
   subject: string;
   tasks: StudyTask[];
   progress: number;
+  status: string;
   createdAt: ReturnType<typeof serverTimestamp>;
 }
 
@@ -79,6 +84,7 @@ export async function saveStudyPlan(
     subject: planData.subject,
     tasks: planData.tasks,
     progress: planData.progress,
+    status: planData.status ?? "active",
     createdAt: serverTimestamp(),
   };
 
@@ -88,31 +94,93 @@ export async function saveStudyPlan(
 
 /* ----------------------------------------------------------------
    getStudyPlans
-   Fetches all study plans for a user, ordered by creation date (desc).
+   Fetches active study plans for a user, ordered by creation date (desc).
 ---------------------------------------------------------------- */
 export async function getStudyPlans(userId: string): Promise<StudyPlan[]> {
   const q = query(userPlansCollection(userId), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => {
-    const data = doc.data();
+  return snapshot.docs
+    .map((docSnap: QueryDocumentSnapshot<DocumentData>) => {
+      const data = docSnap.data();
 
-    // Convert Firestore Timestamp → ISO string (gracefully handle null for
-    // optimistic writes that haven't resolved serverTimestamp yet)
-    let createdAt = "";
-    if (data.createdAt instanceof Timestamp) {
-      createdAt = data.createdAt.toDate().toISOString();
-    } else if (typeof data.createdAt === "string") {
-      createdAt = data.createdAt;
-    }
+      // Convert Firestore Timestamp → ISO string (gracefully handle null for
+      // optimistic writes that haven't resolved serverTimestamp yet)
+      let createdAt = "";
+      if (data.createdAt instanceof Timestamp) {
+        createdAt = data.createdAt.toDate().toISOString();
+      } else if (typeof data.createdAt === "string") {
+        createdAt = data.createdAt;
+      }
 
-    return {
-      id: doc.id,
-      title: data.title ?? "",
-      subject: data.subject ?? "",
-      tasks: (data.tasks ?? []) as StudyTask[],
-      progress: typeof data.progress === "number" ? data.progress : 0,
-      createdAt,
-    } satisfies StudyPlan;
+      return {
+        id: docSnap.id,
+        title: data.title ?? "",
+        subject: data.subject ?? "",
+        tasks: (data.tasks ?? []) as StudyTask[],
+        progress: typeof data.progress === "number" ? data.progress : 0,
+        status: (data.status as "active" | "completed" | "archived") ?? "active",
+        createdAt,
+      } satisfies StudyPlan;
+    })
+    .filter((plan) => !plan.status || plan.status === "active");
+}
+
+/* ----------------------------------------------------------------
+   updateStudyPlanTasks
+   Updates tasks array & recalculates progress in Firestore
+---------------------------------------------------------------- */
+export async function updateStudyPlanTasks(
+  userId: string,
+  planId: string,
+  tasks: StudyTask[]
+): Promise<void> {
+  const planRef = doc(db, "users", userId, "studyPlans", planId);
+  const completedCount = tasks.filter((t) => t.completed).length;
+  const progress = tasks.length ? Math.round((completedCount / tasks.length) * 100) : 0;
+
+  await updateDoc(planRef, {
+    tasks,
+    progress,
   });
+}
+
+/* ----------------------------------------------------------------
+   updateStudyPlanStatus
+   Updates status ('active' | 'completed' | 'archived') in Firestore
+---------------------------------------------------------------- */
+export async function updateStudyPlanStatus(
+  userId: string,
+  planId: string,
+  status: "active" | "completed" | "archived"
+): Promise<void> {
+  const planRef = doc(db, "users", userId, "studyPlans", planId);
+  await updateDoc(planRef, {
+    status,
+  });
+}
+
+/* ----------------------------------------------------------------
+   resetStudyPlanTasks
+   Resets all task checkboxes to uncompleted (0% progress) in Firestore
+---------------------------------------------------------------- */
+export async function resetStudyPlanTasks(
+  userId: string,
+  planId: string,
+  tasks: StudyTask[]
+): Promise<StudyTask[]> {
+  const planRef = doc(db, "users", userId, "studyPlans", planId);
+  const resetTasks = tasks.map((t) => ({
+    ...t,
+    completed: false,
+    status: "pending",
+  }));
+
+  await updateDoc(planRef, {
+    tasks: resetTasks,
+    progress: 0,
+    status: "active",
+  });
+
+  return resetTasks;
 }

@@ -13,10 +13,21 @@ import {
   TrendingUp,
   ChevronDown,
   ChevronUp,
+  RotateCcw,
+  Trophy,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import { useAuth } from "@/lib/contexts/AuthContext";
-import { getStudyPlans, type StudyPlan, type StudyTask } from "@/lib/firebase/db";
+import {
+  getStudyPlans,
+  updateStudyPlanTasks,
+  updateStudyPlanStatus,
+  resetStudyPlanTasks,
+  type StudyPlan,
+  type StudyTask,
+} from "@/lib/firebase/db";
 import MaterialUploader from "@/components/study/MaterialUploader";
 
 /* ------------------------------------------------------------------
@@ -256,14 +267,42 @@ function TaskRow({
 function PlanCard({
   plan,
   onToggleTask,
+  onCompletePlan,
+  onResetPlan,
 }: {
   plan: StudyPlan;
   onToggleTask: (planId: string, taskId: string) => void;
+  onCompletePlan: (planId: string) => Promise<void>;
+  onResetPlan: (planId: string) => Promise<void>;
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [actionLoading, setActionLoading] = useState<"complete" | "reset" | null>(null);
   const accent = subjectAccent(plan.subject);
   const progress = computeProgress(plan.tasks);
   const completedCount = plan.tasks.filter((t) => t.completed).length;
+  const isAllCompleted = plan.tasks.length > 0 && completedCount === plan.tasks.length;
+
+  const handleComplete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (actionLoading) return;
+    setActionLoading("complete");
+    try {
+      await onCompletePlan(plan.id);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleReset = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (actionLoading) return;
+    setActionLoading("reset");
+    try {
+      await onResetPlan(plan.id);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   return (
     <m.article
@@ -271,14 +310,18 @@ function PlanCard({
       variants={cardVariants}
       whileHover={{ y: -2, transition: { duration: 0.18 } }}
       style={{
-        background: "rgba(6,16,46,0.6)",
-        border: "1px solid rgba(255,255,255,0.08)",
+        background: isAllCompleted ? "rgba(6,28,46,0.75)" : "rgba(6,16,46,0.6)",
+        border: isAllCompleted
+          ? "1px solid rgba(34,197,94,0.3)"
+          : "1px solid rgba(255,255,255,0.08)",
         borderRadius: "18px",
         overflow: "hidden",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset",
-        transition: "box-shadow 200ms ease",
+        boxShadow: isAllCompleted
+          ? "0 8px 32px rgba(34,197,94,0.15), 0 0 0 1px rgba(34,197,94,0.1) inset"
+          : "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset",
+        transition: "box-shadow 200ms ease, border-color 200ms ease, background 200ms ease",
       }}
       aria-label={`Study plan: ${plan.title}`}
     >
@@ -341,6 +384,26 @@ function PlanCard({
             <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
               {completedCount} / {plan.tasks.length} tasks
             </span>
+            {/* 100% Completion Badge */}
+            {isAllCompleted && (
+              <span
+                style={{
+                  fontSize: "0.6875rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.05em",
+                  padding: "0.15rem 0.55rem",
+                  borderRadius: "9999px",
+                  background: "rgba(34,197,94,0.15)",
+                  border: "1px solid rgba(34,197,94,0.3)",
+                  color: "rgba(34,197,94,0.95)",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                }}
+              >
+                <Trophy size={11} /> 100% Selesai
+              </span>
+            )}
             {/* Date */}
             {plan.createdAt && (
               <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)", display: "flex", alignItems: "center", gap: "0.25rem" }}>
@@ -416,6 +479,136 @@ function PlanCard({
                   />
                 </div>
               </div>
+
+              {/* Completion Banner & Action Controls */}
+              {isAllCompleted && (
+                <m.div
+                  initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                  style={{
+                    marginTop: "1rem",
+                    padding: "1.125rem",
+                    borderRadius: "14px",
+                    background: "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(16,185,129,0.06))",
+                    border: "1px solid rgba(34,197,94,0.28)",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.875rem",
+                    boxShadow: "0 8px 24px rgba(34,197,94,0.12)",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                    <div
+                      style={{
+                        width: "36px",
+                        height: "36px",
+                        borderRadius: "10px",
+                        background: "rgba(34,197,94,0.2)",
+                        border: "1px solid rgba(34,197,94,0.35)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "#4ade80",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Sparkles size={18} />
+                    </div>
+                    <div>
+                      <h4
+                        style={{
+                          fontFamily: "var(--font-outfit)",
+                          fontWeight: 700,
+                          fontSize: "0.9375rem",
+                          color: "var(--color-silver-50)",
+                          lineHeight: 1.3,
+                          margin: 0,
+                        }}
+                      >
+                        Selamat! Semua tugas telah selesai 🥳
+                      </h4>
+                      <p
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--color-silver-300)",
+                          lineHeight: 1.45,
+                          marginTop: "0.25rem",
+                        }}
+                      >
+                        Pilih <strong>"Selesai"</strong> untuk mengarsipkan plan ini, atau <strong>"Ulangi"</strong> untuk memulai kembali dari 0%.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                    {/* Selesai Button */}
+                    <button
+                      type="button"
+                      id={`plan-complete-btn-${plan.id}`}
+                      onClick={handleComplete}
+                      disabled={actionLoading !== null}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.4rem",
+                        padding: "0.625rem 1rem",
+                        borderRadius: "10px",
+                        background: "linear-gradient(135deg, #22c55e, #16a34a)",
+                        border: "none",
+                        color: "#030b22",
+                        fontSize: "0.8125rem",
+                        fontWeight: 700,
+                        cursor: actionLoading ? "not-allowed" : "pointer",
+                        opacity: actionLoading ? 0.7 : 1,
+                        boxShadow: "0 2px 10px rgba(34,197,94,0.3)",
+                        transition: "transform 120ms ease, opacity 120ms ease",
+                      }}
+                    >
+                      {actionLoading === "complete" ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <CheckCircle2 size={15} />
+                      )}
+                      Selesai
+                    </button>
+
+                    {/* Ulangi Button */}
+                    <button
+                      type="button"
+                      id={`plan-reset-btn-${plan.id}`}
+                      onClick={handleReset}
+                      disabled={actionLoading !== null}
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.4rem",
+                        padding: "0.625rem 1rem",
+                        borderRadius: "10px",
+                        background: "rgba(255,255,255,0.07)",
+                        border: "1px solid rgba(255,255,255,0.15)",
+                        color: "var(--color-silver-100)",
+                        fontSize: "0.8125rem",
+                        fontWeight: 600,
+                        cursor: actionLoading ? "not-allowed" : "pointer",
+                        opacity: actionLoading ? 0.7 : 1,
+                        transition: "background 120ms ease",
+                      }}
+                    >
+                      {actionLoading === "reset" ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <RotateCcw size={15} />
+                      )}
+                      Ulangi
+                    </button>
+                  </div>
+                </m.div>
+              )}
             </div>
           </m.div>
         )}
@@ -500,23 +693,90 @@ function PlanContent() {
   useEffect(() => { fetchPlans(); }, [fetchPlans]);
 
   /* ----------------------------------------------------------------
-     Optimistic task toggle (updates local state immediately;
-     a production app would also call Firestore updateDoc here)
+     Toggle Task & sync with Firestore
   ---------------------------------------------------------------- */
-  const handleToggleTask = useCallback((planId: string, taskId: string) => {
-    setPlans((prev) =>
-      prev.map((plan) =>
-        plan.id !== planId
-          ? plan
-          : {
-              ...plan,
-              tasks: plan.tasks.map((t) =>
-                t.id !== taskId ? t : { ...t, completed: !t.completed }
-              ),
-            }
-      )
-    );
-  }, []);
+  const handleToggleTask = useCallback(
+    async (planId: string, taskId: string) => {
+      if (!user?.uid) return;
+
+      let updatedTasks: StudyTask[] = [];
+
+      setPlans((prev) =>
+        prev.map((plan) => {
+          if (plan.id !== planId) return plan;
+          updatedTasks = plan.tasks.map((t) =>
+            t.id !== taskId
+              ? t
+              : { ...t, completed: !t.completed, status: !t.completed ? "done" : "pending" }
+          );
+          const progress = computeProgress(updatedTasks);
+          return {
+            ...plan,
+            tasks: updatedTasks,
+            progress,
+          };
+        })
+      );
+
+      try {
+        await updateStudyPlanTasks(user.uid, planId, updatedTasks);
+      } catch (err) {
+        console.error("Failed to update task in Firestore:", err);
+      }
+    },
+    [user?.uid]
+  );
+
+  /* ----------------------------------------------------------------
+     Complete Plan (Selesai -> archive in Firestore & hide from view)
+  ---------------------------------------------------------------- */
+  const handleCompletePlan = useCallback(
+    async (planId: string) => {
+      if (!user?.uid) return;
+
+      setPlans((prev) => prev.filter((p) => p.id !== planId));
+
+      try {
+        await updateStudyPlanStatus(user.uid, planId, "completed");
+      } catch (err) {
+        console.error("Failed to complete plan in Firestore:", err);
+        setError("Gagal menyelesaikan plan di database. Silakan muat ulang.");
+      }
+    },
+    [user?.uid]
+  );
+
+  /* ----------------------------------------------------------------
+     Reset Plan (Ulangi -> reset task checkmarks to 0% in Firestore)
+  ---------------------------------------------------------------- */
+  const handleResetPlan = useCallback(
+    async (planId: string) => {
+      if (!user?.uid) return;
+
+      const targetPlan = plans.find((p) => p.id === planId);
+      if (!targetPlan) return;
+
+      try {
+        const resetTasks = await resetStudyPlanTasks(user.uid, planId, targetPlan.tasks);
+        setPlans((prev) =>
+          prev.map((p) =>
+            p.id !== planId
+              ? p
+              : {
+                  ...p,
+                  tasks: resetTasks,
+                  progress: 0,
+                  status: "active",
+                }
+          )
+        );
+      } catch (err) {
+        console.error("Failed to reset plan in Firestore:", err);
+        setError("Gagal mengulang plan di database. Silakan coba lagi.");
+      }
+    },
+    [user?.uid, plans]
+  );
 
   /* ----------------------------------------------------------------
      Render states
@@ -725,6 +985,8 @@ function PlanContent() {
                 key={plan.id}
                 plan={plan}
                 onToggleTask={handleToggleTask}
+                onCompletePlan={handleCompletePlan}
+                onResetPlan={handleResetPlan}
               />
             ))}
           </AnimatePresence>

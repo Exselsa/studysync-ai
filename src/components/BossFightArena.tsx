@@ -31,9 +31,12 @@ import {
   subscribeToMultiplayerMatch,
   submitDuelAnswer,
   commitDuelEvaluation,
+  updateMatchHeartbeat,
+  forfeitMatchDueToDisconnect,
+  getMatchStatus,
   type MultiplayerMatch,
 } from "@/lib/firebase/friends";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import FriendsPanel from "@/components/friends/FriendsPanel";
 
 /* ---------------------------------------------------------------
@@ -184,6 +187,7 @@ function HealthBar({
    --------------------------------------------------------------- */
 export default function BossFightArena() {
   const { user } = useAuth();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const urlTopic = searchParams.get("topic");
   const matchId = searchParams.get("matchId");
@@ -212,11 +216,60 @@ export default function BossFightArena() {
   const [isScreenShaking, setIsScreenShaking] = useState(false);
   const [isSlashActive, setIsSlashActive] = useState(false);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState(false);
+  const [waitingSeconds, setWaitingSeconds] = useState(30);
+  const [opponentInactive, setOpponentInactive] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
 
   const isBusy = animPhase !== "idle" || isWaitingForOpponent;
+
+  // Pulse Heartbeat loop for 1v1 match
+  useEffect(() => {
+    if (gameMode !== "vs_player" || !matchId || !user || phase !== "battle") return;
+
+    updateMatchHeartbeat(matchId, user.uid);
+    const interval = setInterval(() => {
+      updateMatchHeartbeat(matchId, user.uid);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [gameMode, matchId, user, phase]);
+
+  // Timeout / Inactive Opponent Detection when waiting
+  useEffect(() => {
+    if (!isWaitingForOpponent) {
+      setWaitingSeconds(30);
+      setOpponentInactive(false);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setWaitingSeconds((prev) => {
+        if (prev <= 1) {
+          setOpponentInactive(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+
+      if (multiplayerMatch && user) {
+        const isChallenger = user.uid === multiplayerMatch.challengerId;
+        const oppLastActive = isChallenger
+          ? multiplayerMatch.opponentLastActive
+          : multiplayerMatch.challengerLastActive;
+
+        if (oppLastActive) {
+          const lastActiveMs = new Date(oppLastActive).getTime();
+          if (Date.now() - lastActiveMs > 30000) {
+            setOpponentInactive(true);
+          }
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isWaitingForOpponent, multiplayerMatch, user]);
 
   // Handle URL parameters & initialize Multiplayer Session if matchId exists
   useEffect(() => {
@@ -230,6 +283,11 @@ export default function BossFightArena() {
         .then((mDoc) => {
           setMultiplayerMatch(mDoc);
           if (mDoc.topic) setCurrentQuestion(mDoc.topic);
+          if (mDoc.status === "finished" || mDoc.status === "abandoned" || mDoc.status === "expired") {
+            setIsWaitingForOpponent(false);
+            if (mDoc.winnerId === user.uid) setPhase("victory");
+            else setPhase("defeat");
+          }
         })
         .catch((err) =>
           console.error("Failed to initialize multiplayer match:", err)
@@ -306,7 +364,8 @@ export default function BossFightArena() {
           }
         }
 
-        if (mDoc.status === "finished") {
+        if (mDoc.status === "finished" || mDoc.status === "abandoned" || mDoc.status === "expired") {
+          setIsWaitingForOpponent(false);
           if (mDoc.winnerId === user.uid) setPhase("victory");
           else setPhase("defeat");
         }
@@ -1269,34 +1328,45 @@ export default function BossFightArena() {
                 </div>
               )}
 
-              <button
-                id="boss-fight-play-again"
-                type="button"
-                onClick={handleReset}
-                className="w-full py-3.5 rounded-xl text-[14px] font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-                style={{
-                  background: isVictory
-                    ? "linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(34,197,94,0.10) 100%)"
-                    : "linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.10) 100%)",
-                  border: isVictory
-                    ? "1px solid rgba(34,197,94,0.4)"
-                    : "1px solid rgba(245,158,11,0.4)",
-                  color: isVictory
-                    ? "rgba(34,197,94,0.95)"
-                    : "var(--color-gold-300)",
-                  fontFamily: "var(--font-outfit)",
-                }}
-              >
-                {isVictory ? (
-                  <>
-                    <Swords size={16} /> Play Next Match
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw size={16} /> Try Again
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2.5 w-full">
+                <button
+                  id="boss-fight-play-again"
+                  type="button"
+                  onClick={handleReset}
+                  className="flex-1 py-3.5 rounded-xl text-[14px] font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  style={{
+                    background: isVictory
+                      ? "linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(34,197,94,0.10) 100%)"
+                      : "linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.10) 100%)",
+                    border: isVictory
+                      ? "1px solid rgba(34,197,94,0.4)"
+                      : "1px solid rgba(245,158,11,0.4)",
+                    color: isVictory
+                      ? "rgba(34,197,94,0.95)"
+                      : "var(--color-gold-300)",
+                    fontFamily: "var(--font-outfit)",
+                  }}
+                >
+                  {isVictory ? (
+                    <>
+                      <Swords size={16} /> Play Next Match
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw size={16} /> Try Again
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard")}
+                  className="flex-1 py-3.5 rounded-xl text-[14px] font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-slate-200"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  <ArrowLeft size={16} /> Dashboard
+                </button>
+              </div>
             </m.div>
           </m.div>
         )}
@@ -1346,13 +1416,35 @@ export default function BossFightArena() {
                   Jawaban Terkirim!
                 </span>
                 <span className="text-xs text-slate-300 leading-relaxed">
-                  Menunggu lawan kamu menyelesaikan penjelasannya... Wasit akan menilai kedua jawaban secara bersamaan setelah keduanya masuk.
+                  {opponentInactive
+                    ? "Lawan kamu belum merespons (Offline atau meninggalkan pertandingan)."
+                    : `Menunggu jawaban lawan kamu... (${waitingSeconds}s)`}
                 </span>
               </div>
-              <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/90 border border-cyan-500/40 text-[11px] font-semibold text-cyan-300 animate-pulse">
-                <Loader2 size={12} className="animate-spin text-cyan-400" />
-                <span>Menyingkronkan Jawaban Kedua Pemain...</span>
-              </div>
+
+              {opponentInactive ? (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!matchId || !user) return;
+                    await forfeitMatchDueToDisconnect(
+                      matchId,
+                      user.uid,
+                      "Lawan tidak merespons (Offline / Abandoned). Kemenangan diberikan secara WO!"
+                    );
+                    setPhase("victory");
+                    setIsWaitingForOpponent(false);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-lg transition-all active:scale-95 cursor-pointer mt-1 flex items-center gap-1.5"
+                >
+                  <Trophy size={14} /> Klaim Kemenangan (WO)
+                </button>
+              ) : (
+                <div className="flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/90 border border-cyan-500/40 text-[11px] font-semibold text-cyan-300 animate-pulse">
+                  <Loader2 size={12} className="animate-spin text-cyan-400" />
+                  <span>Menyingkronkan Jawaban Kedua Pemain...</span>
+                </div>
+              )}
             </m.div>
           )}
         </AnimatePresence>

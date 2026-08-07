@@ -71,8 +71,11 @@ export interface MultiplayerMatch {
   opponentHp: number;
   challengerAnswer?: string | null;
   opponentAnswer?: string | null;
+  challengerLastActive?: string | null;
+  opponentLastActive?: string | null;
+  lastActive?: string | null;
   currentTurn: string;
-  status: "in_progress" | "finished";
+  status: "in_progress" | "finished" | "abandoned" | "expired";
   winnerId: string | null;
   refereeCommentary?: string;
   lastRoundWinner?: "playerA" | "playerB" | "draw" | null;
@@ -578,6 +581,9 @@ export function subscribeToMultiplayerMatch(
       opponentHp: typeof data.opponentHp === "number" ? data.opponentHp : 100,
       challengerAnswer: data.challengerAnswer || null,
       opponentAnswer: data.opponentAnswer || null,
+      challengerLastActive: data.challengerLastActive || null,
+      opponentLastActive: data.opponentLastActive || null,
+      lastActive: data.lastActive || null,
       currentTurn: data.currentTurn ?? data.challengerId,
       status: data.status ?? "in_progress",
       winnerId: data.winnerId ?? null,
@@ -589,6 +595,87 @@ export function subscribeToMultiplayerMatch(
           : "",
     });
   });
+}
+
+/**
+ * Fetch match status directly once.
+ */
+export async function getMatchStatus(
+  matchId: string
+): Promise<MultiplayerMatch | null> {
+  const matchRef = doc(db, "multiplayer_matches", matchId);
+  const snap = await getDoc(matchRef);
+  if (!snap.exists()) return null;
+
+  const data = snap.data();
+  return {
+    matchId: snap.id,
+    challengerId: data.challengerId,
+    challengerName: data.challengerName,
+    opponentId: data.opponentId,
+    opponentName: data.opponentName,
+    topic: data.topic,
+    challengerHp: typeof data.challengerHp === "number" ? data.challengerHp : 100,
+    opponentHp: typeof data.opponentHp === "number" ? data.opponentHp : 100,
+    challengerAnswer: data.challengerAnswer || null,
+    opponentAnswer: data.opponentAnswer || null,
+    challengerLastActive: data.challengerLastActive || null,
+    opponentLastActive: data.opponentLastActive || null,
+    lastActive: data.lastActive || null,
+    currentTurn: data.currentTurn ?? data.challengerId,
+    status: data.status ?? "in_progress",
+    winnerId: data.winnerId ?? null,
+    refereeCommentary: data.refereeCommentary || undefined,
+    lastRoundWinner: data.lastRoundWinner || undefined,
+    createdAt:
+      data.createdAt instanceof Timestamp
+        ? data.createdAt.toDate().toISOString()
+        : "",
+  };
+}
+
+/**
+ * Send pulse heartbeat for active player in a match.
+ */
+export async function updateMatchHeartbeat(
+  matchId: string,
+  userId: string
+): Promise<void> {
+  const matchRef = doc(db, "multiplayer_matches", matchId);
+  const snap = await getDoc(matchRef);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const isChallenger = userId === data.challengerId;
+  const now = new Date().toISOString();
+
+  await updateDoc(matchRef, {
+    [isChallenger ? "challengerLastActive" : "opponentLastActive"]: now,
+    lastActive: now,
+  });
+}
+
+/**
+ * Forfeit match due to opponent disconnect or timeout.
+ */
+export async function forfeitMatchDueToDisconnect(
+  matchId: string,
+  winnerId: string,
+  reason: string = "Lawan disconnect / meninggalkan match"
+): Promise<void> {
+  const matchRef = doc(db, "multiplayer_matches", matchId);
+  const challengeRef = doc(db, "challenges", matchId);
+
+  await updateDoc(matchRef, {
+    status: "finished",
+    winnerId,
+    refereeCommentary: reason,
+    lastActive: new Date().toISOString(),
+  }).catch(() => {});
+
+  await updateDoc(challengeRef, {
+    status: "finished",
+  }).catch(() => {});
 }
 
 /**
@@ -605,12 +692,17 @@ export async function submitDuelAnswer(
 
   const data = snap.data();
   const isChallenger = userId === data.challengerId;
+  const now = new Date().toISOString();
 
-  const updateData: Record<string, any> = {};
+  const updateData: Record<string, any> = {
+    lastActive: now,
+  };
   if (isChallenger) {
     updateData.challengerAnswer = answer;
+    updateData.challengerLastActive = now;
   } else {
     updateData.opponentAnswer = answer;
+    updateData.opponentLastActive = now;
   }
 
   await updateDoc(matchRef, updateData);
@@ -636,6 +728,9 @@ export async function submitDuelAnswer(
       opponentHp: updatedData.opponentHp ?? 100,
       challengerAnswer: challengerAnswer || null,
       opponentAnswer: opponentAnswer || null,
+      challengerLastActive: updatedData.challengerLastActive || null,
+      opponentLastActive: updatedData.opponentLastActive || null,
+      lastActive: updatedData.lastActive || null,
       currentTurn: updatedData.currentTurn ?? updatedData.challengerId,
       status: updatedData.status ?? "in_progress",
       winnerId: updatedData.winnerId ?? null,
@@ -688,7 +783,13 @@ export async function commitDuelEvaluation(
     lastRoundWinner: winnerOfRound,
     status,
     winnerId,
+    lastActive: new Date().toISOString(),
   });
+
+  if (status === "finished") {
+    const challengeRef = doc(db, "challenges", matchId);
+    await updateDoc(challengeRef, { status: "finished" }).catch(() => {});
+  }
 }
 
 /**
@@ -744,5 +845,11 @@ export async function submitMultiplayerTurn(
     winnerId,
     refereeCommentary: refereeCommentary || null,
     lastRoundWinner: roundWinner || null,
+    lastActive: new Date().toISOString(),
   });
+
+  if (status === "finished") {
+    const challengeRef = doc(db, "challenges", matchId);
+    await updateDoc(challengeRef, { status: "finished" }).catch(() => {});
+  }
 }

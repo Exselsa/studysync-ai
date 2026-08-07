@@ -1,20 +1,22 @@
 # Community 7
 
-> 11 nodes · cohesion 0.18
+> 13 nodes · cohesion 0.15
 
 ## Key Concepts
 
-- [AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L1) (4 connections)
-- [useAuth()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116) (3 connections)
-- [DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L1) (3 connections)
-- [ChallengeNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L15) (2 connections)
-- [DashboardSidebar()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L59) (2 connections)
-- [AuthContext](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L47) (1 connections)
-- [AuthProvider()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L57) (1 connections)
-- [googleProvider](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L52) (1 connections)
-- [ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L1) (1 connections)
-- [active](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L98) (1 connections)
-- [navItems](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L23) (1 connections)
+- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L1) (12 connections)
+- [stats](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L628) (2 connections)
+- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L161) (1 connections)
+- [coreFeatures](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L57) (1 connections)
+- [EASE_SMOOTH](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L23) (1 connections)
+- [fadeUp](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L26) (1 connections)
+- [heroOpacity](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L167) (1 connections)
+- [parallaxY](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L166) (1 connections)
+- [prefersReduced](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L168) (1 connections)
+- [processSteps](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L133) (1 connections)
+- [{ scrollYProgress }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L162) (1 connections)
+- [staggerContainer](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L36) (1 connections)
+- [staggerItem](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L44) (1 connections)
 
 ## Relationships
 
@@ -22,14 +24,13 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 16 (80%)
-- INFERRED: 4 (20%)
+- EXTRACTED: 25 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

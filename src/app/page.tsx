@@ -15,7 +15,9 @@ import {
   Clock,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { useAuth } from "@/lib/contexts/AuthContext";
 
 /* ---------------------------------------------------------------
    Animation Variants
@@ -158,6 +160,8 @@ const processSteps = [
    Hero Section
 --------------------------------------------------------------- */
 function HeroSection() {
+  const { user, signInWithGoogle } = useAuth();
+  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -166,6 +170,20 @@ function HeroSection() {
   const parallaxY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const prefersReduced = useReducedMotion();
+
+  const handleStartClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      try {
+        await signInWithGoogle();
+        router.push("/dashboard");
+      } catch {
+        router.push("/dashboard");
+      }
+    }
+  };
 
   return (
     <section
@@ -273,6 +291,7 @@ function HeroSection() {
           >
             <Link
               href="/dashboard"
+              onClick={handleStartClick}
               id="cta-get-started"
               className="btn-primary text-[15px] px-8 py-3.5"
               aria-label="Mulai StudySync AI — buat study plan kamu"
@@ -577,6 +596,22 @@ function HowItWorksSection() {
    Final CTA Section
 --------------------------------------------------------------- */
 function CtaSection() {
+  const { user, signInWithGoogle } = useAuth();
+  const router = useRouter();
+
+  const handleStartClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      try {
+        await signInWithGoogle();
+        router.push("/dashboard");
+      } catch {
+        router.push("/dashboard");
+      }
+    }
+  };
   return (
     <section
       className="relative px-6 py-24 max-w-4xl mx-auto w-full text-center"
@@ -636,6 +671,7 @@ function CtaSection() {
             >
               <Link
                 href="/dashboard"
+                onClick={handleStartClick}
                 id="cta-section-get-started"
                 className="btn-primary text-[15px] px-9 py-3.5"
                 aria-label="Mulai StudySync AI sekarang"

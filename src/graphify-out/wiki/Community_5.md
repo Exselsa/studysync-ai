@@ -1,22 +1,35 @@
 # Community 5
 
-> 13 nodes · cohesion 0.15
+> 26 nodes · cohesion 0.08
 
 ## Key Concepts
 
-- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L1) (12 connections)
-- [stats](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L434) (2 connections)
-- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L161) (1 connections)
-- [coreFeatures](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L57) (1 connections)
-- [EASE_SMOOTH](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L23) (1 connections)
-- [fadeUp](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L26) (1 connections)
-- [heroOpacity](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L167) (1 connections)
-- [parallaxY](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L166) (1 connections)
-- [prefersReduced](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L168) (1 connections)
-- [processSteps](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L133) (1 connections)
-- [{ scrollYProgress }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L162) (1 connections)
-- [staggerContainer](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L36) (1 connections)
-- [staggerItem](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L44) (1 connections)
+- [MaterialUploader.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L1) (26 connections)
+- [handleFileChange()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L88) (2 connections)
+- [validateAndSetFile()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L94) (2 connections)
+- [[days, setDays]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L46) (1 connections)
+- [[dragActive, setDragActive]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L42) (1 connections)
+- [EASE](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L36) (1 connections)
+- [[error, setError]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L50) (1 connections)
+- [[explainResult, setExplainResult]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L54) (1 connections)
+- [fileInputRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L40) (1 connections)
+- [handleDrag](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L67) (1 connections)
+- [handleDrop](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L77) (1 connections)
+- [handleSubmit()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L122) (1 connections)
+- [isOpen](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L611) (1 connections)
+- [[loading, setLoading]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L48) (1 connections)
+- [[loadingStep, setLoadingStep]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L49) (1 connections)
+- [[mode, setMode]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L45) (1 connections)
+- [[openQuestionIdx, setOpenQuestionIdx]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L61) (1 connections)
+- [[pastedText, setPastedText]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L44) (1 connections)
+- [[planResult, setPlanResult]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L53) (1 connections)
+- [removeFile()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L112) (1 connections)
+- [[savedSuccess, setSavedSuccess]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L58) (1 connections)
+- [[saving, setSaving]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L57) (1 connections)
+- [[selectedFile, setSelectedFile]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L43) (1 connections)
+- [showHint](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L612) (1 connections)
+- [[showHints, setShowHints]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L62) (1 connections)
+- *... and 1 more nodes in this community*
 
 ## Relationships
 
@@ -24,12 +37,11 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\study\MaterialUploader.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 25 (100%)
+- EXTRACTED: 53 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

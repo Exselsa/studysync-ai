@@ -10,11 +10,12 @@ import {
   respondToChallenge,
   type MatchChallenge,
 } from "@/lib/firebase/friends";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function ChallengeNotificationToast() {
   const { user } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [challenges, setChallenges] = useState<MatchChallenge[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const handledMatchesRef = useRef<Set<string>>(new Set());
@@ -32,8 +33,17 @@ export default function ChallengeNotificationToast() {
 
     // Subscribe to realtime accepted challenges targeting user.uid to auto-navigate
     const unsubscribeAccepted = subscribeToUserAcceptedChallenges(user.uid, (list) => {
+      // Strictly NEVER auto-navigate if user is on the Landing Page
+      if (pathname === "/") return;
+
       list.forEach((acceptedChallenge) => {
-        if (!handledMatchesRef.current.has(acceptedChallenge.id)) {
+        // Only auto-redirect for very recent challenges (e.g. created within last 3 minutes)
+        const createdMs = acceptedChallenge.createdAt
+          ? new Date(acceptedChallenge.createdAt).getTime()
+          : 0;
+        const isRecent = Date.now() - createdMs < 3 * 60 * 1000;
+
+        if (isRecent && !handledMatchesRef.current.has(acceptedChallenge.id)) {
           handledMatchesRef.current.add(acceptedChallenge.id);
 
           // Close any open challenge window/modal
@@ -53,7 +63,7 @@ export default function ChallengeNotificationToast() {
       unsubscribePending();
       unsubscribeAccepted();
     };
-  }, [user, router]);
+  }, [user, router, pathname]);
 
   if (!user || challenges.length === 0) return null;
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { m, type Variants } from "framer-motion";
@@ -15,7 +16,17 @@ import {
   Target,
   BarChart3,
   Calendar,
+  CheckCircle2,
+  Circle,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
+import {
+  getStudyPlans,
+  updateStudyPlanTasks,
+  type StudyPlan,
+  type StudyTask,
+} from "@/lib/firebase/db";
 
 /* ---------------------------------------------------------------
    Types
@@ -32,48 +43,6 @@ interface StatCard {
   accentBorder: string;
   iconColor: string;
 }
-
-/* ---------------------------------------------------------------
-   Mock data (high-achiever demo profile)
---------------------------------------------------------------- */
-const statCards: StatCard[] = [
-  {
-    id: "stat-streak",
-    Icon: Flame,
-    label: "Streak Belajar",
-    value: "14",
-    unit: "hari",
-    delta: "+2 dibanding minggu lalu",
-    deltaPositive: true,
-    accent: "rgba(245, 158, 11, 0.10)",
-    accentBorder: "rgba(245, 158, 11, 0.22)",
-    iconColor: "var(--color-gold-400)",
-  },
-  {
-    id: "stat-hours",
-    Icon: Clock,
-    label: "Jam Belajar",
-    value: "47.5",
-    unit: "jam bulan ini",
-    delta: "+8.2 dibanding bulan lalu",
-    deltaPositive: true,
-    accent: "rgba(56, 189, 248, 0.08)",
-    accentBorder: "rgba(56, 189, 248, 0.18)",
-    iconColor: "rgba(56, 189, 248, 0.9)",
-  },
-  {
-    id: "stat-tasks",
-    Icon: CheckSquare,
-    label: "Tugas Pending",
-    value: "3",
-    unit: "minggu ini",
-    delta: "–5 selesai hari ini",
-    deltaPositive: true,
-    accent: "rgba(34, 197, 94, 0.08)",
-    accentBorder: "rgba(34, 197, 94, 0.18)",
-    iconColor: "rgba(34, 197, 94, 0.9)",
-  },
-];
 
 const quickStats = [
   { Icon: TrendingUp, label: "Skor Kesiapan",  value: "87%"    },
@@ -188,6 +157,114 @@ function DashboardContent() {
   const router = useRouter();
   const displayName = user?.displayName?.split(" ")[0] ?? "Scholar";
 
+  const [plans, setPlans] = useState<StudyPlan[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState<boolean>(true);
+
+  // Fetch active study plans from Firestore
+  useEffect(() => {
+    if (!user) return;
+    let isMounted = true;
+
+    getStudyPlans(user.uid)
+      .then((data) => {
+        if (isMounted) {
+          setPlans(data);
+          setLoadingPlans(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching study plans for dashboard:", err);
+        if (isMounted) setLoadingPlans(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
+  // Toggle task completion state and sync with Firestore
+  const handleToggleTask = async (planId: string, taskId: string) => {
+    if (!user) return;
+    const targetPlan = plans.find((p) => p.id === planId);
+    if (!targetPlan) return;
+
+    const updatedTasks = targetPlan.tasks.map((t) =>
+      t.id === taskId
+        ? {
+            ...t,
+            completed: !t.completed,
+            status: !t.completed ? "done" : "pending",
+          }
+        : t
+    );
+
+    // Optimistic UI update
+    setPlans((prev) =>
+      prev.map((p) => (p.id === planId ? { ...p, tasks: updatedTasks } : p))
+    );
+
+    try {
+      await updateStudyPlanTasks(user.uid, planId, updatedTasks);
+    } catch (err) {
+      console.error("Failed to update task in Firestore:", err);
+    }
+  };
+
+  // Extract pending tasks from active study plans
+  const allPendingTasks = plans.flatMap((plan) =>
+    plan.tasks
+      .filter((t) => !t.completed)
+      .map((t) => ({
+        planId: plan.id,
+        planSubject: plan.subject || plan.title || "Study Plan",
+        task: t,
+      }))
+  );
+
+  // Dynamic stat cards reflecting real Firestore data
+  const dynamicStatCards: StatCard[] = [
+    {
+      id: "stat-streak",
+      Icon: Flame,
+      label: "Streak Belajar",
+      value: "14",
+      unit: "hari",
+      delta: "+2 dibanding minggu lalu",
+      deltaPositive: true,
+      accent: "rgba(245, 158, 11, 0.10)",
+      accentBorder: "rgba(245, 158, 11, 0.22)",
+      iconColor: "var(--color-gold-400)",
+    },
+    {
+      id: "stat-hours",
+      Icon: Clock,
+      label: "Jam Belajar",
+      value: "47.5",
+      unit: "jam bulan ini",
+      delta: "+8.2 dibanding bulan lalu",
+      deltaPositive: true,
+      accent: "rgba(56, 189, 248, 0.08)",
+      accentBorder: "rgba(56, 189, 248, 0.18)",
+      iconColor: "rgba(56, 189, 248, 0.9)",
+    },
+    {
+      id: "stat-tasks",
+      Icon: CheckSquare,
+      label: "Tugas Pending",
+      value: loadingPlans ? "..." : allPendingTasks.length.toString(),
+      unit: "perlu selesai",
+      delta: loadingPlans
+        ? "Memuat data..."
+        : allPendingTasks.length === 0
+        ? "Semua tugas tuntas!"
+        : `${allPendingTasks.length} tugas belum selesai`,
+      deltaPositive: allPendingTasks.length === 0,
+      accent: "rgba(34, 197, 94, 0.08)",
+      accentBorder: "rgba(34, 197, 94, 0.18)",
+      iconColor: "rgba(34, 197, 94, 0.9)",
+    },
+  ];
+
   // Current date for the greeting
   const today = new Date();
   const dateString = today.toLocaleDateString("en-US", {
@@ -240,8 +317,13 @@ function DashboardContent() {
               className="text-[13px] leading-relaxed mt-0.5"
               style={{ color: "var(--color-silver-300)" }}
             >
-              Study plan adaptif kamu sudah disesuaikan ulang. Ada 3 tugas utama
-              yang nunggu kamu hari ini.
+              {loadingPlans
+                ? "Memuat data study plan adaptif..."
+                : plans.length === 0
+                ? "Kamu belum memiliki study plan aktif. Mari buat plan baru!"
+                : allPendingTasks.length === 0
+                ? "Luar biasa! Semua tugas di study plan aktif kamu telah selesai."
+                : `Study plan adaptif kamu aktif. Ada ${allPendingTasks.length} tugas prioritas yang perlu kamu selesaikan.`}
             </p>
           </div>
 
@@ -267,7 +349,7 @@ function DashboardContent() {
           className="grid grid-cols-1 sm:grid-cols-3 gap-4"
           variants={containerVariants}
         >
-          {statCards.map((card) => (
+          {dynamicStatCards.map((card) => (
             <StatCardComponent key={card.id} card={card} />
           ))}
         </m.div>
@@ -324,7 +406,7 @@ function DashboardContent() {
           </div>
         </m.section>
 
-        {/* ---- Today's Priority Tasks (stub) ---- */}
+        {/* ---- Today's Priority Tasks ---- */}
         <m.section variants={itemVariants} aria-labelledby="tasks-heading">
           <div className="flex items-center justify-between mb-4">
             <h2
@@ -337,7 +419,7 @@ function DashboardContent() {
             <button
               type="button"
               id="dashboard-view-plan"
-              className="btn-ghost text-[11px] px-3 py-1.5 gap-1"
+              className="btn-ghost text-[11px] px-3 py-1.5 gap-1 cursor-pointer"
               aria-label="Lihat study plan lengkap"
               onClick={() => router.push("/dashboard/plan")}
             >
@@ -346,87 +428,127 @@ function DashboardContent() {
             </button>
           </div>
 
-          <div className="flex flex-col gap-2">
-            {[
-              {
-                id: "task-review-ml",
-                subject: "Machine Learning",
-                task: "Review Bab 7: Varian Gradient Descent",
-                due: "Batas 2 jam lagi",
-                priority: "Tinggi",
-                priorityColor: "rgba(239, 68, 68, 0.85)",
-              },
-              {
-                id: "task-calc-problems",
-                subject: "Calculus III",
-                task: "Selesaikan latihan soal: Medan Vektor & Curl",
-                due: "Batas besok",
-                priority: "Sedang",
-                priorityColor: "rgba(245, 158, 11, 0.85)",
-              },
-              {
-                id: "task-cs-flashcards",
-                subject: "Algorithms",
-                task: "Spaced repetition: Pola Dynamic Programming",
-                due: "Batas 3 hari lagi",
-                priority: "Normal",
-                priorityColor: "rgba(56, 189, 248, 0.85)",
-              },
-            ].map(({ id, subject, task, due, priority, priorityColor }) => (
-              <m.div
-                key={id}
-                id={id}
-                className="glass-panel-light rounded-xl px-5 py-4 flex items-start gap-4"
-                whileHover={{
-                  borderColor: "rgba(255,255,255,0.12)",
-                  transition: { duration: 0.15 },
-                }}
-                role="article"
-                aria-label={`${subject}: ${task}`}
-              >
-                {/* Priority dot */}
+          {loadingPlans ? (
+            <div className="flex flex-col gap-2.5">
+              {[1, 2, 3].map((i) => (
                 <div
-                  className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0"
-                  style={{ background: priorityColor }}
-                  aria-label={`Priority: ${priority}`}
-                />
-
-                <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="text-[10px] font-bold tracking-[0.1em] uppercase"
-                      style={{ color: "var(--color-gold-400)" }}
-                    >
-                      {subject}
-                    </span>
-                    <span
-                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded"
-                      style={{
-                        color: priorityColor,
-                        background: `${priorityColor.replace("0.85", "0.1")}`,
-                      }}
-                    >
-                      {priority}
-                    </span>
+                  key={i}
+                  className="glass-panel-light rounded-xl px-5 py-4 flex items-center gap-4 animate-pulse"
+                >
+                  <div className="w-5 h-5 rounded-full bg-slate-800 shrink-0" />
+                  <div className="flex flex-col gap-2 flex-1">
+                    <div className="w-24 h-3 rounded bg-slate-800" />
+                    <div className="w-3/4 h-4 rounded bg-slate-800" />
                   </div>
-                  <p
-                    className="text-[13px] font-medium truncate"
-                    style={{ color: "var(--color-silver-100)" }}
-                  >
-                    {task}
-                  </p>
-                  <p
-                    className="text-[11px]"
-                    style={{ color: "var(--color-silver-400)" }}
-                  >
-                    {due}
-                  </p>
                 </div>
+              ))}
+            </div>
+          ) : plans.length === 0 ? (
+            <div className="glass-panel rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-4 border border-cyan-500/20 bg-gradient-to-b from-cyan-950/20 to-transparent">
+              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
+                <BookOpen size={24} />
+              </div>
+              <div className="flex flex-col gap-1 max-w-sm">
+                <h3 className="text-sm font-bold text-slate-100">Belum Ada Study Plan Aktif</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Buat study plan adaptif berbasis AI untuk menyusun daftar tugas harian kamu.
+                </p>
+              </div>
+              <button
+                type="button"
+                id="dashboard-create-plan-cta"
+                onClick={() => router.push("/dashboard/plan")}
+                className="btn-primary text-xs px-5 py-2.5 gap-2 mt-1 shadow-lg cursor-pointer flex items-center"
+              >
+                <Sparkles size={14} />
+                Buat Study Plan Sekarang
+              </button>
+            </div>
+          ) : allPendingTasks.length === 0 ? (
+            <div className="glass-panel rounded-2xl p-8 flex flex-col items-center justify-center text-center gap-4 border border-emerald-500/20 bg-gradient-to-b from-emerald-950/20 to-transparent">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-400/30 flex items-center justify-center text-emerald-400">
+                <CheckCircle2 size={24} />
+              </div>
+              <div className="flex flex-col gap-1 max-w-sm">
+                <h3 className="text-sm font-bold text-slate-100">Semua Tugas Hari Ini Selesai! 🎉</h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Kerja bagus! Seluruh item tugas dalam study plan kamu sudah tuntas.
+                </p>
+              </div>
+              <button
+                type="button"
+                id="dashboard-view-plan-completed-cta"
+                onClick={() => router.push("/dashboard/plan")}
+                className="btn-ghost text-xs px-5 py-2.5 gap-2 mt-1 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/10 cursor-pointer flex items-center"
+              >
+                <BookOpen size={14} />
+                Lihat Study Plan
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {allPendingTasks.map(({ planId, planSubject, task }) => (
+                <m.div
+                  key={task.id}
+                  id={`dashboard-task-${task.id}`}
+                  className="glass-panel-light rounded-xl px-5 py-4 flex items-center justify-between gap-4 transition-all duration-200"
+                  whileHover={{
+                    borderColor: "rgba(255,255,255,0.14)",
+                    transition: { duration: 0.15 },
+                  }}
+                  role="article"
+                  aria-label={`${planSubject}: ${task.title}`}
+                >
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleTask(planId, task.id)}
+                      className="mt-0.5 shrink-0 text-slate-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                      aria-label={`Tandai ${task.title} sebagai selesai`}
+                    >
+                      <Circle size={18} className="text-slate-400 hover:text-cyan-400" />
+                    </button>
 
-                <ChevronRightIcon />
-              </m.div>
-            ))}
-          </div>
+                    <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="text-[10px] font-bold tracking-[0.1em] uppercase"
+                          style={{ color: "var(--color-gold-400)" }}
+                        >
+                          {planSubject}
+                        </span>
+                        {task.dueDate && (
+                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded text-amber-300 bg-amber-950/40 border border-amber-500/20">
+                            {task.dueDate}
+                          </span>
+                        )}
+                      </div>
+                      <p
+                        className="text-[13px] font-medium text-slate-100 truncate"
+                      >
+                        {task.title}
+                      </p>
+                      {task.description && (
+                        <p className="text-[11px] text-slate-400 truncate">
+                          {task.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => router.push("/dashboard/plan")}
+                    className="btn-ghost text-[11px] px-2.5 py-1 gap-1 text-slate-400 hover:text-slate-200 shrink-0 cursor-pointer"
+                    aria-label="Lihat detail plan"
+                  >
+                    <span>Plan</span>
+                    <ArrowRight size={11} />
+                  </button>
+                </m.div>
+              ))}
+            </div>
+          )}
         </m.section>
       </m.div>
     </div>

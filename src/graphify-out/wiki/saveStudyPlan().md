@@ -1,6 +1,6 @@
 # saveStudyPlan()
 
-> God node · 3 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L73)
+> God node · 4 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L78)
 
 ## Call Trace Diagram
 
@@ -12,6 +12,9 @@ sequenceDiagram
     participant P3 as handleKeyDown()
     participant P4 as userPlansCollection()
     participant P5 as getStudyPlans()
+    participant P6 as fetchPlans()
+    participant P7 as loadTopics()
+    participant P8 as handleSaveToFirestore()
     P0->>+ P1: calls
     P1-->>- P0: return
     P1->>+ P0: calls
@@ -32,6 +35,14 @@ sequenceDiagram
     P5-->>- P4: return
     P5->>+ P4: calls
     P4-->>- P5: return
+    P5->>+ P6: calls
+    P6-->>- P5: return
+    P5->>+ P7: calls
+    P7-->>- P5: return
+    P0->>+ P8: calls
+    P8-->>- P0: return
+    P8->>+ P0: calls
+    P0-->>- P8: return
 ```
 
 ## Connections by Relation
@@ -39,6 +50,7 @@ sequenceDiagram
 ### calls
 - [[sendMessage()]] `INFERRED`
 - [[userPlansCollection()]] `EXTRACTED`
+- [[handleSaveToFirestore()]] `INFERRED`
 
 ### contains
 - [[db.ts]] `EXTRACTED`

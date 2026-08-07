@@ -1,35 +1,35 @@
 # Community 2
 
-> 27 nodes · cohesion 0.07
+> 29 nodes · cohesion 0.07
 
 ## Key Concepts
 
-- [FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L1) (31 connections)
-- [[activeTab, setActiveTab]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L341) (1 connections)
-- [[addEmail, setAddEmail]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L350) (1 connections)
-- [[addLoading, setAddLoading]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L355) (1 connections)
-- [[addStatus, setAddStatus]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L351) (1 connections)
-- [[challengeFriend, setChallengeFriend]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L357) (1 connections)
-- [[challengeId, setChallengeId]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L69) (1 connections)
-- [[customTopic, setCustomTopic]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L66) (1 connections)
-- [DEFAULT_CS_TOPICS](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L34) (1 connections)
-- [[error, setError]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L70) (1 connections)
-- [friendEmail](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L559) (1 connections)
-- [friendName](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L555) (1 connections)
-- [[friends, setFriends]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L345) (1 connections)
-- [handleCloseModals()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L372) (1 connections)
-- [[isOpen, setIsOpen]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L340) (1 connections)
-- [[loading, setLoading]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L67) (1 connections)
-- [[pendingRequests, setPendingRequests]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L346) (1 connections)
-- [router](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L63) (1 connections)
-- [[selectedTopic, setSelectedTopic]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L65) (1 connections)
-- [[studyPlanTopics, setStudyPlanTopics]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L64) (1 connections)
-- [targetFriendId](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L72) (1 connections)
-- [targetFriendName](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L74) (1 connections)
-- [unsub](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L107) (1 connections)
-- [unsubFriends](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L364) (1 connections)
-- [unsubPending](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L368) (1 connections)
-- *... and 2 more nodes in this community*
+- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L1) (32 connections)
+- [accent](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L280) (1 connections)
+- [[actionLoading, setActionLoading]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L279) (1 connections)
+- [avgPct](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L626) (1 connections)
+- [cardVariants](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L43) (1 connections)
+- [circ](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L94) (1 connections)
+- [[collapsed, setCollapsed]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L278) (1 connections)
+- [completedCount](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L282) (1 connections)
+- [computeProgress()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L56) (1 connections)
+- [dash](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L95) (1 connections)
+- [doneTasks](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L625) (1 connections)
+- [[error, setError]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L674) (1 connections)
+- [fetchPlans](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L679) (1 connections)
+- [formatDate()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L61) (1 connections)
+- [handleComplete()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L285) (1 connections)
+- [handleCompletePlan](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L733) (1 connections)
+- [handleReset()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L296) (1 connections)
+- [handleResetPlan](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L752) (1 connections)
+- [handleToggleTask](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L698) (1 connections)
+- [isAllCompleted](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L283) (1 connections)
+- [isOverdue()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L68) (1 connections)
+- [[loading, setLoading]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L673) (1 connections)
+- [overdue](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L136) (1 connections)
+- [[plans, setPlans]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L672) (1 connections)
+- [progress](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L281) (1 connections)
+- *... and 4 more nodes in this community*
 
 ## Relationships
 
@@ -37,11 +37,11 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 57 (100%)
+- EXTRACTED: 60 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
