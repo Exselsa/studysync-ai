@@ -14,6 +14,10 @@ import {
   Shield,
   Clock,
   ExternalLink,
+  FileText,
+  Swords,
+  Video,
+  CheckSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -55,68 +59,58 @@ const staggerItem: Variants = {
 };
 
 /* ---------------------------------------------------------------
-   Feature Grid Data
+   Feature Grid Data (5 Core Platform Features)
 --------------------------------------------------------------- */
 const coreFeatures = [
   {
-    id: "feature-adaptive-planning",
-    Icon: CalendarDays,
-    label: "Penjadwalan Adaptif",
+    id: "feature-pdf-plan",
+    Icon: FileText,
+    label: "Rencana Belajar AI & Ekstraksi PDF",
     description:
-      "Blok belajar dinamis yang otomatis menyesuaikan dengan waktu luang, tingkat energi, dan kurva daya ingat kamu secara real-time.",
+      "Unggah materi kuliah atau slide PDF kamu, otomatis dibuatkan Study Plan adaptif dan rangkuman santai oleh abang ganteng.",
     accent: "rgba(245, 158, 11, 0.12)",
     accentBorder: "rgba(245, 158, 11, 0.22)",
     iconColor: "var(--color-gold-400)",
   },
   {
+    id: "feature-feynman-boss",
+    Icon: Swords,
+    label: "Feynman Boss Fight & Duel 1v1",
+    description:
+      "Uji pemahaman materi kamu lewat battle game interaktif, fitur countdown timer, dan pesan taunt real-time ('kenak mental', 'mantap jiwa').",
+    accent: "rgba(239, 68, 68, 0.10)",
+    accentBorder: "rgba(239, 68, 68, 0.24)",
+    iconColor: "rgba(244, 63, 94, 0.95)",
+  },
+  {
     id: "feature-ai-tutor",
     Icon: BrainCircuit,
-    label: "Engine AI Tutor",
+    label: "AI Tutor Adaptif (Setup Wizard)",
     description:
-      "Diskusi interaktif bersama abang ganteng yang membantu menemukan bagian materi yang belum paham melalui pertanyaan terarah.",
-    accent: "rgba(56, 189, 248, 0.08)",
-    accentBorder: "rgba(56, 189, 248, 0.18)",
-    iconColor: "rgba(56, 189, 248, 0.9)",
+      "Asisten belajar personal bersama abang ganteng yang otomatis menyesuaikan kedalaman penjelasan khusus untuk jenjang SMA maupun Kuliah.",
+    accent: "rgba(56, 189, 248, 0.10)",
+    accentBorder: "rgba(56, 189, 248, 0.24)",
+    iconColor: "rgba(56, 189, 248, 0.95)",
   },
   {
-    id: "feature-progress-telemetry",
-    Icon: TrendingUp,
-    label: "Telemetri Progres",
+    id: "feature-study-meet",
+    Icon: Video,
+    label: "Collaborative Study Meet",
     description:
-      "Metrik sesi belajar yang detail, interval pengulangan berjarak, dan pemodelan daya ingat yang diperbarui setiap kali kamu belajar.",
-    accent: "rgba(34, 197, 94, 0.08)",
-    accentBorder: "rgba(34, 197, 94, 0.18)",
-    iconColor: "rgba(34, 197, 94, 0.9)",
+      "Ruang belajar real-time buat mabar bareng teman, berbagi catatan live, dan panggil penjelasan abang ganteng bersama.",
+    accent: "rgba(168, 85, 247, 0.10)",
+    accentBorder: "rgba(168, 85, 247, 0.24)",
+    iconColor: "rgba(168, 85, 247, 0.95)",
   },
   {
-    id: "feature-goal-targeting",
-    Icon: Target,
-    label: "Dekomposisi Target",
+    id: "feature-daily-tasks",
+    Icon: CheckSquare,
+    label: "Tugas Prioritas Hari Ini",
     description:
-      "Peta target ujian yang dipecah jadi tugas-tugas kecil harian, memastikan semua topik berhasil kamu kuasai.",
-    accent: "rgba(168, 85, 247, 0.08)",
-    accentBorder: "rgba(168, 85, 247, 0.18)",
-    iconColor: "rgba(168, 85, 247, 0.9)",
-  },
-  {
-    id: "feature-analytics",
-    Icon: BarChart3,
-    label: "Analitik Belajar",
-    description:
-      "Skor prediksi kesiapan ujian, peta penguasaan tiap subjek, dan indeks beban kognitif mingguan.",
-    accent: "rgba(239, 68, 68, 0.08)",
-    accentBorder: "rgba(239, 68, 68, 0.18)",
-    iconColor: "rgba(239, 68, 68, 0.85)",
-  },
-  {
-    id: "feature-sessions",
-    Icon: Clock,
-    label: "Intelegensi Sesi",
-    description:
-      "Varian Pomodoro ilmiah yang dikalibrasi dengan profil fokus kamu. Penjadwalan ulang otomatis menjaga kamu tetap teratur.",
-    accent: "rgba(245, 158, 11, 0.08)",
-    accentBorder: "rgba(245, 158, 11, 0.16)",
-    iconColor: "var(--color-gold-300)",
+      "Dashboard terintegrasi yang otomatis mensinkronkan target harian kamu dari Study Plan aktif secara konsisten.",
+    accent: "rgba(34, 197, 94, 0.10)",
+    accentBorder: "rgba(34, 197, 94, 0.24)",
+    iconColor: "rgba(34, 197, 94, 0.95)",
   },
 ];
 

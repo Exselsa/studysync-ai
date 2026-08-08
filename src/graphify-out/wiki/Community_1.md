@@ -1,11 +1,13 @@
 # Community 1
 
-> 29 nodes · cohesion 0.07
+> 31 nodes · cohesion 0.06
 
 ## Key Concepts
 
 - [FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L1) (31 connections)
-- [sendMatchChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L335) (2 connections)
+- [acceptFriendRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L213) (2 connections)
+- [sendMatchChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L343) (2 connections)
+- [handleAcceptRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L410) (2 connections)
 - [handleSendChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L126) (2 connections)
 - [[activeTab, setActiveTab]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L341) (1 connections)
 - [[addEmail, setAddEmail]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L350) (1 connections)
@@ -27,9 +29,7 @@
 - [[selectedTopic, setSelectedTopic]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L65) (1 connections)
 - [[studyPlanTopics, setStudyPlanTopics]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L64) (1 connections)
 - [targetFriendId](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L72) (1 connections)
-- [targetFriendName](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L74) (1 connections)
-- [unsub](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L107) (1 connections)
-- *... and 4 more nodes in this community*
+- *... and 6 more nodes in this community*
 
 ## Relationships
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 59 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 61 (94%)
+- INFERRED: 4 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

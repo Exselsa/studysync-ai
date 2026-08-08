@@ -2,12 +2,12 @@
   "hotspots": [
     {
       "label": "ChallengeNotificationToast()",
-      "risk": 0.608,
+      "risk": 0.607,
       "type": "FUNCTION"
     },
     {
       "label": "handleAttack()",
-      "risk": 0.55,
+      "risk": 0.547,
       "type": "FUNCTION"
     },
     {
@@ -17,12 +17,12 @@
     },
     {
       "label": "POST()",
-      "risk": 0.397,
+      "risk": 0.389,
       "type": "FUNCTION"
     },
     {
       "label": "handleSubmit()",
-      "risk": 0.362,
+      "risk": 0.361,
       "type": "FUNCTION"
     }
   ],
@@ -31,6 +31,6 @@
     "parseFileBuffer()": 5,
     "EASE": 4,
     "handleAttack()": 4,
-    "getStudyPlans()": 4
+    "saveStudyPlan()": 4
   }
 }

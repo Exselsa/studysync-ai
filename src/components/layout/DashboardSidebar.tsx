@@ -11,11 +11,13 @@ import {
   LogOut,
   ChevronRight,
   Swords,
+  Video,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { cn } from "@/lib/cn";
 import FriendsPanel from "@/components/friends/FriendsPanel";
 import ChallengeNotificationToast from "@/components/friends/ChallengeNotificationToast";
+import MeetInviteNotificationToast from "@/components/friends/MeetInviteNotificationToast";
 
 /* ---------------------------------------------------------------
    Sidebar Navigation Items
@@ -37,6 +39,12 @@ const navItems = [
     label: "AI Tutor",
     href: "/dashboard/tutor",
     Icon: BrainCircuit,
+    exact: false,
+  },
+  {
+    label: "Study Meet",
+    href: "/dashboard/meet",
+    Icon: Video,
     exact: false,
   },
   {
@@ -292,6 +300,7 @@ export default function DashboardSidebarClient({
     <>
       <DashboardSidebar />
       <ChallengeNotificationToast />
+      <MeetInviteNotificationToast />
       {/* Main content area — offset by sidebar width */}
       <div
         className="flex flex-col flex-1 min-h-0"

@@ -8,12 +8,12 @@
 2. `parseFileBuffer()` (5 edges)
 3. `EASE` (4 edges)
 4. `handleAttack()` (4 edges)
-5. `getStudyPlans()` (4 edges)
-6. `sendFriendRequest()` (4 edges)
-7. `router` (3 edges)
-8. `RESPONSE_SCHEMA` (3 edges)
-9. `buildFallbackResponse()` (3 edges)
-10. `buildFallback()` (3 edges)
+5. `saveStudyPlan()` (4 edges)
+6. `getStudyPlans()` (4 edges)
+7. `sendFriendRequest()` (4 edges)
+8. `router` (3 edges)
+9. `RESPONSE_SCHEMA` (3 edges)
+10. `buildFallbackResponse()` (3 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 

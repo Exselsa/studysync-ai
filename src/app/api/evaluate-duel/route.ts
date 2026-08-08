@@ -26,12 +26,12 @@ const RESPONSE_SCHEMA: Schema = {
     playerADamageDealt: {
       type: Type.NUMBER,
       description:
-        "Integer damage (0 to 35) dealt BY Player A TO Player B based on how clear, simple, and jargon-free Player A's explanation is.",
+        "Integer damage (0 to 35) dealt BY Player A TO Player B based on how clear, concise, and accurate Player A's short-answer explanation is.",
     },
     playerBDamageDealt: {
       type: Type.NUMBER,
       description:
-        "Integer damage (0 to 35) dealt BY Player B TO Player A based on how clear, simple, and jargon-free Player B's explanation is.",
+        "Integer damage (0 to 35) dealt BY Player B TO Player A based on how clear, concise, and accurate Player B's short-answer explanation is.",
     },
     refereeCommentary: {
       type: Type.STRING,
@@ -52,8 +52,8 @@ const RESPONSE_SCHEMA: Schema = {
   ],
 };
 
-const SYSTEM_INSTRUCTION = `You are abang ganteng, the Grand Arena Referee in a 1v1 Feynman Technique Duel between two students.
-Two players are explaining the same technical topic to a 5-year-old child.
+const SYSTEM_INSTRUCTION = `You are abang ganteng, the Grand Arena Referee in a 1v1 Short-Answer Duel between two students.
+Two players are providing a concise short-answer explanation of the same technical topic ("Jelaskan secara singkat dan jelas").
 
 CRITICAL RESPONSE RULES:
 1. Output ALL refereeCommentary strictly 100% in casual, friendly, and conversational Indonesian ("santai dan tidak kaku").
@@ -61,7 +61,7 @@ CRITICAL RESPONSE RULES:
 3. NEVER return any English sentences or phrases in refereeCommentary. Ban all English commentary in battle logs.
 
 COMPARISON METHOD:
-- Grade both explanations on simplicity (use of real-world analogies, zero unexplained jargon), accuracy, and clarity.
+- Grade both explanations on accuracy, conciseness, and clarity.
 - Set playerADamageDealt (damage Player A deals to Player B, 0–35).
 - Set playerBDamageDealt (damage Player B deals to Player A, 0–35).
 - Declare winnerOfRound ('playerA', 'playerB', or 'draw').

@@ -22,6 +22,8 @@ import {
   Clock,
   Award,
   Flag,
+  MessageSquare,
+  Smile,
 } from "lucide-react";
 import type { EvaluateResponse } from "@/app/api/evaluate/route";
 import type { DuelEvaluateResponse } from "@/app/api/evaluate-duel/route";
@@ -35,8 +37,10 @@ import {
   updateMatchHeartbeat,
   forfeitMatchDueToDisconnect,
   surrenderMatch,
+  sendDuelTaunt,
   getMatchStatus,
   type MultiplayerMatch,
+  type DuelTaunt,
 } from "@/lib/firebase/friends";
 import { useSearchParams, useRouter } from "next/navigation";
 import FriendsPanel from "@/components/friends/FriendsPanel";
@@ -45,6 +49,14 @@ import FriendsPanel from "@/components/friends/FriendsPanel";
    Types & Constants
    --------------------------------------------------------------- */
 export type GameMode = "select" | "vs_boss" | "vs_player";
+
+export const PRESET_TAUNTS = [
+  "nice",
+  "mantap jiwa",
+  "jangan nangis",
+  "pinter banget",
+  "kenak mental",
+] as const;
 
 export interface StudyTopicItem {
   id: string;
@@ -87,6 +99,62 @@ const DEFAULT_CS_CONCEPTS = [
   "Hash Tables & Collisions",
   "Asynchronous Promises",
 ];
+
+export function getQuestionDifficultyWeight(question: string): {
+  timeLimit: number;
+  weightLabel: "Easy" | "Medium" | "Hard";
+  badgeColor: string;
+} {
+  const qLower = (question || "").toLowerCase();
+  const len = (question || "").length;
+
+  const hardKeywords = [
+    "gradient descent",
+    "backpropagation",
+    "neural network",
+    "persamaan diferensial",
+    "dynamic programming",
+    "containers vs",
+    "b-tree",
+    "garbage collection",
+    "call stack",
+    "substitusi",
+    "integrasi",
+  ];
+
+  if (hardKeywords.some((k) => qLower.includes(k)) || len > 30) {
+    return {
+      timeLimit: 60,
+      weightLabel: "Hard",
+      badgeColor: "bg-rose-500/20 text-rose-300 border-rose-500/40",
+    };
+  }
+
+  const mediumKeywords = [
+    "binary search",
+    "http rest",
+    "event loop",
+    "recursion",
+    "hash table",
+    "asynchronous",
+    "indexing",
+    "big o",
+  ];
+
+  if (mediumKeywords.some((k) => qLower.includes(k)) || len > 18) {
+    return {
+      timeLimit: 45,
+      weightLabel: "Medium",
+      badgeColor: "bg-amber-500/20 text-amber-300 border-amber-500/40",
+    };
+  }
+
+  return {
+    timeLimit: 30,
+    weightLabel: "Easy",
+    badgeColor: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
+  };
+}
 
 /* ---------------------------------------------------------------
    Floating Damage Numbers
@@ -232,6 +300,35 @@ export default function BossFightArena() {
   const [waitingSeconds, setWaitingSeconds] = useState(30);
   const [opponentInactive, setOpponentInactive] = useState(false);
   const [showSurrenderModal, setShowSurrenderModal] = useState(false);
+
+  // Dynamic Question Weight & Turn Timer State
+  const diffInfo = getQuestionDifficultyWeight(currentQuestion);
+  const [turnTimeLeft, setTurnTimeLeft] = useState<number>(diffInfo.timeLimit);
+  const [isTimingOut, setIsTimingOut] = useState<boolean>(false);
+
+  // Taunt System State
+  const [showTauntMenu, setShowTauntMenu] = useState(false);
+  const [activeTaunt, setActiveTaunt] = useState<DuelTaunt | null>(null);
+
+  // Realtime Taunt Listener Effect (Fades out speech bubble after 3 seconds)
+  useEffect(() => {
+    if (!multiplayerMatch?.lastTaunt) return;
+    const taunt = multiplayerMatch.lastTaunt;
+    if (Date.now() - taunt.timestamp < 5000) {
+      setActiveTaunt(taunt);
+      const timer = setTimeout(() => {
+        setActiveTaunt(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [multiplayerMatch?.lastTaunt]);
+
+  // Reset turn countdown timer when currentQuestion changes or game resets
+  useEffect(() => {
+    const info = getQuestionDifficultyWeight(currentQuestion);
+    setTurnTimeLeft(info.timeLimit);
+    setIsTimingOut(false);
+  }, [currentQuestion, phase]);
 
   const handleBackToSelect = useCallback(() => {
     setGameMode("select");
@@ -684,6 +781,94 @@ export default function BossFightArena() {
     }
   }
 
+  // Timeout Execution Handler when Turn Countdown hits 0
+  const handleTimeout = useCallback(async () => {
+    if (isBusy || phase !== "battle" || isTimingOut) return;
+    setIsTimingOut(true);
+
+    if (attackText.trim()) {
+      await handleAttack();
+      setIsTimingOut(false);
+      return;
+    }
+
+    setAnimPhase("boss_attack");
+    const timeoutDmg = 20;
+
+    setTimeout(() => {
+      setLatestPlayerDamage(timeoutDmg);
+      setIsScreenShaking(true);
+      setIsSlashActive(true);
+      setPlayerHp((prev) => Math.max(0, prev - timeoutDmg));
+    }, 350);
+
+    setTimeout(() => {
+      setIsScreenShaking(false);
+      setIsSlashActive(false);
+    }, 800);
+
+    setTimeout(() => {
+      setCombo(0);
+      setBattleLog((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          concept: currentQuestion,
+          explanation: "⏱️ (Waktu Habis / Timeout)",
+          damageDealt: 0,
+          playerDamageTaken: timeoutDmg,
+          bossFeedback:
+            "Waktu berpikir kamu habis! Lawan mengambil giliran untuk menyerang.",
+          isCorrect: false,
+          timestamp: new Date(),
+        },
+      ]);
+
+      const matchedTopic = userTopics.find((t) => t.title === selectedTopicTitle);
+      const pool =
+        matchedTopic && matchedTopic.concepts.length > 0
+          ? matchedTopic.concepts
+          : DEFAULT_CS_CONCEPTS;
+      const filtered = pool.filter((q) => q !== currentQuestion);
+      const nextQ =
+        filtered.length > 0
+          ? filtered[Math.floor(Math.random() * filtered.length)]
+          : pool[0];
+      setCurrentQuestion(nextQ);
+
+      setLatestPlayerDamage(null);
+      setAnimPhase("idle");
+      setIsTimingOut(false);
+    }, 1350);
+  }, [
+    attackText,
+    currentQuestion,
+    isBusy,
+    phase,
+    isTimingOut,
+    selectedTopicTitle,
+    userTopics,
+    handleAttack,
+  ]);
+
+  // Turn Countdown Timer Effect (Ticks every 1s during battle)
+  useEffect(() => {
+    if (phase !== "battle" || animPhase !== "idle" || isWaitingForOpponent) {
+      return;
+    }
+
+    if (turnTimeLeft <= 0) {
+      handleTimeout();
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTurnTimeLeft((prev) => Math.max(0, prev - 1));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [turnTimeLeft, phase, animPhase, isWaitingForOpponent, handleTimeout]);
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -884,15 +1069,70 @@ export default function BossFightArena() {
 
         <div className="flex items-center gap-2">
           {gameMode === "vs_player" && phase === "battle" && (
-            <button
-              type="button"
-              id="boss-fight-surrender-btn"
-              onClick={() => setShowSurrenderModal(true)}
-              className="text-xs font-black text-rose-300 hover:text-white bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
-              title="Menyerah dari pertandingan duel ini"
-            >
-              <Flag size={13} className="text-rose-400" /> Menyerah
-            </button>
+            <>
+              <div className="relative">
+                <button
+                  type="button"
+                  id="boss-fight-taunt-menu-btn"
+                  onClick={() => setShowTauntMenu((prev) => !prev)}
+                  className="text-xs font-black text-cyan-300 hover:text-white bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/40 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+                  title="Kirim Pesan Taunt / Emote"
+                >
+                  <MessageSquare size={13} className="text-cyan-400" />
+                  <span>Taunt</span>
+                </button>
+
+                <AnimatePresence>
+                  {showTauntMenu && (
+                    <m.div
+                      initial={{ opacity: 0, scale: 0.9, y: 8 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.9, y: 8 }}
+                      className="absolute right-0 top-full mt-2 z-40 p-2.5 rounded-2xl bg-slate-900/95 border border-cyan-500/40 shadow-2xl backdrop-blur-xl flex flex-col gap-1.5 w-48"
+                    >
+                      <div className="flex items-center justify-between text-[10px] font-black tracking-wider uppercase text-cyan-400 px-2 pt-1 pb-0.5 border-b border-cyan-500/20">
+                        <span>KIRIM TAUNT:</span>
+                        <Smile size={12} className="text-amber-400" />
+                      </div>
+                      <div className="flex flex-col gap-1 mt-1">
+                        {PRESET_TAUNTS.map((tauntText) => (
+                          <button
+                            key={tauntText}
+                            type="button"
+                            onClick={async () => {
+                              setShowTauntMenu(false);
+                              if (matchId && user) {
+                                const senderName =
+                                  user.displayName || "Scholar";
+                                await sendDuelTaunt(
+                                  matchId,
+                                  user.uid,
+                                  senderName,
+                                  tauntText
+                                );
+                              }
+                            }}
+                            className="text-left text-xs font-bold px-2.5 py-1.5 rounded-xl bg-slate-800/80 hover:bg-cyan-950 hover:text-cyan-200 text-slate-200 border border-slate-700/60 hover:border-cyan-500/50 transition-all cursor-pointer flex items-center justify-between active:scale-95"
+                          >
+                            <span>💬 &ldquo;{tauntText}&rdquo;</span>
+                          </button>
+                        ))}
+                      </div>
+                    </m.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <button
+                type="button"
+                id="boss-fight-surrender-btn"
+                onClick={() => setShowSurrenderModal(true)}
+                className="text-xs font-black text-rose-300 hover:text-white bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+                title="Menyerah dari pertandingan duel ini"
+              >
+                <Flag size={13} className="text-rose-400" /> Menyerah
+              </button>
+            </>
           )}
 
           <span className="text-[11px] font-bold px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 flex items-center gap-1.5">
@@ -1260,7 +1500,7 @@ export default function BossFightArena() {
               <span className="text-cyan-300 underline underline-offset-4 decoration-cyan-400/50 font-black">
                 {currentQuestion}
               </span>{" "}
-              seolah-olah saya anak umur 5 tahun!&rdquo;
+              secara singkat dan jelas!&rdquo;
             </h3>
             <div
               className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px]"
@@ -1272,7 +1512,23 @@ export default function BossFightArena() {
         {/* Center: Face-off Arena Characters */}
         <div className="relative z-10 w-full flex items-center justify-around my-4 sm:my-6">
           {/* 1. Player Knight Avatar (Blue Scholar) */}
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2 relative">
+            {/* Realtime Animated Floating Speech Bubble (Player) */}
+            <AnimatePresence>
+              {activeTaunt && activeTaunt.senderId === user?.uid && (
+                <m.div
+                  initial={{ opacity: 0, scale: 0.5, y: 15 }}
+                  animate={{ opacity: 1, scale: 1.05, y: -12 }}
+                  exit={{ opacity: 0, scale: 0.7, y: -25 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                  className="absolute -top-14 z-30 px-3.5 py-1.5 rounded-2xl bg-cyan-950/95 border border-cyan-400/80 text-cyan-200 text-xs font-black shadow-[0_0_20px_rgba(6,182,212,0.6)] backdrop-blur-md whitespace-nowrap"
+                >
+                  <span>💬 &ldquo;{activeTaunt.text}&rdquo;</span>
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-cyan-400/80" />
+                </m.div>
+              )}
+            </AnimatePresence>
+
             <m.div
               className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full flex items-center justify-center"
               style={{
@@ -1312,7 +1568,23 @@ export default function BossFightArena() {
           </div>
 
           {/* 2. Opponent Player Knight Avatar (Red/Crimson Scholar) */}
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2 relative">
+            {/* Realtime Animated Floating Speech Bubble (Opponent) */}
+            <AnimatePresence>
+              {activeTaunt && activeTaunt.senderId !== user?.uid && (
+                <m.div
+                  initial={{ opacity: 0, scale: 0.5, y: 15 }}
+                  animate={{ opacity: 1, scale: 1.05, y: -12 }}
+                  exit={{ opacity: 0, scale: 0.7, y: -25 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                  className="absolute -top-14 z-30 px-3.5 py-1.5 rounded-2xl bg-rose-950/95 border border-rose-400/80 text-rose-200 text-xs font-black shadow-[0_0_20px_rgba(244,63,94,0.6)] backdrop-blur-md whitespace-nowrap"
+                >
+                  <span>💬 &ldquo;{activeTaunt.text}&rdquo;</span>
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-rose-400/80" />
+                </m.div>
+              )}
+            </AnimatePresence>
+
             <m.div
               className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center"
               style={{
@@ -1637,6 +1909,54 @@ export default function BossFightArena() {
             </m.div>
           )}
         </AnimatePresence>
+        {/* Dynamic Turn Countdown Timer Bar */}
+        <div className="w-full px-4 pt-3 pb-2 border-b border-white/10 flex flex-col gap-1.5 bg-slate-950/60">
+          <div className="flex items-center justify-between text-[11px] font-bold">
+            <div className="flex items-center gap-1.5 text-slate-200">
+              <Clock
+                size={13}
+                className={
+                  turnTimeLeft <= 10
+                    ? "text-rose-400 animate-pulse"
+                    : "text-cyan-400"
+                }
+              />
+              <span>Sisa Waktu Turn:</span>
+              <span
+                className={`font-mono text-xs ${
+                  turnTimeLeft <= 10
+                    ? "text-rose-400 font-extrabold"
+                    : "text-cyan-300"
+                }`}
+              >
+                {turnTimeLeft}s
+              </span>
+            </div>
+            <span
+              className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border ${diffInfo.badgeColor}`}
+            >
+              Bobot Soal: {diffInfo.weightLabel} ({diffInfo.timeLimit}s)
+            </span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-slate-950 overflow-hidden border border-white/10">
+            <div
+              className={`h-full transition-all duration-1000 ${
+                turnTimeLeft <= 10
+                  ? "bg-rose-500 shadow-[0_0_10px_#f43f5e]"
+                  : turnTimeLeft <= 20
+                  ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]"
+                  : "bg-cyan-400 shadow-[0_0_8px_#38bdf8]"
+              }`}
+              style={{
+                width: `${Math.max(
+                  0,
+                  (turnTimeLeft / diffInfo.timeLimit) * 100
+                )}%`,
+              }}
+            />
+          </div>
+        </div>
+
         {/* Label Header */}
         <div
           className="px-4 pt-3 pb-2 flex items-center justify-between"
@@ -1653,7 +1973,7 @@ export default function BossFightArena() {
               htmlFor="boss-fight-attack-input"
               className="text-[11px] font-extrabold tracking-[0.14em] uppercase text-cyan-300"
             >
-              Serangan Penjelasan Feynman
+              Serangan Jawaban Singkat
             </label>
           </div>
           <span
@@ -1671,7 +1991,7 @@ export default function BossFightArena() {
           value={attackText}
           onChange={(e) => setAttackText(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`Jelaskan '${currentQuestion}' (${selectedTopicTitle}) seolah ke anak umur 5 tahun (gunakan analogi sederhana seperti balok mainan, ember, atau resep makanan...)`}
+          placeholder={`Jelaskan '${currentQuestion}' (${selectedTopicTitle}) secara singkat dan jelas...`}
           disabled={isBusy || phase !== "battle"}
           rows={3}
           className="w-full resize-none outline-none text-[13px] leading-relaxed px-4 py-3 placeholder:italic disabled:opacity-50"

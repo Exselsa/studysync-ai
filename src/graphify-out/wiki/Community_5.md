@@ -4,31 +4,31 @@
 
 ## Key Concepts
 
-- [friends.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L1) (21 connections)
-- [handleAttack()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L551) (4 connections)
-- [sendFriendRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L143) (4 connections)
-- [handleKeyDown()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L687) (2 connections)
-- [acceptFriendRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L205) (2 connections)
-- [commitDuelEvaluation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L779) (2 connections)
-- [findUserByEmail()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L105) (2 connections)
-- [removeFriendRelationship()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L215) (2 connections)
-- [saveUserProfile()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L88) (2 connections)
-- [submitDuelAnswer()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L716) (2 connections)
-- [handleAcceptRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L410) (2 connections)
+- [friends.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L1) (22 connections)
+- [handleAttack()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L648) (4 connections)
+- [sendFriendRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L151) (4 connections)
+- [async()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L1102) (2 connections)
+- [handleKeyDown()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L872) (2 connections)
+- [commitDuelEvaluation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L830) (2 connections)
+- [findUserByEmail()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L113) (2 connections)
+- [removeFriendRelationship()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L223) (2 connections)
+- [saveUserProfile()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L96) (2 connections)
+- [sendDuelTaunt()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L622) (2 connections)
+- [submitDuelAnswer()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L767) (2 connections)
 - [handleAddFriend()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L386) (2 connections)
 - [handleRemoveFriend()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L418) (2 connections)
-- [createOrGetMultiplayerMatch()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L473) (1 connections)
-- [forfeitMatchDueToDisconnect()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L661) (1 connections)
-- [getMatchStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L603) (1 connections)
-- [respondToChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L358) (1 connections)
-- [submitMultiplayerTurn()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L830) (1 connections)
-- [subscribeToChallengeStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L405) (1 connections)
-- [subscribeToFriends()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L223) (1 connections)
-- [subscribeToIncomingChallenges()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L371) (1 connections)
-- [subscribeToMultiplayerMatch()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L560) (1 connections)
-- [subscribeToPendingFriendRequests()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L296) (1 connections)
-- [subscribeToUserAcceptedChallenges()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L435) (1 connections)
-- [surrenderMatch()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L684) (1 connections)
+- [createOrGetMultiplayerMatch()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L481) (1 connections)
+- [forfeitMatchDueToDisconnect()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L712) (1 connections)
+- [getMatchStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L643) (1 connections)
+- [respondToChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L366) (1 connections)
+- [submitMultiplayerTurn()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L881) (1 connections)
+- [subscribeToChallengeStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L413) (1 connections)
+- [subscribeToFriends()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L231) (1 connections)
+- [subscribeToIncomingChallenges()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L379) (1 connections)
+- [subscribeToMultiplayerMatch()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L568) (1 connections)
+- [subscribeToPendingFriendRequests()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L304) (1 connections)
+- [subscribeToUserAcceptedChallenges()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L443) (1 connections)
+- [surrenderMatch()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L735) (1 connections)
 - *... and 1 more nodes in this community*
 
 ## Relationships
@@ -43,7 +43,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 52 (84%)
+- EXTRACTED: 53 (84%)
 - INFERRED: 10 (16%)
 - AMBIGUOUS: 0 (0%)
 

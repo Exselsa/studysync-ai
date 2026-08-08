@@ -22,7 +22,8 @@
     "18": "unknown",
     "19": "unknown",
     "20": "unknown",
-    "21": "unknown"
+    "21": "unknown",
+    "22": "unknown"
   },
   "communitySummaries": {
     "0": "",
@@ -46,7 +47,8 @@
     "18": "Unable to determine domain due to missing code entities.",
     "19": "Unable to determine domain due to missing code entities.",
     "20": "Unable to determine domain due to missing code entities.",
-    "21": "Unable to determine domain due to missing code entities."
+    "21": "Unable to determine domain due to missing code entities.",
+    "22": "Unable to determine domain due to missing code entities."
   },
   "communityLinks": {
     "8": {
@@ -56,27 +58,27 @@
     },
     "3": {},
     "6": {
-      "10": 1,
+      "9": 1,
       "3": 4,
       "7": 3
     },
     "7": {},
-    "10": {
+    "9": {
       "3": 1
     },
     "0": {
-      "10": 1,
-      "5": 2
-    },
-    "5": {
-      "1": 1
-    },
-    "1": {
-      "10": 1,
+      "9": 1,
       "5": 3
     },
+    "5": {
+      "1": 2
+    },
+    "1": {
+      "9": 1,
+      "5": 2
+    },
     "4": {
-      "10": 1
+      "9": 1
     }
   }
 }

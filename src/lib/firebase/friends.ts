@@ -60,6 +60,13 @@ export interface MatchChallenge {
   createdAt: string;
 }
 
+export interface DuelTaunt {
+  senderId: string;
+  senderName?: string;
+  text: string;
+  timestamp: number;
+}
+
 export interface MultiplayerMatch {
   matchId: string;
   challengerId: string;
@@ -79,6 +86,7 @@ export interface MultiplayerMatch {
   winnerId: string | null;
   refereeCommentary?: string;
   lastRoundWinner?: "playerA" | "playerB" | "draw" | null;
+  lastTaunt?: DuelTaunt | null;
   createdAt: string;
 }
 
@@ -589,11 +597,43 @@ export function subscribeToMultiplayerMatch(
       winnerId: data.winnerId ?? null,
       refereeCommentary: data.refereeCommentary || undefined,
       lastRoundWinner: data.lastRoundWinner || undefined,
+      lastTaunt: data.lastTaunt
+        ? {
+            senderId: data.lastTaunt.senderId,
+            senderName: data.lastTaunt.senderName,
+            text: data.lastTaunt.text,
+            timestamp:
+              typeof data.lastTaunt.timestamp === "number"
+                ? data.lastTaunt.timestamp
+                : Date.now(),
+          }
+        : null,
       createdAt:
         data.createdAt instanceof Timestamp
           ? data.createdAt.toDate().toISOString()
           : "",
     });
+  });
+}
+
+/**
+ * Send real-time taunt message in an active 1v1 PvP duel.
+ */
+export async function sendDuelTaunt(
+  matchId: string,
+  senderId: string,
+  senderName: string,
+  text: string
+): Promise<void> {
+  const matchRef = doc(db, "multiplayer_matches", matchId);
+  await updateDoc(matchRef, {
+    lastTaunt: {
+      senderId,
+      senderName,
+      text,
+      timestamp: Date.now(),
+    },
+    lastActive: new Date().toISOString(),
   });
 }
 
@@ -627,6 +667,17 @@ export async function getMatchStatus(
     winnerId: data.winnerId ?? null,
     refereeCommentary: data.refereeCommentary || undefined,
     lastRoundWinner: data.lastRoundWinner || undefined,
+    lastTaunt: data.lastTaunt
+      ? {
+          senderId: data.lastTaunt.senderId,
+          senderName: data.lastTaunt.senderName,
+          text: data.lastTaunt.text,
+          timestamp:
+            typeof data.lastTaunt.timestamp === "number"
+              ? data.lastTaunt.timestamp
+              : Date.now(),
+        }
+      : null,
     createdAt:
       data.createdAt instanceof Timestamp
         ? data.createdAt.toDate().toISOString()

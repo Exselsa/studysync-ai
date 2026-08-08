@@ -1,10 +1,10 @@
 # Community 8
 
-> 16 nodes · cohesion 0.12
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L1) (15 connections)
+- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L1) (16 connections)
 - [router](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/tutor/page.tsx#L98) (3 connections)
 - [stats](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L628) (2 connections)
 - [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L166) (1 connections)
@@ -16,6 +16,7 @@
 - [parallaxY](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L171) (1 connections)
 - [prefersReduced](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L173) (1 connections)
 - [processSteps](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L136) (1 connections)
+- [rect](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L806) (1 connections)
 - [{ scrollYProgress }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L167) (1 connections)
 - [staggerContainer](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L39) (1 connections)
 - [staggerItem](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L47) (1 connections)
@@ -33,7 +34,7 @@
 
 ## Audit Trail
 
-- EXTRACTED: 33 (100%)
+- EXTRACTED: 35 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

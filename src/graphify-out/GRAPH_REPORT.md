@@ -1,12 +1,12 @@
 # Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
 
 ## Corpus Check
-- 33 files · ~71,991 words
+- 33 files · ~74,044 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 314 nodes · 333 edges · 22 communities detected
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
+- 329 nodes · 350 edges · 22 communities detected
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -38,12 +38,12 @@
 2. `parseFileBuffer()` - 5 edges
 3. `EASE` - 4 edges
 4. `handleAttack()` - 4 edges
-5. `getStudyPlans()` - 4 edges
-6. `sendFriendRequest()` - 4 edges
-7. `router` - 3 edges
-8. `RESPONSE_SCHEMA` - 3 edges
-9. `buildFallbackResponse()` - 3 edges
-10. `buildFallback()` - 3 edges
+5. `saveStudyPlan()` - 4 edges
+6. `getStudyPlans()` - 4 edges
+7. `sendFriendRequest()` - 4 edges
+8. `router` - 3 edges
+9. `RESPONSE_SCHEMA` - 3 edges
+10. `buildFallbackResponse()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --calls--> `buildFallbackExplanation()`  [INFERRED]
@@ -62,12 +62,12 @@
 ### Community 0 - "Community 0"
 
 Cohesion: 0.04
-Nodes (42): [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, setBattleLog], BOSS_MAX_HP, [bossHp, setBossHp], [combo, setCombo], [currentQuestion, setCurrentQuestion], DEFAULT_CS_CONCEPTS (+34 more)
+Nodes (51): [activeTaunt, setActiveTaunt], [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, setBattleLog], BOSS_MAX_HP, [bossHp, setBossHp], [combo, setCombo], [currentQuestion, setCurrentQuestion] (+43 more)
 
 ### Community 1 - "Community 1"
 
-Cohesion: 0.07
-Nodes (27): sendMatchChallenge(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId], [customTopic, setCustomTopic] (+19 more)
+Cohesion: 0.06
+Nodes (29): acceptFriendRequest(), sendMatchChallenge(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId] (+21 more)
 
 ### Community 2 - "Community 2"
 
@@ -87,7 +87,7 @@ Nodes (23): [days, setDays], [dragActive, setDragActive], EASE, [error, setError
 ### Community 5 - "Community 5"
 
 Cohesion: 0.09
-Nodes (12): handleAttack(), handleKeyDown(), acceptFriendRequest(), commitDuelEvaluation(), findUserByEmail(), removeFriendRelationship(), saveUserProfile(), sendFriendRequest() (+4 more)
+Nodes (12): async(), handleAttack(), handleKeyDown(), commitDuelEvaluation(), findUserByEmail(), removeFriendRelationship(), saveUserProfile(), sendDuelTaunt() (+4 more)
 
 ### Community 6 - "Community 6"
 
@@ -102,17 +102,17 @@ Nodes (16): canProceedStep2, canProceedStep3, canProceedStep4, [customMajor, set
 ### Community 8 - "Community 8"
 
 Cohesion: 0.12
-Nodes (14): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+6 more)
+Nodes (15): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+7 more)
 
 ### Community 9 - "Community 9"
 
-Cohesion: 0.17
-Nodes (10): containerRef, [isHovered, setIsHovered], isIcon, mount, parent, rippleIdRef, [ripples, setRipples], SHADER_COLOR_BACK (+2 more)
+Cohesion: 0.19
+Nodes (9): fetchPlans(), getStudyPlans(), sanitizeStudyPlan(), saveStudyPlan(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore() (+1 more)
 
 ### Community 10 - "Community 10"
 
-Cohesion: 0.22
-Nodes (8): fetchPlans(), getStudyPlans(), saveStudyPlan(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore(), handleToggleTask
+Cohesion: 0.17
+Nodes (10): containerRef, [isHovered, setIsHovered], isIcon, mount, parent, rippleIdRef, [ripples, setRipples], SHADER_COLOR_BACK (+2 more)
 
 ### Community 11 - "Community 11"
 
@@ -170,7 +170,7 @@ Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **191 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+186 more)
+- **201 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+196 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 17`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
