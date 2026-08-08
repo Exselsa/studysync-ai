@@ -28,9 +28,9 @@
   ],
   "blast_radius": {
     "POST()": 14,
+    "handleToggleTask": 5,
     "normalizeStudyPlanData()": 5,
-    "parseFileBuffer()": 5,
-    "router": 4,
-    "RESPONSE_SCHEMA": 4
+    "recordDailyActivity()": 5,
+    "parseFileBuffer()": 5
   }
 }

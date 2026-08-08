@@ -1,12 +1,12 @@
 # Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
 
 ## Corpus Check
-- 39 files · ~90,583 words
+- 41 files · ~92,233 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 423 nodes · 460 edges · 24 communities detected
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 32 edges (avg confidence: 0.8)
+- 433 nodes · 475 edges · 25 communities detected
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 34 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -34,18 +34,19 @@
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
 - [[_COMMUNITY_Community 23|Community 23]]
+- [[_COMMUNITY_Community 24|Community 24]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `POST()` - 14 edges
-2. `normalizeStudyPlanData()` - 5 edges
-3. `parseFileBuffer()` - 5 edges
-4. `router` - 4 edges
-5. `RESPONSE_SCHEMA` - 4 edges
-6. `EASE` - 4 edges
-7. `handleToggleTask` - 4 edges
-8. `handleAttack()` - 4 edges
-9. `useAuth()` - 4 edges
-10. `saveStudyPlan()` - 4 edges
+2. `handleToggleTask` - 5 edges
+3. `normalizeStudyPlanData()` - 5 edges
+4. `recordDailyActivity()` - 5 edges
+5. `parseFileBuffer()` - 5 edges
+6. `router` - 4 edges
+7. `RESPONSE_SCHEMA` - 4 edges
+8. `EASE` - 4 edges
+9. `handleAttack()` - 4 edges
+10. `useAuth()` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --calls--> `buildFallbackExplanation()`  [INFERRED]
@@ -74,12 +75,12 @@ Nodes (52): [aiTopicPrompt, setAiTopicPrompt], analyserRef, audioContextRef, aud
 ### Community 2 - "Community 2"
 
 Cohesion: 0.05
-Nodes (37): [aiInsights, setAiInsights], allPendingTasks, canProceedStep2, canProceedStep3, canProceedStep4, containerVariants, [customMajor, setCustomMajor], dateString (+29 more)
+Nodes (39): [aiInsights, setAiInsights], allPendingTasks, canProceedStep2, canProceedStep3, canProceedStep4, containerVariants, [customMajor, setCustomMajor], dateString (+31 more)
 
 ### Community 3 - "Community 3"
 
 Cohesion: 0.06
-Nodes (29): acceptFriendRequest(), sendMatchChallenge(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId] (+21 more)
+Nodes (29): removeFriendRelationship(), sendMatchChallenge(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId] (+21 more)
 
 ### Community 4 - "Community 4"
 
@@ -104,12 +105,12 @@ Nodes (23): [days, setDays], [dragActive, setDragActive], EASE, [error, setError
 ### Community 8 - "Community 8"
 
 Cohesion: 0.09
-Nodes (12): async(), handleAttack(), handleKeyDown(), commitDuelEvaluation(), findUserByEmail(), removeFriendRelationship(), saveUserProfile(), sendDuelTaunt() (+4 more)
+Nodes (12): async(), handleAttack(), handleKeyDown(), acceptFriendRequest(), commitDuelEvaluation(), findUserByEmail(), saveUserProfile(), sendDuelTaunt() (+4 more)
 
 ### Community 9 - "Community 9"
 
-Cohesion: 0.14
-Nodes (11): fetchPlans(), getStudyPlans(), saveStudyPlan(), toggleTaskCompletion(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore() (+3 more)
+Cohesion: 0.12
+Nodes (16): fetchPlans(), getStudyPlans(), saveStudyPlan(), toggleTaskCompletion(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore() (+8 more)
 
 ### Community 10 - "Community 10"
 
@@ -181,18 +182,25 @@ _Unable to determine domain due to missing code entities._
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 24 - "Community 24"
+_Unable to determine domain due to missing code entities._
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **254 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+249 more)
+- **256 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+251 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 18`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 19`** (2 nodes): `orbs`, `BackgroundCanvas.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 20`** (2 nodes): `cn.ts`, `cn()`
+- **Thin community `Community 20`** (2 nodes): `useStudyTimer.ts`, `useStudyTimer()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 21`** (1 nodes): `loading.tsx`
+- **Thin community `Community 21`** (2 nodes): `cn.ts`, `cn()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 22`** (1 nodes): `Providers.tsx`
+- **Thin community `Community 22`** (1 nodes): `loading.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 23`** (1 nodes): `types.ts`
+- **Thin community `Community 23`** (1 nodes): `Providers.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 24`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

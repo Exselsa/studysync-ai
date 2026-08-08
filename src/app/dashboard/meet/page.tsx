@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useStudyTimer } from "@/hooks/useStudyTimer";
+import VoiceChat from "@/components/meet/VoiceChat";
 import { getStudyPlans, type StudyPlan } from "@/lib/firebase/db";
 import {
   subscribeToFriends,
@@ -61,28 +62,8 @@ import {
 } from "@/lib/firebase/meet";
 
 /* ----------------------------------------------------------------
-   Helper Component — Dynamic DOM Hidden Audio Element for WebRTC
+   Study Meet Page
 ---------------------------------------------------------------- */
-function RemoteAudioElement({
-  peerUid,
-  stream,
-}: {
-  peerUid: string;
-  stream: MediaStream;
-}) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (audioRef.current && stream) {
-      audioRef.current.srcObject = stream;
-      audioRef.current
-        .play()
-        .catch((err) => console.warn("Remote audio playback note:", err));
-    }
-  }, [stream]);
-
-  return <audio ref={audioRef} autoPlay playsInline style={{ display: "none" }} />;
-}
 
 export default function StudyMeetPage() {
   const { user, loading: authLoading } = useAuth();
@@ -120,16 +101,7 @@ export default function StudyMeetPage() {
   const [showDeleteRoomModal, setShowDeleteRoomModal] = useState(false);
   const [showClearBoardModal, setShowClearBoardModal] = useState(false);
 
-  // Voice Chat & WebRTC Streams State
-  const [isMuted, setIsMuted] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(
-    new Map()
-  );
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
+
 
   // In-Room Text Chat State
   const [showChatPanel, setShowChatPanel] = useState(false);
@@ -235,103 +207,7 @@ export default function StudyMeetPage() {
     return () => unsubFriends();
   }, [user]);
 
-  /* ----------------------------------------------------------------
-     5. WebRTC Voice Stream & STUN Peer Connections
-  ---------------------------------------------------------------- */
-  const toggleMicrophone = useCallback(async () => {
-    if (!urlRoomId || !user) return;
-    const nextMuteState = !isMuted;
-    setIsMuted(nextMuteState);
 
-    try {
-      if (!nextMuteState) {
-        // Get local microphone audio stream
-        if (!mediaStreamRef.current) {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: false,
-          });
-          mediaStreamRef.current = stream;
-
-          // Setup AudioContext Analyser for live speaking level detection
-          const AudioContextClass =
-            window.AudioContext || (window as any).webkitAudioContext;
-          if (AudioContextClass) {
-            const ctx = new AudioContextClass();
-            audioContextRef.current = ctx;
-            const source = ctx.createMediaStreamSource(stream);
-            const analyser = ctx.createAnalyser();
-            analyser.fftSize = 256;
-            source.connect(analyser);
-            analyserRef.current = analyser;
-
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-
-            const checkSpeaking = () => {
-              if (!analyserRef.current || isMuted) return;
-              analyserRef.current.getByteFrequencyData(dataArray);
-              let sum = 0;
-              for (let i = 0; i < bufferLength; i++) {
-                sum += dataArray[i];
-              }
-              const average = sum / bufferLength;
-              const nowSpeaking = average > 12;
-
-              if (nowSpeaking !== isSpeaking) {
-                setIsSpeaking(nowSpeaking);
-                updateParticipantMicState(
-                  urlRoomId,
-                  user.uid,
-                  false,
-                  nowSpeaking
-                ).catch(() => {});
-              }
-              requestAnimationFrame(checkSpeaking);
-            };
-            checkSpeaking();
-          }
-        } else {
-          mediaStreamRef.current.getAudioTracks().forEach((t) => (t.enabled = true));
-        }
-
-        // Attach local audio tracks to existing RTCPeerConnections
-        peerConnectionsRef.current.forEach((pc) => {
-          if (mediaStreamRef.current) {
-            mediaStreamRef.current.getAudioTracks().forEach((track) => {
-              pc.addTrack(track, mediaStreamRef.current!);
-            });
-          }
-        });
-
-        await updateParticipantMicState(urlRoomId, user.uid, false, isSpeaking);
-      } else {
-        // Mute tracks
-        if (mediaStreamRef.current) {
-          mediaStreamRef.current.getAudioTracks().forEach((t) => (t.enabled = false));
-        }
-        setIsSpeaking(false);
-        await updateParticipantMicState(urlRoomId, user.uid, true, false);
-      }
-    } catch (err) {
-      console.warn("Microphone access note:", err);
-      setIsMuted(true);
-      await updateParticipantMicState(urlRoomId, user.uid, true, false);
-    }
-  }, [isMuted, isSpeaking, urlRoomId, user]);
-
-  // Clean up audio streams on unmount
-  useEffect(() => {
-    return () => {
-      if (mediaStreamRef.current) {
-        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close().catch(() => {});
-      }
-      peerConnectionsRef.current.forEach((pc) => pc.close());
-    };
-  }, []);
 
   /* ----------------------------------------------------------------
      Handlers
@@ -555,10 +431,6 @@ export default function StudyMeetPage() {
   if (!urlRoomId || !currentRoom) {
     return (
       <section className="flex flex-col gap-8 w-full max-w-5xl mx-auto px-4 py-8">
-        {/* Render Dynamic DOM Hidden Audio Elements for Remote WebRTC Peers */}
-        {Array.from(remoteStreams.entries()).map(([peerUid, stream]) => (
-          <RemoteAudioElement key={peerUid} peerUid={peerUid} stream={stream} />
-        ))}
 
         {/* Header Hero Banner */}
         <m.div
@@ -871,10 +743,6 @@ export default function StudyMeetPage() {
   ---------------------------------------------------------------- */
   return (
     <section className="flex flex-col gap-5 w-full max-w-6xl mx-auto px-4 py-6">
-      {/* Render Dynamic DOM Hidden Audio Elements for Remote WebRTC Peers */}
-      {Array.from(remoteStreams.entries()).map(([peerUid, stream]) => (
-        <RemoteAudioElement key={peerUid} peerUid={peerUid} stream={stream} />
-      ))}
 
       {/* Room Header Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-xl shadow-xl">
@@ -918,28 +786,9 @@ export default function StudyMeetPage() {
         </div>
 
         {/* Header Right Actions: Open Mic Toggle, Text Chat Toggle & Host Delete */}
-        <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
-          {/* Real-Time Voice Mic Toggle Button */}
-          <button
-            type="button"
-            id="meet-mic-toggle-btn"
-            onClick={toggleMicrophone}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 border ${
-              isMuted
-                ? "bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600"
-                : "bg-emerald-950/90 border-emerald-500/60 text-emerald-300 shadow-[0_0_15px_rgba(34,197,94,0.4)] animate-pulse"
-            }`}
-          >
-            {isMuted ? (
-              <>
-                <MicOff size={14} className="text-rose-400" /> Mic Teredam
-              </>
-            ) : (
-              <>
-                <Mic size={14} className="text-emerald-400" /> Mic Nyala 🎙️
-              </>
-            )}
-          </button>
+        <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end flex-wrap">
+          {/* Full Mesh WebRTC Voice Chat Controls */}
+          <VoiceChat roomId={currentRoom.roomId} />
 
           {/* In-Room Text Chat Panel Toggle */}
           <button

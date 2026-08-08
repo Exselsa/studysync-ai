@@ -5,15 +5,15 @@
 
 ## Core Abstractions (God Nodes)
 1. `POST()` (14 edges)
-2. `normalizeStudyPlanData()` (5 edges)
-3. `parseFileBuffer()` (5 edges)
-4. `router` (4 edges)
-5. `RESPONSE_SCHEMA` (4 edges)
-6. `EASE` (4 edges)
-7. `handleToggleTask` (4 edges)
-8. `handleAttack()` (4 edges)
-9. `useAuth()` (4 edges)
-10. `saveStudyPlan()` (4 edges)
+2. `handleToggleTask` (5 edges)
+3. `normalizeStudyPlanData()` (5 edges)
+4. `recordDailyActivity()` (5 edges)
+5. `parseFileBuffer()` (5 edges)
+6. `router` (4 edges)
+7. `RESPONSE_SCHEMA` (4 edges)
+8. `EASE` (4 edges)
+9. `handleAttack()` (4 edges)
+10. `useAuth()` (4 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 
