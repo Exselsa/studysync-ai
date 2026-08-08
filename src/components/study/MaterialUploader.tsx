@@ -220,7 +220,7 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
 
     setSaving(true);
     try {
-      await saveStudyPlan(user.uid, planResult.studyPlan);
+      await saveStudyPlan(user.uid, planResult);
       setSavedSuccess(true);
       if (onPlanSaved) onPlanSaved();
     } catch (err) {
@@ -445,7 +445,7 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
                 {planResult.title}
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Mata Kuliah: <span className="text-amber-300 font-semibold">{planResult.subject}</span> · Durasi: {planResult.totalDays} Hari
+                Mata Kuliah: <span className="text-amber-300 font-semibold">{planResult.subject}</span> · Durasi: {planResult.durationDays || 7} Hari
               </p>
             </div>
 
@@ -478,69 +478,22 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
             </m.button>
           </div>
 
-          {/* AI Summary Banner */}
-          <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/25 text-amber-200 text-xs leading-relaxed flex items-start gap-3">
-            <BrainCircuit size={18} className="text-amber-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-extrabold block text-amber-300 mb-0.5">Ringkasan AI:</span>
-              {planResult.summary}
-            </div>
-          </div>
-
-          {/* Daily Modules */}
+          {/* Tasks List */}
           <div className="flex flex-col gap-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Modul Harian & Tugas Utama
+              Daftar Tugas Harian ({planResult.tasks?.length || 0} Tugas)
             </h4>
 
-            <div className="grid grid-cols-1 gap-3">
-              {planResult.modules.map((mod) => (
+            <div className="grid grid-cols-1 gap-2.5">
+              {(planResult.tasks || []).map((tk, idx) => (
                 <div
-                  key={mod.dayNumber}
-                  className="rounded-2xl bg-slate-900/60 border border-white/10 p-4 flex flex-col gap-3"
+                  key={idx}
+                  className="flex items-center gap-3 p-3 rounded-2xl bg-slate-900/60 border border-white/10 text-xs"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/30 text-amber-300 font-extrabold text-[11px]">
-                        {mod.dateOffset}
-                      </span>
-                      <span className="text-xs font-bold text-slate-100">{mod.goal}</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                      <Clock size={12} /> {mod.estimatedMinutes} menit
-                    </span>
-                  </div>
-
-                  {/* Topic badges */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {mod.topics.map((tp) => (
-                      <span
-                        key={tp}
-                        className="px-2 py-0.5 rounded-md bg-slate-950 border border-slate-800 text-[10px] font-medium text-slate-300"
-                      >
-                        #{tp}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Tasks */}
-                  <div className="flex flex-col gap-1.5 pt-1">
-                    {mod.tasks.map((tk, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-xs"
-                      >
-                        <CheckCircle2 size={15} className="text-amber-400 shrink-0 mt-0.5" />
-                        <div className="flex flex-col flex-1 min-w-0">
-                          <span className="font-semibold text-slate-200">{tk.title}</span>
-                          <span className="text-[11px] text-slate-400 leading-normal">{tk.description}</span>
-                        </div>
-                        <span className="text-[10px] font-semibold text-slate-500 shrink-0">
-                          {tk.estimatedMinutes}m
-                        </span>
-                      </div>
-                    ))}
-                  </div>
+                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/30 text-amber-300 font-extrabold text-[11px] shrink-0">
+                    Hari ke-{tk.day}
+                  </span>
+                  <span className="font-semibold text-slate-200 flex-1">{tk.title}</span>
                 </div>
               ))}
             </div>

@@ -25,13 +25,15 @@ export interface DayModulePlan {
   tasks: DailyTaskPlan[];
 }
 
+
 export interface GeneratedStudyPlanResponse {
   title: string;
   subject: string;
-  totalDays: number;
-  summary: string;
-  modules: DayModulePlan[];
-  studyPlan: StudyPlanPayload;
+  durationDays: number;
+  tasks: Array<{
+    day: number;
+    title: string;
+  }>;
 }
 
 export const GENERATE_PLAN_SCHEMA: Schema = {
@@ -45,73 +47,24 @@ export const GENERATE_PLAN_SCHEMA: Schema = {
       type: Type.STRING,
       description: "Subject or course name identified from the lecture material.",
     },
-    totalDays: {
-      type: Type.NUMBER,
+    durationDays: {
+      type: Type.INTEGER,
       description: "Total number of study days allocated for this material.",
     },
-    summary: {
-      type: Type.STRING,
-      description: "Friendly, encouraging summary explaining the plan to the student in casual Indonesian using 'kamu'.",
-    },
-    modules: {
+    tasks: {
       type: Type.ARRAY,
-      description: "Day-by-day study modules breaking down the material into clear daily milestones.",
+      description: "Flat list of daily actionable study tasks.",
       items: {
         type: Type.OBJECT,
         properties: {
-          dayNumber: { type: Type.NUMBER, description: "Day index (1, 2, 3...)" },
-          dateOffset: { type: Type.STRING, description: "Relative time e.g. 'Hari ke-1', 'Hari ke-2'" },
-          goal: { type: Type.STRING, description: "Primary learning target for this day" },
-          topics: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "Key topics covered on this day",
-          },
-          estimatedMinutes: { type: Type.NUMBER, description: "Estimated total study time in minutes" },
-          tasks: {
-            type: Type.ARRAY,
-            description: "Actionable study tasks for this day",
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                title: { type: Type.STRING, description: "Actionable task title" },
-                description: { type: Type.STRING, description: "Specific instructions on what to read or practice" },
-                estimatedMinutes: { type: Type.NUMBER, description: "Estimated task completion time in minutes" },
-              },
-              required: ["title", "description", "estimatedMinutes"],
-            },
-          },
+          day: { type: Type.INTEGER, description: "Day number starting from 1" },
+          title: { type: Type.STRING, description: "Actionable study task title" },
         },
-        required: ["dayNumber", "dateOffset", "goal", "topics", "estimatedMinutes", "tasks"],
+        required: ["day", "title"],
       },
-    },
-    studyPlan: {
-      type: Type.OBJECT,
-      description: "Standard StudyPlan format for saving to the user's board.",
-      properties: {
-        title: { type: Type.STRING },
-        subject: { type: Type.STRING },
-        progress: { type: Type.NUMBER, description: "Initial progress percentage (usually 0)" },
-        tasks: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              id: { type: Type.STRING },
-              title: { type: Type.STRING },
-              description: { type: Type.STRING },
-              completed: { type: Type.BOOLEAN },
-              status: { type: Type.STRING, description: "'pending' | 'in_progress' | 'done'" },
-              dueDate: { type: Type.STRING },
-            },
-            required: ["id", "title", "description", "completed", "status"],
-          },
-        },
-      },
-      required: ["title", "subject", "progress", "tasks"],
     },
   },
-  required: ["title", "subject", "totalDays", "summary", "modules", "studyPlan"],
+  required: ["tasks"],
 };
 
 export const GENERATE_PLAN_SYSTEM_INSTRUCTION = `
@@ -223,74 +176,15 @@ export function buildFallbackStudyPlan(text: string, days: number = 3): Generate
   const sampleSubject = text.slice(0, 40).trim() || "Materi Kuliah";
   const planTitle = `Study Plan: ${sampleSubject}`;
 
-  const tasks = [
-    {
-      id: crypto.randomUUID(),
-      title: "Pahami Konsep Dasar",
-      description: "Baca ringkasan awal materi dan catat istilah-istilah penting.",
-      completed: false,
-      status: "pending",
-      dueDate: "Hari ke-1",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "Dalami Poin Utama & Analogi",
-      description: "Pelajari hubungan antar bab dan coba jelaskan ke diri sendiri.",
-      completed: false,
-      status: "pending",
-      dueDate: "Hari ke-2",
-    },
-    {
-      id: crypto.randomUUID(),
-      title: "Latihan Soal & Review",
-      description: "Uji pemahaman kamu lewat pertanyaan review dan rangkuman akhir.",
-      completed: false,
-      status: "pending",
-      dueDate: `Hari ke-${days}`,
-    },
-  ];
-
   return {
     title: planTitle,
     subject: sampleSubject,
-    totalDays: days,
-    summary: `Nih, aku sudah buatkan study plan ${days} hari buat bantu kamu menguasai materi ini dengan santai dan efektif!`,
-    modules: [
-      {
-        dayNumber: 1,
-        dateOffset: "Hari ke-1",
-        goal: "Fondasi dasar dan pengenalan istilah utama",
-        topics: ["Poin Utama 1", "Istilah Kunci"],
-        estimatedMinutes: 45,
-        tasks: [
-          {
-            title: "Review Fondasi Dasar",
-            description: "Baca bagian awal materi dan garis bawahi poin penting.",
-            estimatedMinutes: 45,
-          },
-        ],
-      },
-      {
-        dayNumber: 2,
-        dateOffset: "Hari ke-2",
-        goal: "Pendalaman konsep inti dan penerapan",
-        topics: ["Konsep Lanjutan", "Studi Kasus"],
-        estimatedMinutes: 60,
-        tasks: [
-          {
-            title: "Bedah Analogi & Kasus",
-            description: "Gunakan metode Feynman untuk menjelaskan bab 2 secara sederhana.",
-            estimatedMinutes: 60,
-          },
-        ],
-      },
+    durationDays: days,
+    tasks: [
+      { day: 1, title: "Pahami fondasi dasar & ringkasan awal materi" },
+      { day: 2, title: "Dalami konsep utama & analogi materi" },
+      { day: days, title: "Kerjakan latihan soal & review rangkuman akhir" },
     ],
-    studyPlan: {
-      title: planTitle,
-      subject: sampleSubject,
-      progress: 0,
-      tasks,
-    },
   };
 }
 

@@ -23,13 +23,12 @@ import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import {
   getStudyPlans,
-  updateStudyPlanTasks,
+  toggleTaskCompletion,
   updateStudyPlanStatus,
   resetStudyPlanTasks,
   deleteStudyPlan,
-  normalizePlanTasks,
   type StudyPlan,
-  type StudyTask,
+  type StudyPlanTask,
 } from "@/lib/firebase/db";
 import MaterialUploader from "@/components/study/MaterialUploader";
 
@@ -56,8 +55,8 @@ const taskVariants: Variants = {
 /* ------------------------------------------------------------------
    Utilities
 ------------------------------------------------------------------ */
-function computeProgress(tasks: StudyTask[]): number {
-  if (!tasks.length) return 0;
+function computeProgress(tasks: StudyPlanTask[]): number {
+  if (!tasks || !tasks.length) return 0;
   return Math.round((tasks.filter((t) => t.completed).length / tasks.length) * 100);
 }
 
@@ -65,26 +64,21 @@ function formatDate(iso: string): string {
   if (!iso) return "";
   const d = new Date(iso);
   if (isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
-
-function isOverdue(dueDate?: string): boolean {
-  if (!dueDate) return false;
-  return new Date(dueDate) < new Date();
+  return d.toLocaleDateString("id-ID", { month: "short", day: "numeric" });
 }
 
 /* ------------------------------------------------------------------
    Subject colour mapping
 ------------------------------------------------------------------ */
 function subjectAccent(subject: string): { bg: string; border: string; text: string } {
-  const s = subject.toLowerCase();
-  if (s.includes("calculus") || s.includes("math"))
+  const s = (subject || "").toLowerCase();
+  if (s.includes("calculus") || s.includes("math") || s.includes("matematika"))
     return { bg: "rgba(56,189,248,0.10)", border: "rgba(56,189,248,0.22)", text: "rgba(56,189,248,0.9)" };
   if (s.includes("machine") || s.includes("ml") || s.includes("ai"))
     return { bg: "rgba(245,158,11,0.10)", border: "rgba(245,158,11,0.22)", text: "rgba(245,158,11,0.9)" };
-  if (s.includes("algorithm") || s.includes("cs") || s.includes("code"))
+  if (s.includes("algorithm") || s.includes("cs") || s.includes("code") || s.includes("koding"))
     return { bg: "rgba(34,197,94,0.10)", border: "rgba(34,197,94,0.22)", text: "rgba(34,197,94,0.9)" };
-  if (s.includes("chemistry") || s.includes("organic"))
+  if (s.includes("chemistry") || s.includes("organic") || s.includes("kimia"))
     return { bg: "rgba(168,85,247,0.10)", border: "rgba(168,85,247,0.22)", text: "rgba(168,85,247,0.9)" };
   return { bg: "rgba(255,255,255,0.06)", border: "rgba(255,255,255,0.12)", text: "var(--color-silver-300)" };
 }
@@ -133,11 +127,9 @@ function TaskRow({
   task,
   onToggle,
 }: {
-  task: StudyTask;
+  task: StudyPlanTask;
   onToggle: (id: string) => void;
 }) {
-  const overdue = !task.completed && isOverdue(task.dueDate);
-
   return (
     <m.div
       layout
@@ -192,71 +184,29 @@ function TaskRow({
           {task.title}
         </p>
 
-        {/* Description */}
-        {task.description && (
-          <p
+        {/* Day badge */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.35rem", flexWrap: "wrap" }}>
+          <span
             style={{
-              fontSize: "0.6875rem",
+              fontSize: "0.6rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              padding: "0.1rem 0.45rem",
+              borderRadius: "9999px",
+              background: task.completed
+                ? "rgba(34,197,94,0.12)"
+                : "rgba(245,158,11,0.12)",
+              border: task.completed
+                ? "1px solid rgba(34,197,94,0.22)"
+                : "1px solid rgba(245,158,11,0.22)",
               color: task.completed
-                ? "var(--color-silver-400)"
-                : "rgba(203,213,225,0.75)",
-              lineHeight: 1.55,
-              marginTop: "0.25rem",
-              wordBreak: "break-word",
-              opacity: task.completed ? 0.5 : 1,
-              fontStyle: task.completed ? "italic" : "normal",
+                ? "rgba(34,197,94,0.85)"
+                : "var(--color-gold-400)",
             }}
           >
-            {task.description}
-          </p>
-        )}
-
-        {/* Status badge + due date row */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.35rem", flexWrap: "wrap" }}>
-          {task.status && (
-            <span
-              style={{
-                fontSize: "0.6rem",
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                padding: "0.1rem 0.45rem",
-                borderRadius: "9999px",
-                background: task.completed
-                  ? "rgba(34,197,94,0.12)"
-                  : task.status === "in_progress"
-                  ? "rgba(56,189,248,0.12)"
-                  : "rgba(255,255,255,0.06)",
-                border: task.completed
-                  ? "1px solid rgba(34,197,94,0.22)"
-                  : task.status === "in_progress"
-                  ? "1px solid rgba(56,189,248,0.22)"
-                  : "1px solid rgba(255,255,255,0.10)",
-                color: task.completed
-                  ? "rgba(34,197,94,0.85)"
-                  : task.status === "in_progress"
-                  ? "rgba(56,189,248,0.85)"
-                  : "var(--color-silver-400)",
-              }}
-            >
-              {task.completed ? "done" : (task.status ?? "pending")}
-            </span>
-          )}
-
-          {task.dueDate && (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem" }}>
-              <Clock size={10} style={{ color: overdue ? "rgba(239,68,68,0.8)" : "var(--color-silver-400)" }} aria-hidden="true" />
-              <span
-                style={{
-                  fontSize: "0.6875rem",
-                  color: overdue ? "rgba(239,68,68,0.8)" : "var(--color-silver-400)",
-                  fontWeight: overdue ? 600 : 400,
-                }}
-              >
-                {overdue ? "Overdue · " : ""}{formatDate(task.dueDate)}
-              </span>
-            </div>
-          )}
+            Hari ke-{task.day}
+          </span>
         </div>
       </div>
     </m.div>
@@ -283,16 +233,13 @@ function PlanCard({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<"complete" | "reset" | "delete" | null>(null);
 
-  // Retroactive UI Data Repair: extract tasks dynamically if plan.tasks is empty
-  const effectiveTasks =
-    Array.isArray(plan.tasks) && plan.tasks.length > 0
-      ? plan.tasks
-      : normalizePlanTasks(plan);
+  // Render tasks with day sorting (tasks.slice().sort((a,b) => a.day - b.day))
+  const sortedTasks = (plan.tasks || []).slice().sort((a, b) => a.day - b.day);
 
   const accent = subjectAccent(plan.subject);
-  const progress = computeProgress(effectiveTasks);
-  const completedCount = effectiveTasks.filter((t) => t.completed).length;
-  const isAllCompleted = effectiveTasks.length > 0 && completedCount === effectiveTasks.length;
+  const progress = computeProgress(sortedTasks);
+  const completedCount = sortedTasks.filter((t) => t.completed).length;
+  const isAllCompleted = sortedTasks.length > 0 && completedCount === sortedTasks.length;
 
   const handleComplete = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -407,7 +354,7 @@ function PlanCard({
               </span>
               {/* Task progress */}
               <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
-                {completedCount} / {effectiveTasks.length} tasks
+                {completedCount} / {sortedTasks.length} tasks
               </span>
               {/* 100% Completion Badge */}
               {isAllCompleted && (
@@ -494,13 +441,13 @@ function PlanCard({
                   gap: "0.5rem",
                 }}
               >
-                {effectiveTasks.length === 0 ? (
+                {sortedTasks.length === 0 ? (
                   <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)", textAlign: "center", padding: "0.75rem 0" }}>
                     Belum ada tugas di plan ini.
                   </p>
                 ) : (
                   <AnimatePresence>
-                    {effectiveTasks.map((task) => (
+                    {sortedTasks.map((task) => (
                       <TaskRow
                         key={task.id}
                         task={task}
@@ -810,40 +757,39 @@ function PlanContent() {
   }, [fetchPlans]);
 
   /* ----------------------------------------------------------------
-     Toggle Task & sync with Firestore
+     Toggle Task & sync with Firestore (Optimistic Update + Rollback)
   ---------------------------------------------------------------- */
   const handleToggleTask = useCallback(
     async (planId: string, taskId: string) => {
       if (!user?.uid) return;
 
-      let updatedTasks: StudyTask[] = [];
+      let previousPlans: StudyPlan[] = [];
 
-      setPlans((prev) =>
-        prev.map((plan) => {
+      // Optimistic update
+      setPlans((prev) => {
+        previousPlans = prev;
+        return prev.map((plan) => {
           if (plan.id !== planId) return plan;
-          const currentTasks =
-            Array.isArray(plan.tasks) && plan.tasks.length > 0
-              ? plan.tasks
-              : normalizePlanTasks(plan);
-
-          updatedTasks = currentTasks.map((t) =>
-            t.id !== taskId
-              ? t
-              : { ...t, completed: !t.completed, status: !t.completed ? "done" : "pending" }
+          const updatedTasks = plan.tasks.map((t) =>
+            t.id === taskId ? { ...t, completed: !t.completed } : t
           );
-          const progress = computeProgress(updatedTasks);
           return {
             ...plan,
             tasks: updatedTasks,
-            progress,
           };
-        })
-      );
+        });
+      });
 
       try {
-        await updateStudyPlanTasks(user.uid, planId, updatedTasks);
+        const serverTasks = await toggleTaskCompletion(user.uid, planId, taskId);
+        setPlans((prev) =>
+          prev.map((plan) => (plan.id === planId ? { ...plan, tasks: serverTasks } : plan))
+        );
       } catch (err) {
-        console.error("Failed to update task in Firestore:", err);
+        console.error("Failed to toggle task in Firestore:", err);
+        setError("Gagal memperbarui status tugas di database. Silakan muat ulang.");
+        // Rollback optimistic update on error
+        setPlans(previousPlans);
       }
     },
     [user?.uid]
@@ -906,8 +852,6 @@ function PlanContent() {
               : {
                   ...p,
                   tasks: resetTasks,
-                  progress: 0,
-                  status: "active",
                 }
           )
         );
@@ -1066,7 +1010,7 @@ function PlanContent() {
         </m.div>
       )}
 
-      {/* ---- Material Upload & Gemini AI Section ---- */}
+      {/* ---- Material Upload & AI Section ---- */}
       <m.div variants={cardVariants}>
         <MaterialUploader onPlanSaved={fetchPlans} />
       </m.div>

@@ -13,6 +13,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { parseFileBuffer } from "@/lib/utils/file-parser";
+import { normalizeStudyPlanData } from "@/lib/normalizeStudyPlan";
 import {
   GENERATE_PLAN_SCHEMA,
   GENERATE_PLAN_SYSTEM_INSTRUCTION,
@@ -126,7 +127,7 @@ Pastikan output memenuhi schema JSON dan seluruh teks ditulis dalam Bahasa Indon
 
       const rawText = response.text;
       if (!rawText) {
-        throw new Error("Gemini returned an empty response.");
+        throw new Error("AI returned an empty response.");
       }
 
       const cleanJson = rawText
@@ -134,16 +135,46 @@ Pastikan output memenuhi schema JSON dan seluruh teks ditulis dalam Bahasa Indon
         .replace(/^```(?:json)?\s*/i, "")
         .replace(/\s*```$/i, "");
 
-      const parsedResult = JSON.parse(cleanJson) as GeneratedStudyPlanResponse;
+      const parsedResult = JSON.parse(cleanJson);
+      const normalizedTasks = normalizeStudyPlanData(parsedResult);
+
+      if (normalizedTasks.length === 0) {
+        return NextResponse.json(
+          { error: "Gagal mengekstrak tugas dari materi" },
+          { status: 422 }
+        );
+      }
 
       return NextResponse.json({
         success: true,
-        result: parsedResult,
+        result: {
+          title: parsedResult.title || `Study Plan: ${materialText.slice(0, 30)}`,
+          subject: parsedResult.subject || "Materi Kuliah",
+          durationDays: parsedResult.durationDays || days,
+          tasks: normalizedTasks,
+        },
       });
     } catch (aiErr) {
-      console.error("[/api/study-materials/generate-plan] Gemini API Error:", aiErr);
+      console.error("[/api/study-materials/generate-plan] AI API Error:", aiErr);
       const fallback = buildFallbackStudyPlan(materialText, days);
-      return NextResponse.json({ success: true, result: fallback });
+      const normalizedTasks = normalizeStudyPlanData(fallback);
+
+      if (normalizedTasks.length === 0) {
+        return NextResponse.json(
+          { error: "Gagal mengekstrak tugas dari materi" },
+          { status: 422 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        result: {
+          title: fallback.title,
+          subject: fallback.subject,
+          durationDays: fallback.durationDays,
+          tasks: normalizedTasks,
+        },
+      });
     }
   } catch (err: unknown) {
     console.error("[/api/study-materials/generate-plan] Error:", err);

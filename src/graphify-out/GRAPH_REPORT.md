@@ -1,11 +1,11 @@
 # Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
 
 ## Corpus Check
-- 37 files · ~88,791 words
+- 37 files · ~90,759 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 418 nodes · 454 edges · 23 communities detected
+- 421 nodes · 457 edges · 23 communities detected
 - Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -93,7 +93,7 @@ Nodes (20): extractPrintableStrings(), extractTextFromDocx(), extractTextFromPdf
 ### Community 6 - "Community 6"
 
 Cohesion: 0.07
-Nodes (20): accent, [actionLoading, setActionLoading], avgPct, cardVariants, circ, [collapsed, setCollapsed], completedCount, dash (+12 more)
+Nodes (20): accent, [actionLoading, setActionLoading], cardVariants, circ, [collapsed, setCollapsed], completedCount, dash, effectiveTasks (+12 more)
 
 ### Community 7 - "Community 7"
 
@@ -112,13 +112,13 @@ Nodes (15): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parall
 
 ### Community 10 - "Community 10"
 
-Cohesion: 0.15
-Nodes (8): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems, MeetInviteNotificationToast()
+Cohesion: 0.17
+Nodes (10): fetchPlans(), getStudyPlans(), normalizePlanTasks(), sanitizeStudyPlan(), saveStudyPlan(), updateStudyPlanTasks(), userPlansCollection(), loadTopics() (+2 more)
 
 ### Community 11 - "Community 11"
 
-Cohesion: 0.19
-Nodes (9): fetchPlans(), getStudyPlans(), sanitizeStudyPlan(), saveStudyPlan(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore() (+1 more)
+Cohesion: 0.15
+Nodes (8): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems, MeetInviteNotificationToast()
 
 ### Community 12 - "Community 12"
 _Unable to determine domain due to missing code entities._
@@ -176,7 +176,7 @@ Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **254 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+249 more)
+- **255 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+250 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 18`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

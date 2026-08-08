@@ -23,9 +23,9 @@ import {
 } from "lucide-react";
 import {
   getStudyPlans,
-  updateStudyPlanTasks,
+  toggleTaskCompletion,
   type StudyPlan,
-  type StudyTask,
+  type StudyPlanTask,
 } from "@/lib/firebase/db";
 
 /* ---------------------------------------------------------------
@@ -193,7 +193,6 @@ function DashboardContent() {
         ? {
             ...t,
             completed: !t.completed,
-            status: !t.completed ? "done" : "pending",
           }
         : t
     );
@@ -204,7 +203,10 @@ function DashboardContent() {
     );
 
     try {
-      await updateStudyPlanTasks(user.uid, planId, updatedTasks);
+      const serverTasks = await toggleTaskCompletion(user.uid, planId, taskId);
+      setPlans((prev) =>
+        prev.map((p) => (p.id === planId ? { ...p, tasks: serverTasks } : p))
+      );
     } catch (err) {
       console.error("Failed to update task in Firestore:", err);
     }
@@ -517,11 +519,9 @@ function DashboardContent() {
                         >
                           {planSubject}
                         </span>
-                        {task.dueDate && (
-                          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded text-amber-300 bg-amber-950/40 border border-amber-500/20">
-                            {task.dueDate}
-                          </span>
-                        )}
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded text-amber-300 bg-amber-950/40 border border-amber-500/20">
+                          Hari ke-{task.day}
+                        </span>
                       </div>
                       <p
                         className="text-[13px] font-medium text-slate-100 truncate"

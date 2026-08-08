@@ -1,6 +1,6 @@
 # getStudyPlans()
 
-> God node · 4 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L134)
+> God node · 4 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L260)
 
 ## Call Trace Diagram
 
@@ -17,10 +17,10 @@ sequenceDiagram
     P1-->>- P0: return
     P1->>+ P2: calls
     P2-->>- P1: return
-    P2->>+ P1: calls
-    P1-->>- P2: return
     P2->>+ P3: calls
     P3-->>- P2: return
+    P2->>+ P1: calls
+    P1-->>- P2: return
     P2->>+ P4: calls
     P4-->>- P2: return
     P1->>+ P0: calls
