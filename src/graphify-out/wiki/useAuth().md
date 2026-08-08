@@ -1,6 +1,6 @@
 # useAuth()
 
-> God node · 3 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L106)
+> God node · 4 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116)
 
 ## Call Trace Diagram
 
@@ -8,7 +8,8 @@
 sequenceDiagram
     participant P0 as useAuth()
     participant P1 as ChallengeNotificationToast()
-    participant P2 as DashboardSidebar()
+    participant P2 as MeetInviteNotificationToast()
+    participant P3 as DashboardSidebar()
     P0->>+ P1: calls
     P1-->>- P0: return
     P1->>+ P0: calls
@@ -17,12 +18,17 @@ sequenceDiagram
     P2-->>- P0: return
     P2->>+ P0: calls
     P0-->>- P2: return
+    P0->>+ P3: calls
+    P3-->>- P0: return
+    P3->>+ P0: calls
+    P0-->>- P3: return
 ```
 
 ## Connections by Relation
 
 ### calls
 - [[ChallengeNotificationToast()]] `INFERRED`
+- [[MeetInviteNotificationToast()]] `INFERRED`
 - [[DashboardSidebar()]] `INFERRED`
 
 ### contains

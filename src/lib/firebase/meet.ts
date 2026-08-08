@@ -2,7 +2,8 @@
  * Firestore Study Meet Realtime Module — StudySync AI
  *
  * Realtime synchronization for Collaborative Study Meet rooms, shared documents,
- * friend invitations, and host-exclusive AI explanations by "abang ganteng".
+ * WebRTC voice chat signaling, in-room text chat, friend invitations,
+ * and host-exclusive AI explanations by "abang ganteng".
  */
 
 import {
@@ -13,8 +14,10 @@ import {
   getDocs,
   getDoc,
   updateDoc,
+  deleteDoc,
   query,
   where,
+  orderBy,
   onSnapshot,
   serverTimestamp,
   Timestamp,
@@ -32,6 +35,8 @@ export interface RoomParticipant {
   displayName: string;
   photoURL?: string;
   role: "host" | "participant";
+  isMuted?: boolean;
+  isSpeaking?: boolean;
   joinedAt: string;
 }
 
@@ -68,8 +73,17 @@ export interface MeetInvite {
   createdAt: string;
 }
 
+export interface MeetChatMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderPhotoURL?: string;
+  text: string;
+  createdAt: string;
+}
+
 /* ----------------------------------------------------------------
-   Room Creation & Join Operations
+   Room Creation, Join, Delete & Persistence Operations
 ---------------------------------------------------------------- */
 
 /**
@@ -105,6 +119,8 @@ export async function createStudyMeetRoom(
         displayName: hostName,
         photoURL: hostUser.photoURL || "",
         role: "host",
+        isMuted: false,
+        isSpeaking: false,
         joinedAt: now,
       },
     ],
@@ -135,6 +151,10 @@ export async function joinStudyMeetRoom(
   }
 
   const data = snap.data();
+  if (data.status === "ended") {
+    throw new Error("Ruang Study Meet ini telah ditutup oleh host.");
+  }
+
   const participants: RoomParticipant[] = Array.isArray(data.participants)
     ? data.participants
     : [];
@@ -149,6 +169,8 @@ export async function joinStudyMeetRoom(
       displayName: userName,
       photoURL: user.photoURL || "",
       role: user.uid === data.hostId ? "host" : "participant",
+      isMuted: false,
+      isSpeaking: false,
       joinedAt: new Date().toISOString(),
     };
 
@@ -159,6 +181,17 @@ export async function joinStudyMeetRoom(
   }
 
   return parseRoomDoc(snap.id, snap.data());
+}
+
+/**
+ * Close and delete/archive a Study Meet room (Host-only).
+ */
+export async function deleteStudyMeetRoom(roomId: string): Promise<void> {
+  const roomRef = doc(db, "study_meets", roomId);
+  await updateDoc(roomRef, {
+    status: "ended",
+    updatedAt: serverTimestamp(),
+  });
 }
 
 /**
@@ -193,6 +226,17 @@ export async function updateSharedDocument(
   const roomRef = doc(db, "study_meets", roomId);
   await updateDoc(roomRef, {
     sharedDocument: documentText,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+/**
+ * Reset and clear the shared workspace board to empty (Host-only).
+ */
+export async function clearSharedBoard(roomId: string): Promise<void> {
+  const roomRef = doc(db, "study_meets", roomId);
+  await updateDoc(roomRef, {
+    sharedDocument: "",
     updatedAt: serverTimestamp(),
   });
 }
@@ -255,6 +299,100 @@ export async function setRoomAiGenerating(
   await updateDoc(roomRef, {
     isAiGenerating: isGenerating,
     updatedAt: serverTimestamp(),
+  });
+}
+
+/* ----------------------------------------------------------------
+   Voice Chat & Participant Mic Real-Time State
+---------------------------------------------------------------- */
+
+/**
+ * Update a participant's mic mute/speaking state in Firestore room doc.
+ */
+export async function updateParticipantMicState(
+  roomId: string,
+  userId: string,
+  isMuted: boolean,
+  isSpeaking: boolean
+): Promise<void> {
+  const roomRef = doc(db, "study_meets", roomId);
+  const snap = await getDoc(roomRef);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const participants: RoomParticipant[] = Array.isArray(data.participants)
+    ? data.participants
+    : [];
+
+  const updatedParticipants = participants.map((p) => {
+    if (p.uid === userId) {
+      return { ...p, isMuted, isSpeaking };
+    }
+    return p;
+  });
+
+  await updateDoc(roomRef, {
+    participants: updatedParticipants,
+  });
+}
+
+/* ----------------------------------------------------------------
+   In-Room Text Chat API (`/study_meets/{roomId}/messages`)
+---------------------------------------------------------------- */
+
+/**
+ * Send a real-time text chat message in a Study Meet room.
+ */
+export async function sendMeetChatMessage(
+  roomId: string,
+  senderUser: User,
+  text: string
+): Promise<string> {
+  const cleanText = text.trim();
+  if (!cleanText) return "";
+
+  const messagesCol = collection(db, "study_meets", roomId, "messages");
+  const docRef = await addDoc(messagesCol, {
+    senderId: senderUser.uid,
+    senderName:
+      senderUser.displayName || senderUser.email?.split("@")[0] || "Scholar",
+    senderPhotoURL: senderUser.photoURL || "",
+    text: cleanText,
+    createdAt: serverTimestamp(),
+  });
+
+  return docRef.id;
+}
+
+/**
+ * Subscribe to real-time chat messages in a Study Meet room.
+ */
+export function subscribeToMeetChatMessages(
+  roomId: string,
+  callback: (messages: MeetChatMessage[]) => void
+): Unsubscribe {
+  const messagesCol = collection(db, "study_meets", roomId, "messages");
+  const q = query(messagesCol, orderBy("createdAt", "asc"));
+
+  return onSnapshot(q, (snap) => {
+    const list = snap.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        senderId: data.senderId,
+        senderName: data.senderName || "Scholar",
+        senderPhotoURL: data.senderPhotoURL || "",
+        text: data.text || "",
+        createdAt:
+          data.createdAt instanceof Timestamp
+            ? data.createdAt.toDate().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "Baru saja",
+      };
+    });
+    callback(list);
   });
 }
 

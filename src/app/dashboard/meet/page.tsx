@@ -20,6 +20,13 @@ import {
   Edit3,
   Shield,
   Crown,
+  Trash2,
+  Eraser,
+  Mic,
+  MicOff,
+  MessageSquare,
+  Volume2,
+  X,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { getStudyPlans, type StudyPlan } from "@/lib/firebase/db";
@@ -30,14 +37,20 @@ import {
 import {
   createStudyMeetRoom,
   joinStudyMeetRoom,
+  deleteStudyMeetRoom,
   subscribeToStudyMeetRoom,
   updateSharedDocument,
+  clearSharedBoard,
   importStudyPlanToRoom,
   appendAiExplanationToRoom,
   setRoomAiGenerating,
   sendMeetInvite,
+  updateParticipantMicState,
+  sendMeetChatMessage,
+  subscribeToMeetChatMessages,
   type StudyMeetRoom,
   type RoomParticipant,
+  type MeetChatMessage,
 } from "@/lib/firebase/meet";
 
 export default function StudyMeetPage() {
@@ -64,6 +77,21 @@ export default function StudyMeetPage() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showImportPlanModal, setShowImportPlanModal] = useState(false);
   const [showAiModal, setShowAiModal] = useState(false);
+  const [showDeleteRoomModal, setShowDeleteRoomModal] = useState(false);
+  const [showClearBoardModal, setShowClearBoardModal] = useState(false);
+
+  // Voice Chat & Mic State
+  const [isMuted, setIsMuted] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+
+  // In-Room Text Chat State
+  const [showChatPanel, setShowChatPanel] = useState(false);
+  const [chatMessages, setChatMessages] = useState<MeetChatMessage[]>([]);
+  const [chatInputText, setChatInputText] = useState("");
+  const chatScrollEndRef = useRef<HTMLDivElement | null>(null);
 
   // Friends & Study Plans for Modals
   const [friendsList, setFriendsList] = useState<FriendRelationship[]>([]);
@@ -72,7 +100,7 @@ export default function StudyMeetPage() {
   const [selectedPlanId, setSelectedPlanId] = useState<string>("");
   const [aiTopicPrompt, setAiTopicPrompt] = useState("");
 
-  // Editor State
+  // Shared Board State
   const [localDocText, setLocalDocText] = useState("");
   const [isEditorView, setIsEditorView] = useState(true); // true = edit, false = preview
   const [copiedCode, setCopiedCode] = useState(false);
@@ -91,21 +119,19 @@ export default function StudyMeetPage() {
 
     setRoomLoading(true);
 
-    // First attempt to join room if user is not yet in participants
+    // Attempt auto-join
     joinStudyMeetRoom(urlRoomId, user)
-      .catch((err) => {
-        console.warn("Auto-join note:", err.message);
-      })
-      .finally(() => {
-        setRoomLoading(false);
-      });
+      .catch((err) => console.warn("Auto-join note:", err.message))
+      .finally(() => setRoomLoading(false));
 
-    // Real-time listener for room changes
+    // Real-time listener for room document updates
     const unsubscribe = subscribeToStudyMeetRoom(urlRoomId, (roomData) => {
-      if (!roomData) {
-        setErrorMsg("Ruang Study Meet tidak ditemukan.");
+      if (!roomData || roomData.status === "ended") {
+        setErrorMsg("Ruang Study Meet telah ditutup oleh host.");
         setCurrentRoom(null);
         setRoomLoading(false);
+        // Redirect participant back to lobby
+        router.push("/dashboard/meet");
         return;
       }
 
@@ -115,10 +141,29 @@ export default function StudyMeetPage() {
     });
 
     return () => unsubscribe();
-  }, [urlRoomId, user]);
+  }, [urlRoomId, user, router]);
 
   /* ----------------------------------------------------------------
-     2. Fetch Friends & Plans for Host Actions
+     2. Realtime In-Room Text Chat Subscription
+  ---------------------------------------------------------------- */
+  useEffect(() => {
+    if (!urlRoomId || !currentRoom) {
+      setChatMessages([]);
+      return;
+    }
+
+    const unsubChat = subscribeToMeetChatMessages(urlRoomId, (msgs) => {
+      setChatMessages(msgs);
+      setTimeout(() => {
+        chatScrollEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    });
+
+    return () => unsubChat();
+  }, [urlRoomId, currentRoom?.roomId]);
+
+  /* ----------------------------------------------------------------
+     3. Fetch Friends & Plans for Host Modals
   ---------------------------------------------------------------- */
   useEffect(() => {
     if (!user) return;
@@ -132,6 +177,93 @@ export default function StudyMeetPage() {
 
     return () => unsubFriends();
   }, [user]);
+
+  /* ----------------------------------------------------------------
+     4. Open Mic (Voice Chat) Audio Stream & Speaking Detection
+  ---------------------------------------------------------------- */
+  const toggleMicrophone = useCallback(async () => {
+    if (!urlRoomId || !user) return;
+    const nextMuteState = !isMuted;
+    setIsMuted(nextMuteState);
+
+    try {
+      if (!nextMuteState) {
+        // Request browser audio mic stream
+        if (!mediaStreamRef.current) {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false,
+          });
+          mediaStreamRef.current = stream;
+
+          // Setup AudioContext Analyser for live speaking level detection
+          const AudioContextClass =
+            window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioContextClass) {
+            const ctx = new AudioContextClass();
+            audioContextRef.current = ctx;
+            const source = ctx.createMediaStreamSource(stream);
+            const analyser = ctx.createAnalyser();
+            analyser.fftSize = 256;
+            source.connect(analyser);
+            analyserRef.current = analyser;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            const checkSpeaking = () => {
+              if (!analyserRef.current || isMuted) return;
+              analyserRef.current.getByteFrequencyData(dataArray);
+              let sum = 0;
+              for (let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i];
+              }
+              const average = sum / bufferLength;
+              const nowSpeaking = average > 12;
+
+              if (nowSpeaking !== isSpeaking) {
+                setIsSpeaking(nowSpeaking);
+                updateParticipantMicState(
+                  urlRoomId,
+                  user.uid,
+                  false,
+                  nowSpeaking
+                ).catch(() => {});
+              }
+              requestAnimationFrame(checkSpeaking);
+            };
+            checkSpeaking();
+          }
+        } else {
+          mediaStreamRef.current.getAudioTracks().forEach((t) => (t.enabled = true));
+        }
+        await updateParticipantMicState(urlRoomId, user.uid, false, isSpeaking);
+      } else {
+        // Mute mic tracks
+        if (mediaStreamRef.current) {
+          mediaStreamRef.current.getAudioTracks().forEach((t) => (t.enabled = false));
+        }
+        setIsSpeaking(false);
+        await updateParticipantMicState(urlRoomId, user.uid, true, false);
+      }
+    } catch (err) {
+      console.warn("Microphone access permission note:", err);
+      setIsMuted(true);
+      await updateParticipantMicState(urlRoomId, user.uid, true, false);
+    }
+  }, [isMuted, isSpeaking, urlRoomId, user]);
+
+  // Clean up audio streams on unmount
+  useEffect(() => {
+    return () => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+      }
+    };
+  }, []);
 
   /* ----------------------------------------------------------------
      Handlers
@@ -173,6 +305,44 @@ export default function StudyMeetPage() {
       setErrorMsg(err instanceof Error ? err.message : "Gagal bergabung ke ruang.");
     } finally {
       setIsJoiningRoom(false);
+    }
+  };
+
+  // Host: Delete Room
+  const handleConfirmDeleteRoom = async () => {
+    if (!currentRoom || !isHost) return;
+    setShowDeleteRoomModal(false);
+    try {
+      await deleteStudyMeetRoom(currentRoom.roomId);
+      router.push("/dashboard/meet");
+    } catch (err) {
+      console.error("Delete room error:", err);
+    }
+  };
+
+  // Host: Clear Shared Board
+  const handleConfirmClearBoard = async () => {
+    if (!currentRoom || !isHost) return;
+    setShowClearBoardModal(false);
+    try {
+      await clearSharedBoard(currentRoom.roomId);
+      setLocalDocText("");
+    } catch (err) {
+      console.error("Clear board error:", err);
+    }
+  };
+
+  // Send Text Chat Message
+  const handleSendChatMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentRoom || !user || !chatInputText.trim()) return;
+
+    const text = chatInputText.trim();
+    setChatInputText("");
+    try {
+      await sendMeetChatMessage(currentRoom.roomId, user, text);
+    } catch (err) {
+      console.error("Send chat error:", err);
     }
   };
 
@@ -288,7 +458,7 @@ export default function StudyMeetPage() {
   }
 
   /* ----------------------------------------------------------------
-     3. LOBBY VIEW (No Active Room Selected)
+     LOBBY VIEW (No Active Room Selected)
   ---------------------------------------------------------------- */
   if (!urlRoomId || !currentRoom) {
     return (
@@ -308,7 +478,7 @@ export default function StudyMeetPage() {
           <div className="flex flex-col gap-2 max-w-xl">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300">
-                KOLABORASI REAL-TIME
+                KOLABORASI REAL-TIME & OPEN MIC
               </span>
               <span className="text-[10px] font-extrabold text-amber-300 px-2.5 py-0.5 rounded-full bg-amber-950/60 border border-amber-500/30">
                 ✨ abang ganteng AI Supported
@@ -323,7 +493,7 @@ export default function StudyMeetPage() {
             </h1>
 
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Buat ruang belajar live, undang teman-teman kamu, salin materi dari Study Plan, dan minta bantuan penjelasan langsung dari **abang ganteng** secara real-time!
+              Buat ruang belajar live, obrolan suara (Voice Open Mic), chat room real-time, impor Study Plan, dan minta penjelasan langsung dari **abang ganteng**!
             </p>
           </div>
 
@@ -358,7 +528,7 @@ export default function StudyMeetPage() {
                 Buat Ruang Meet Baru
               </h2>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Jadilah Host, undang teman-teman kamu, impor materi, dan kontrol penjelasan dari abang ganteng.
+                Jadilah Host, undang teman-teman kamu, kontrol papan catatan, dan panggil penjelasan dari abang ganteng.
               </p>
             </div>
 
@@ -449,7 +619,7 @@ export default function StudyMeetPage() {
   }
 
   /* ----------------------------------------------------------------
-     4. LIVE STUDY MEET WORKSPACE VIEW (Active Room)
+     LIVE STUDY MEET WORKSPACE VIEW (Active Room)
   ---------------------------------------------------------------- */
   return (
     <section className="flex flex-col gap-5 w-full max-w-6xl mx-auto px-4 py-6">
@@ -494,26 +664,104 @@ export default function StudyMeetPage() {
           </div>
         </div>
 
-        {/* Participants Avatars & Invite Quick Action */}
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-          <div className="flex items-center -space-x-2 overflow-hidden">
-            {currentRoom.participants.map((p) => (
+        {/* Header Right Actions: Open Mic Toggle, Text Chat Toggle & Host Delete */}
+        <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
+          {/* Real-Time Voice Mic Toggle Button */}
+          <button
+            type="button"
+            id="meet-mic-toggle-btn"
+            onClick={toggleMicrophone}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95 border ${
+              isMuted
+                ? "bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600"
+                : "bg-emerald-950/90 border-emerald-500/60 text-emerald-300 shadow-[0_0_15px_rgba(34,197,94,0.4)] animate-pulse"
+            }`}
+          >
+            {isMuted ? (
+              <>
+                <MicOff size={14} className="text-rose-400" /> Mic Teredam
+              </>
+            ) : (
+              <>
+                <Mic size={14} className="text-emerald-400" /> Mic Nyala 🎙️
+              </>
+            )}
+          </button>
+
+          {/* In-Room Text Chat Panel Toggle */}
+          <button
+            type="button"
+            id="meet-chat-toggle-btn"
+            onClick={() => setShowChatPanel((prev) => !prev)}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+              showChatPanel
+                ? "bg-cyan-950 border-cyan-400 text-cyan-200 shadow-md"
+                : "bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700"
+            }`}
+          >
+            <MessageSquare size={13} className="text-cyan-400" />
+            <span>Chat ({chatMessages.length})</span>
+          </button>
+
+          {/* Host Delete Room Button */}
+          {isHost && (
+            <button
+              type="button"
+              id="meet-delete-room-btn"
+              onClick={() => setShowDeleteRoomModal(true)}
+              className="px-3 py-1.5 rounded-full bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+              title="Tutup & Hapus Ruang Meet"
+            >
+              <Trash2 size={13} className="text-rose-400" /> Hapus Room
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Participants Avatars with Real-Time Glowing Speaking Indicator */}
+      <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-sm">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-extrabold tracking-wider uppercase text-cyan-300 flex items-center gap-1.5">
+            <Volume2 size={13} className="text-emerald-400 animate-pulse" /> Peserta Room ({currentRoom.participants.length}):
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 overflow-x-auto py-1">
+          {currentRoom.participants.map((p) => {
+            const isUserSpeaking = p.isSpeaking;
+            const isUserMuted = p.isMuted;
+
+            return (
               <div
                 key={p.uid}
-                className="w-8 h-8 rounded-full border-2 border-slate-900 bg-cyan-950 text-cyan-300 font-extrabold text-[11px] flex items-center justify-center shadow-md relative group"
-                title={`${p.displayName} (${p.role})`}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 relative transition-all"
               >
-                {p.displayName.charAt(0).toUpperCase()}
-                {p.role === "host" && (
-                  <Crown size={10} className="absolute -top-1 -right-1 text-amber-400 fill-amber-400" />
+                <div
+                  className={`w-7 h-7 rounded-full text-[11px] font-black flex items-center justify-center relative transition-all ${
+                    isUserSpeaking
+                      ? "bg-emerald-950 text-emerald-300 border-2 border-emerald-400 shadow-[0_0_16px_rgba(34,197,94,0.8)] animate-pulse"
+                      : "bg-cyan-950 text-cyan-300 border border-cyan-500/40"
+                  }`}
+                  title={`${p.displayName} (${p.role})`}
+                >
+                  {p.displayName.charAt(0).toUpperCase()}
+                  {p.role === "host" && (
+                    <Crown size={9} className="absolute -top-1 -right-1 text-amber-400 fill-amber-400" />
+                  )}
+                </div>
+
+                <span className="text-xs font-bold text-slate-200 max-w-[100px] truncate">
+                  {p.displayName}
+                </span>
+
+                {isUserMuted ? (
+                  <MicOff size={11} className="text-rose-400 shrink-0" />
+                ) : (
+                  <Mic size={11} className="text-emerald-400 shrink-0 animate-pulse" />
                 )}
               </div>
-            ))}
-          </div>
-
-          <span className="text-[11px] text-slate-400 font-bold">
-            {currentRoom.participants.length} Anggota
-          </span>
+            );
+          })}
         </div>
       </div>
 
@@ -562,6 +810,18 @@ export default function StudyMeetPage() {
                   <Sparkles size={14} className="fill-slate-950" /> Minta Penjelasan Abang Ganteng 💡
                 </>
               )}
+            </button>
+          )}
+
+          {/* Host Action 4: Clear Shared Board 🧹 */}
+          {isHost && (
+            <button
+              type="button"
+              id="meet-clear-board-btn"
+              onClick={() => setShowClearBoardModal(true)}
+              className="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+            >
+              <Eraser size={14} className="text-rose-400" /> Bersihkan Papan 🧹
             </button>
           )}
 
@@ -614,56 +874,144 @@ export default function StudyMeetPage() {
         )}
       </AnimatePresence>
 
-      {/* Main Shared Workspace Editor Board */}
-      <div
-        className="rounded-3xl p-5 sm:p-6 flex flex-col gap-4 border relative min-h-[420px]"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(3,11,34,0.92) 0%, rgba(6,182,212,0.04) 100%)",
-          borderColor: "rgba(255,255,255,0.08)",
-          boxShadow: "0 15px 45px rgba(0,0,0,0.5)",
-          backdropFilter: "blur(16px)",
-        }}
-      >
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <div className="flex items-center gap-2">
-            <FileText size={15} className="text-cyan-400" />
-            <span className="text-xs font-extrabold tracking-wider uppercase text-cyan-300">
-              Papan Catatan Real-Time Room
+      {/* Grid Layout: Main Shared Workspace Board + In-Room Text Chat Panel */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+        {/* Main Shared Workspace Editor Board */}
+        <div
+          className={`rounded-3xl p-5 sm:p-6 flex flex-col gap-4 border relative min-h-[420px] ${
+            showChatPanel ? "lg:col-span-2" : "lg:col-span-3"
+          }`}
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(3,11,34,0.92) 0%, rgba(6,182,212,0.04) 100%)",
+            borderColor: "rgba(255,255,255,0.08)",
+            boxShadow: "0 15px 45px rgba(0,0,0,0.5)",
+            backdropFilter: "blur(16px)",
+          }}
+        >
+          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <div className="flex items-center gap-2">
+              <FileText size={15} className="text-cyan-400" />
+              <span className="text-xs font-extrabold tracking-wider uppercase text-cyan-300">
+                Papan Catatan Real-Time Room
+              </span>
+            </div>
+            <span className="text-[10px] text-slate-400 font-mono">
+              {isHost ? "Host can edit directly" : "Synced via Firestore onSnapshot"}
             </span>
           </div>
-          <span className="text-[10px] text-slate-400 font-mono">
-            {isHost ? "Host can edit directly" : "Synced via Firestore onSnapshot"}
-          </span>
+
+          {isEditorView ? (
+            <textarea
+              id="meet-shared-workspace-input"
+              value={localDocText}
+              onChange={(e) => handleDocumentChange(e.target.value)}
+              disabled={!isHost}
+              rows={16}
+              placeholder={
+                isHost
+                  ? "Tulis catatan ruang meet di sini... (Terhubung real-time ke semua peserta room)"
+                  : "Host sedang menyiapkan catatan untuk room..."
+              }
+              className="w-full resize-none outline-none text-xs sm:text-sm leading-relaxed p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-100 placeholder:italic font-mono disabled:opacity-80 disabled:cursor-not-allowed focus:border-cyan-500/60 transition-colors"
+              style={{ fontFamily: "var(--font-inter)" }}
+              aria-label="Papan Catatan Bersama Study Meet"
+            />
+          ) : (
+            <div className="w-full min-h-[350px] p-5 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-100 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-sans overflow-y-auto">
+              {localDocText ? (
+                localDocText
+              ) : (
+                <span className="italic text-slate-400">
+                  Papan catatan room masih kosong.
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
-        {isEditorView ? (
-          <textarea
-            id="meet-shared-workspace-input"
-            value={localDocText}
-            onChange={(e) => handleDocumentChange(e.target.value)}
-            disabled={!isHost}
-            rows={16}
-            placeholder={
-              isHost
-                ? "Tulis catatan ruang meet di sini... (Terhubung real-time ke semua peserta room)"
-                : "Host sedang menyiapkan catatan untuk room..."
-            }
-            className="w-full resize-none outline-none text-xs sm:text-sm leading-relaxed p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-100 placeholder:italic font-mono disabled:opacity-80 disabled:cursor-not-allowed focus:border-cyan-500/60 transition-colors"
-            style={{ fontFamily: "var(--font-inter)" }}
-            aria-label="Papan Catatan Bersama Study Meet"
-          />
-        ) : (
-          <div className="w-full min-h-[350px] p-5 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-100 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap font-sans overflow-y-auto">
-            {localDocText ? (
-              localDocText
-            ) : (
-              <span className="italic text-slate-400">
-                Papan catatan room masih kosong.
-              </span>
-            )}
-          </div>
-        )}
+        {/* Collapsible Sidebar Text Chat Panel */}
+        <AnimatePresence>
+          {showChatPanel && (
+            <m.div
+              initial={{ opacity: 0, x: 20, scale: 0.96 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.96 }}
+              className="lg:col-span-1 rounded-3xl p-4 flex flex-col gap-3 border bg-slate-900/90 border-cyan-500/30 backdrop-blur-xl shadow-2xl h-[520px]"
+            >
+              <div className="flex items-center justify-between pb-2 border-b border-cyan-500/20">
+                <div className="flex items-center gap-2 text-cyan-300 font-extrabold text-xs">
+                  <MessageSquare size={14} className="text-cyan-400" />
+                  <span>Obrolan Teks Room</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowChatPanel(false)}
+                  className="text-slate-400 hover:text-slate-200 text-xs font-bold cursor-pointer"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+
+              {/* Chat Message List */}
+              <div className="flex-1 overflow-y-auto flex flex-col gap-2.5 p-1">
+                {chatMessages.length === 0 ? (
+                  <p className="text-[11px] text-slate-400 italic text-center py-10">
+                    Belum ada pesan di ruang chat ini. Mulai obrolan bersama anggota room!
+                  </p>
+                ) : (
+                  chatMessages.map((msg) => {
+                    const isSelf = user && msg.senderId === user.uid;
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`flex flex-col gap-1 max-w-[85%] ${
+                          isSelf ? "ml-auto items-end" : "mr-auto items-start"
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                          <span className="font-bold text-cyan-300">
+                            {isSelf ? "Kamu" : msg.senderName}
+                          </span>
+                          <span>•</span>
+                          <span>{msg.createdAt}</span>
+                        </div>
+                        <div
+                          className={`px-3 py-2 rounded-2xl text-xs leading-relaxed ${
+                            isSelf
+                              ? "bg-cyan-950/90 border border-cyan-500/40 text-cyan-100 rounded-tr-none"
+                              : "bg-slate-950/90 border border-slate-800 text-slate-200 rounded-tl-none"
+                          }`}
+                        >
+                          {msg.text}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+                <div ref={chatScrollEndRef} />
+              </div>
+
+              {/* Chat Input */}
+              <form onSubmit={handleSendChatMessage} className="flex items-center gap-2 pt-2 border-t border-white/10">
+                <input
+                  type="text"
+                  value={chatInputText}
+                  onChange={(e) => setChatInputText(e.target.value)}
+                  placeholder="Ketik pesan..."
+                  className="flex-1 text-xs px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 outline-none focus:border-cyan-400"
+                />
+                <button
+                  type="submit"
+                  disabled={!chatInputText.trim()}
+                  className="p-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-40 transition-all cursor-pointer shrink-0"
+                >
+                  <Send size={14} />
+                </button>
+              </form>
+            </m.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* MODAL 1: Host Invite Friends Modal */}
@@ -852,6 +1200,98 @@ export default function StudyMeetPage() {
                   </button>
                 </div>
               </form>
+            </m.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* MODAL 4: Host Confirm Clear Shared Board Modal */}
+      <AnimatePresence>
+        {showClearBoardModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+            <m.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+                <Eraser size={24} />
+              </div>
+              <div>
+                <h3
+                  className="text-lg font-black text-slate-100"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  Bersihkan Papan Catatan? 🧹
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Seluruh teks pada papan catatan ruang meet ini akan dihapus bersih secara real-time untuk seluruh anggota room.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowClearBoardModal(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmClearBoard}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95"
+                >
+                  Ya, Bersihkan Papan
+                </button>
+              </div>
+            </m.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* MODAL 5: Host Confirm Delete Room Modal */}
+      <AnimatePresence>
+        {showDeleteRoomModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+            <m.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+                <Trash2 size={24} />
+              </div>
+              <div>
+                <h3
+                  className="text-lg font-black text-slate-100"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  Hapus Ruang Study Meet? 🗑️
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Ruang meet akan ditutup dan seluruh anggota yang sedang bergabung akan otomatis dikembalikan ke menu lobby Study Meet.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteRoomModal(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmDeleteRoom}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95"
+                >
+                  Ya, Hapus Room
+                </button>
+              </div>
             </m.div>
           </div>
         )}

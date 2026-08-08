@@ -11,26 +11,26 @@
       "type": "FUNCTION"
     },
     {
+      "label": "MeetInviteNotificationToast()",
+      "risk": 0.428,
+      "type": "FUNCTION"
+    },
+    {
       "label": "unsub",
       "risk": 0.421,
       "type": "FUNCTION"
     },
     {
       "label": "POST()",
-      "risk": 0.389,
-      "type": "FUNCTION"
-    },
-    {
-      "label": "handleSubmit()",
-      "risk": 0.361,
+      "risk": 0.395,
       "type": "FUNCTION"
     }
   ],
   "blast_radius": {
-    "POST()": 11,
+    "POST()": 13,
     "parseFileBuffer()": 5,
-    "EASE": 4,
-    "handleAttack()": 4,
-    "saveStudyPlan()": 4
+    "router": 4,
+    "RESPONSE_SCHEMA": 4,
+    "EASE": 4
   }
 }

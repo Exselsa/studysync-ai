@@ -1,6 +1,6 @@
 # POST()
 
-> God node · 11 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L14)
+> God node · 13 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L14)
 
 ## Call Trace Diagram
 
@@ -16,7 +16,8 @@ sequenceDiagram
     participant P7 as offsetDate()
     participant P8 as buildFallback()
     participant P9 as buildFallbackExplanation()
-    participant P10 as buildFallbackStudyPlan()
+    participant P10 as buildFallbackExplanation()
+    participant P11 as buildFallbackStudyPlan()
     P0->>+ P1: calls
     P1-->>- P0: return
     P1->>+ P0: calls
@@ -51,6 +52,8 @@ sequenceDiagram
     P9-->>- P0: return
     P0->>+ P10: calls
     P10-->>- P0: return
+    P0->>+ P11: calls
+    P11-->>- P0: return
 ```
 
 ## Connections by Relation
@@ -59,10 +62,12 @@ sequenceDiagram
 - [[parseFileBuffer()]] `INFERRED`
 - [[buildFallbackResponse()]] `EXTRACTED`
 - [[buildFallback()]] `EXTRACTED`
+- [[buildFallbackExplanation()]] `EXTRACTED`
 - [[buildFallbackExplanation()]] `INFERRED`
 - [[buildFallbackStudyPlan()]] `INFERRED`
 
 ### contains
+- [[route.ts]] `EXTRACTED`
 - [[route.ts]] `EXTRACTED`
 - [[route.ts]] `EXTRACTED`
 - [[route.ts]] `EXTRACTED`
