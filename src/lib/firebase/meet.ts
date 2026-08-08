@@ -204,6 +204,35 @@ export async function deleteStudyMeetRoom(roomId: string): Promise<void> {
 }
 
 /**
+ * Permanently delete a Study Meet room document from Firestore.
+ */
+export async function permanentlyDeleteStudyMeetRoom(roomId: string): Promise<void> {
+  const roomRef = doc(db, "study_meets", roomId);
+  await deleteDoc(roomRef);
+}
+
+/**
+ * Remove a participant from a Study Meet room's participants list in Firestore.
+ */
+export async function leaveStudyMeetRoom(roomId: string, userId: string): Promise<void> {
+  const roomRef = doc(db, "study_meets", roomId);
+  const snap = await getDoc(roomRef);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const participants: RoomParticipant[] = Array.isArray(data.participants)
+    ? data.participants
+    : [];
+
+  const updatedParticipants = participants.filter((p) => p.uid !== userId);
+
+  await updateDoc(roomRef, {
+    participants: updatedParticipants,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+/**
  * Subscribe to real-time updates for a single Study Meet Room.
  */
 export function subscribeToStudyMeetRoom(

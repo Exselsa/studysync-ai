@@ -28,6 +28,7 @@ import {
   Volume2,
   X,
   DoorOpen,
+  LogOut,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { getStudyPlans, type StudyPlan } from "@/lib/firebase/db";
@@ -39,6 +40,8 @@ import {
   createStudyMeetRoom,
   joinStudyMeetRoom,
   deleteStudyMeetRoom,
+  permanentlyDeleteStudyMeetRoom,
+  leaveStudyMeetRoom,
   subscribeToStudyMeetRoom,
   subscribeToUserActiveStudyMeetRooms,
   updateSharedDocument,
@@ -94,6 +97,13 @@ export default function StudyMeetPage() {
   const [userActiveRooms, setUserActiveRooms] = useState<StudyMeetRoom[]>([]);
   const [roomLoading, setRoomLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Lobby Card Action Target State
+  const [targetLobbyRoom, setTargetLobbyRoom] = useState<{
+    room: StudyMeetRoom;
+    action: "delete" | "leave";
+  } | null>(null);
+  const [isProcessingLobbyAction, setIsProcessingLobbyAction] = useState(false);
 
   // Creation / Joining Modal State
   const [newRoomTitle, setNewRoomTitle] = useState("");
@@ -364,7 +374,31 @@ export default function StudyMeetPage() {
     }
   };
 
-  // Host: Delete Room
+  // Lobby Card Action Handler (Delete / Leave Room)
+  const handleConfirmLobbyAction = async () => {
+    if (!user || !targetLobbyRoom || isProcessingLobbyAction) return;
+    setIsProcessingLobbyAction(true);
+
+    const { room, action } = targetLobbyRoom;
+
+    try {
+      if (action === "delete") {
+        await permanentlyDeleteStudyMeetRoom(room.roomId);
+      } else {
+        await leaveStudyMeetRoom(room.roomId, user.uid);
+      }
+
+      // Dynamically filter local state
+      setUserActiveRooms((prev) => prev.filter((r) => r.roomId !== room.roomId));
+      setTargetLobbyRoom(null);
+    } catch (err) {
+      console.error(`Failed to ${action} room:`, err);
+    } finally {
+      setIsProcessingLobbyAction(false);
+    }
+  };
+
+  // Host: Delete Room inside active room view
   const handleConfirmDeleteRoom = async () => {
     if (!currentRoom || !isHost) return;
     setShowDeleteRoomModal(false);
@@ -569,7 +603,7 @@ export default function StudyMeetPage() {
           </div>
         )}
 
-        {/* SECTION: Ruang Belajar Saya (Active Room Persistence & Re-entry) */}
+        {/* SECTION: Ruang Belajar Saya (Active Room Persistence, Re-entry & Card Deletion) */}
         {userActiveRooms.length > 0 && (
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
@@ -616,13 +650,38 @@ export default function StudyMeetPage() {
                       </p>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/dashboard/meet?roomId=${room.roomId}`)}
-                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer"
-                    >
-                      <DoorOpen size={15} /> Masuk Kembali 🚪
-                    </button>
+                    {/* Lobby Room Card Action Buttons */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => router.push(`/dashboard/meet?roomId=${room.roomId}`)}
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-md transition-all active:scale-95 cursor-pointer"
+                      >
+                        <DoorOpen size={14} /> Masuk Kembali 🚪
+                      </button>
+
+                      {isUserHost ? (
+                        <button
+                          type="button"
+                          id={`meet-card-delete-${room.roomId}`}
+                          onClick={() => setTargetLobbyRoom({ room, action: "delete" })}
+                          className="py-2.5 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+                          title="Hapus room ini"
+                        >
+                          <Trash2 size={14} className="text-rose-400" /> Hapus 🗑️
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          id={`meet-card-leave-${room.roomId}`}
+                          onClick={() => setTargetLobbyRoom({ room, action: "leave" })}
+                          className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+                          title="Keluar dari room ini"
+                        >
+                          <LogOut size={14} className="text-slate-400" /> Keluar 🚪
+                        </button>
+                      )}
+                    </div>
                   </m.div>
                 );
               })}
@@ -736,6 +795,71 @@ export default function StudyMeetPage() {
             </form>
           </m.div>
         </div>
+
+        {/* LOBBY CARD ACTION CONFIRMATION MODAL (Delete / Leave) */}
+        <AnimatePresence>
+          {targetLobbyRoom && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+              <m.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+                  {targetLobbyRoom.action === "delete" ? (
+                    <Trash2 size={24} />
+                  ) : (
+                    <LogOut size={24} />
+                  )}
+                </div>
+
+                <div>
+                  <h3
+                    className="text-lg font-black text-slate-100"
+                    style={{ fontFamily: "var(--font-outfit)" }}
+                  >
+                    {targetLobbyRoom.action === "delete"
+                      ? "Hapus Room?"
+                      : "Keluar dari Room?"}
+                  </h3>
+                  <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                    {targetLobbyRoom.action === "delete"
+                      ? `Yakin ingin menghapus room "${targetLobbyRoom.room.title}"? Semua data obrolan dan catatan di room ini akan dihapus permanen.`
+                      : `Yakin ingin keluar dari room "${targetLobbyRoom.room.title}"?`}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setTargetLobbyRoom(null)}
+                    disabled={isProcessingLobbyAction}
+                    className="flex-1 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs cursor-pointer disabled:opacity-50"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmLobbyAction}
+                    disabled={isProcessingLobbyAction}
+                    className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                  >
+                    {isProcessingLobbyAction ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" /> Memproses...
+                      </>
+                    ) : targetLobbyRoom.action === "delete" ? (
+                      "Ya, Hapus"
+                    ) : (
+                      "Ya, Keluar"
+                    )}
+                  </button>
+                </div>
+              </m.div>
+            </div>
+          )}
+        </AnimatePresence>
       </section>
     );
   }
