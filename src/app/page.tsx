@@ -754,54 +754,165 @@ function InstagramIcon({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSV
 }
 
 /* ---------------------------------------------------------------
-   Team Data & Avatar Component
+   Team Data & Interactive Member Card
 --------------------------------------------------------------- */
 const teamMembers = [
   {
-    name: "Muh.D.Firdaus",
+    name: "MUH.D.FIRDAUS",
     role: "Full-Stack Dev",
     handle: "@_daffafirdaus0",
     instagram: "https://www.instagram.com/_daffafirdaus0?igsh=MTMwdjI5OXhuY2hyMQ==",
-    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Muh.D.Firdaus",
-    fallbackAvatar: "https://ui-avatars.com/api/?name=Muh.D.Firdaus&background=0d1f52&color=f59e0b&bold=true",
-    bio: "Merancang arsitektur sistem terpadu dan engine cerdas agar abang ganteng selalu siap membantu kamu.",
+    imageSrc: "/team/muh.d.firdaus.jpeg",
+    bio: "tidak dapat bicara,mutualan ig saja,sekalian bantu orang kecil ini mencapai 1000 follower pertamanya",
     accentGlow: "rgba(245, 158, 11, 0.3)",
     roleBadgeStyle: "bg-amber-500/10 text-amber-400 border-amber-500/30",
   },
   {
-    name: "Rio Arrasyid H",
+    name: "RIO ARRASYID H",
     role: "Frontend Dev",
     handle: "@riorasyidd",
     instagram: "https://www.instagram.com/riorasyidd?igsh=MWgyYmN6NWhiag==",
-    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Rio%20Arrasyid%20H",
-    fallbackAvatar: "https://ui-avatars.com/api/?name=Rio+Arrasyid+H&background=0d1f52&color=38bdf8&bold=true",
-    bio: "Pakar UI/UX yang menghadirkan tampilan visual memukau, animasi mulus, dan kenyamanan belajar buat kamu.",
+    imageSrc: "/team/rio_arrasyid_h.jpeg",
+    bio: "tidak ada yang diberi, semua harus diraih",
     accentGlow: "rgba(56, 189, 248, 0.3)",
     roleBadgeStyle: "bg-sky-500/10 text-sky-400 border-sky-500/30",
   },
   {
-    name: "Arief Rachman",
+    name: "ARIEF RACHMAN",
     role: "Backend Dev",
     handle: "@arippyon",
     instagram: "https://www.instagram.com/arippyon?igsh=MXYwaGNlZ29mNngxdw==",
-    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Arief%20Rachman",
-    fallbackAvatar: "https://ui-avatars.com/api/?name=Arief+Rachman&background=0d1f52&color=a855f7&bold=true",
-    bio: "Mengendalikan arsitektur server, optimasi data, dan keandalan sistem agar performa belajar kamu selalu cepat.",
+    imageSrc: "/team/arief_rachman.jpeg",
+    bio: "Kasih banjir bang",
     accentGlow: "rgba(168, 85, 247, 0.3)",
     roleBadgeStyle: "bg-purple-500/10 text-purple-400 border-purple-500/30",
   },
 ];
 
-function AvatarImage({ src, fallbackSrc, alt }: { src: string; fallbackSrc: string; alt: string }) {
-  const [imgSrc, setImgSrc] = useState(src);
+function TeamMemberCard({
+  member,
+  index,
+}: {
+  member: (typeof teamMembers)[0];
+  index: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const prefersReduced = useReducedMotion();
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
   return (
-    <img
-      src={imgSrc}
-      alt={alt}
-      onError={() => setImgSrc(fallbackSrc)}
-      className="w-full h-full object-cover p-1.5 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300"
-      loading="lazy"
-    />
+    <m.article
+      ref={cardRef}
+      variants={staggerItem}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="backdrop-blur-xl bg-slate-900/60 border border-white/15 rounded-3xl p-7 flex flex-col items-center text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_20px_45px_rgba(0,0,0,0.7)] group"
+    >
+      {/* Top Gloss Highlight Sheen */}
+      <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none z-10" />
+
+      {/* Interactive Liquid Mouse-Tracking Spotlight */}
+      <div
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+          isHovered ? "opacity-100" : "opacity-0"
+        }`}
+        style={{
+          background: `radial-gradient(350px circle at ${mousePos.x}px ${mousePos.y}px, rgba(168, 85, 247, 0.25), rgba(59, 130, 246, 0.15), transparent 80%)`,
+        }}
+      />
+
+      {/* Ambient Base Glow */}
+      <div
+        className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity duration-300"
+        style={{ background: member.accentGlow }}
+      />
+
+      {/* Floating 3D Profile Frame */}
+      <m.div
+        className="relative mb-6 z-10"
+        animate={prefersReduced ? {} : { y: [0, -7, 0] }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: index * 0.4,
+        }}
+      >
+        {/* Outer 3D Bevel Ring with Glow */}
+        <div
+          className="p-1.5 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_10px_25px_rgba(0,0,0,0.6)] transition-all duration-300 group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_0_30px_rgba(245,158,11,0.3)]"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.15) 100%)",
+          }}
+        >
+          {/* Inner Bevel Circular Photo Container */}
+          <div className="relative w-24 h-24 rounded-full overflow-hidden flex items-center justify-center bg-slate-950/80 border border-white/20 shadow-[inset_0_2px_6px_rgba(0,0,0,0.85)]">
+            <img
+              src={member.imageSrc}
+              alt={`Foto ${member.name}`}
+              className="w-24 h-24 rounded-full object-cover p-0.5 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        {/* Skeuomorphic Core Dev Badge */}
+        <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900 border border-white/20 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_10px_rgba(0,0,0,0.5)]">
+          Core Dev
+        </div>
+      </m.div>
+
+      {/* Member Details */}
+      <div className="space-y-2 mb-6 flex-1 flex flex-col items-center z-10">
+        <h3
+          className="text-xl font-bold tracking-tight text-slate-100 group-hover:text-amber-300 transition-colors uppercase"
+          style={{ fontFamily: "var(--font-outfit)" }}
+        >
+          {member.name}
+        </h3>
+
+        <div
+          className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] ${member.roleBadgeStyle}`}
+        >
+          {member.role}
+        </div>
+
+        <p
+          className="text-xs sm:text-sm leading-relaxed max-w-xs mt-3"
+          style={{ color: "var(--color-silver-300)" }}
+        >
+          {member.bio}
+        </p>
+      </div>
+
+      {/* Tactile Skeuomorphic Instagram Button */}
+      <a
+        href={member.instagram}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full mt-auto flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:via-pink-500 hover:to-amber-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_18px_rgba(219,39,119,0.35)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] active:scale-[0.97] border border-white/25 transition-all duration-200 group/btn z-10"
+        aria-label={`Kunjungi profil Instagram ${member.name}`}
+      >
+        <InstagramIcon className="w-4 h-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] group-hover/btn:rotate-6 transition-transform" />
+        <span>{member.handle}</span>
+        <ExternalLink
+          size={13}
+          className="text-white/80 opacity-70 group-hover/btn:opacity-100 group-hover/btn:translate-x-0.5 transition-all"
+        />
+      </a>
+    </m.article>
   );
 }
 
@@ -809,8 +920,6 @@ function AvatarImage({ src, fallbackSrc, alt }: { src: string; fallbackSrc: stri
    About Us Section ("Kenalan Sama Tim")
 --------------------------------------------------------------- */
 function AboutUsSection() {
-  const prefersReduced = useReducedMotion();
-
   return (
     <section
       id="about-us"
@@ -827,8 +936,8 @@ function AboutUsSection() {
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
       >
-        <span className="badge-gold mb-4 inline-flex" aria-label="About Us">
-          Kenalan Sama Tim
+        <span className="badge-gold mb-4 inline-flex" aria-label="Kenalan Yuk">
+          KENALAN YUK
         </span>
         <h2
           id="about-heading"
@@ -838,13 +947,14 @@ function AboutUsSection() {
             color: "var(--color-silver-50)",
           }}
         >
-          Tim Dibalik <span className="text-gradient-gold">StudySync-AI</span>
+          Nama Tim Kami{" "}
+          <span className="text-gradient-gold">Doa Ibu Mama Bapak Papa</span>
         </h2>
         <p
           className="text-base max-w-xl mx-auto leading-relaxed"
           style={{ color: "var(--color-silver-300)" }}
         >
-          Kenalan sama 3 orang yang bikin abang ganteng tetap eksis!
+          kalo kepo ama kita langsung aje follow ig,haha
         </p>
       </m.div>
 
@@ -857,91 +967,7 @@ function AboutUsSection() {
         viewport={{ once: true, margin: "-60px" }}
       >
         {teamMembers.map((member, index) => (
-          <m.article
-            key={member.name}
-            variants={staggerItem}
-            className="backdrop-blur-xl bg-slate-900/60 border border-white/15 rounded-3xl p-7 flex flex-col items-center text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_20px_45px_rgba(0,0,0,0.7)] group"
-          >
-            {/* Top Gloss Highlight Sheen */}
-            <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none" />
-
-            {/* Ambient Translucent Glow Highlight */}
-            <div
-              className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-25 pointer-events-none group-hover:opacity-60 transition-opacity duration-300"
-              style={{ background: member.accentGlow }}
-            />
-
-            {/* Floating 3D Avatar Badge Frame */}
-            <m.div
-              className="relative mb-6"
-              animate={prefersReduced ? {} : { y: [0, -7, 0] }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: index * 0.4,
-              }}
-            >
-              {/* Outer 3D Bevel Ring with Glow */}
-              <div
-                className="p-1.5 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_10px_25px_rgba(0,0,0,0.6)] transition-all duration-300 group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_0_30px_rgba(245,158,11,0.3)]"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.15) 100%)",
-                }}
-              >
-                {/* Inner Bevel Glass Container */}
-                <div className="relative w-28 h-28 rounded-full overflow-hidden flex items-center justify-center bg-slate-950/80 border border-white/20 shadow-[inset_0_2px_6px_rgba(0,0,0,0.85)]">
-                  <AvatarImage
-                    src={member.avatarUrl}
-                    fallbackSrc={member.fallbackAvatar}
-                    alt={`Avatar ${member.name}`}
-                  />
-                </div>
-              </div>
-
-              {/* Skeuomorphic Dev Tag Badge */}
-              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900 border border-white/20 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_10px_rgba(0,0,0,0.5)]">
-                Core Dev
-              </div>
-            </m.div>
-
-            {/* Member Details */}
-            <div className="space-y-2 mb-6 flex-1 flex flex-col items-center">
-              <h3
-                className="text-xl font-bold tracking-tight text-slate-100 group-hover:text-amber-300 transition-colors"
-                style={{ fontFamily: "var(--font-outfit)" }}
-              >
-                {member.name}
-              </h3>
-
-              <div
-                className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] ${member.roleBadgeStyle}`}
-              >
-                {member.role}
-              </div>
-
-              <p
-                className="text-xs sm:text-sm leading-relaxed max-w-xs mt-3"
-                style={{ color: "var(--color-silver-300)" }}
-              >
-                {member.bio}
-              </p>
-            </div>
-
-            {/* Tactile Skeuomorphic Instagram Button */}
-            <a
-              href={member.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full mt-auto flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:via-pink-500 hover:to-amber-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_18px_rgba(219,39,119,0.35)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] active:scale-[0.97] border border-white/25 transition-all duration-200 group/btn"
-              aria-label={`Kunjungi profil Instagram ${member.name}`}
-            >
-              <InstagramIcon className="w-4 h-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] group-hover/btn:rotate-6 transition-transform" />
-              <span>{member.handle}</span>
-              <ExternalLink size={13} className="text-white/80 opacity-70 group-hover/btn:opacity-100 group-hover/btn:translate-x-0.5 transition-all" />
-            </a>
-          </m.article>
+          <TeamMemberCard key={member.name} member={member} index={index} />
         ))}
       </m.div>
     </section>

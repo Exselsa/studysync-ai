@@ -1,7 +1,7 @@
 # Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
 
 ## Corpus Check
-- 33 files · ~70,863 words
+- 33 files · ~71,991 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
