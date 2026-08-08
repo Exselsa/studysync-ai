@@ -1,21 +1,22 @@
 # Community 11
 
-> 12 nodes · cohesion 0.17
+> 13 nodes · cohesion 0.19
 
 ## Key Concepts
 
-- [liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L1) (11 connections)
-- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L50) (1 connections)
-- [handleClick()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L109) (1 connections)
-- [[isHovered, setIsHovered]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L53) (1 connections)
-- [isIcon](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L120) (1 connections)
-- [mount](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L63) (1 connections)
-- [parent](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L60) (1 connections)
-- [rippleIdRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L54) (1 connections)
-- [[ripples, setRipples]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L52) (1 connections)
-- [SHADER_COLOR_BACK](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L35) (1 connections)
-- [SHADER_COLOR_TINT](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L36) (1 connections)
-- [shaderMountRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L51) (1 connections)
+- [db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L1) (8 connections)
+- [getStudyPlans()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L134) (4 connections)
+- [saveStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L116) (4 connections)
+- [userPlansCollection()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L70) (3 connections)
+- [handleToggleTask](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L698) (3 connections)
+- [fetchPlans()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L534) (2 connections)
+- [sanitizeStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L88) (2 connections)
+- [updateStudyPlanTasks()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L178) (2 connections)
+- [loadTopics()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L79) (2 connections)
+- [handleSaveToFirestore()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L218) (2 connections)
+- [resetStudyPlanTasks()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L215) (1 connections)
+- [sanitizeTask()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L77) (1 connections)
+- [updateStudyPlanStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L200) (1 connections)
 
 ## Relationships
 
@@ -23,12 +24,16 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\ui\liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\BossFightArena.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\study\MaterialUploader.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts)
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 27 (77%)
+- INFERRED: 8 (23%)
 - AMBIGUOUS: 0 (0%)
 
 ---

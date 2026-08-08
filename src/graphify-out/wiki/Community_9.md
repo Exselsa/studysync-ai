@@ -1,22 +1,26 @@
 # Community 9
 
-> 13 nodes · cohesion 0.15
+> 17 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- [useAuth()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116) (4 connections)
-- [AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L1) (4 connections)
-- [DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L1) (3 connections)
-- [ChallengeNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L15) (2 connections)
-- [DashboardSidebar()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L67) (2 connections)
-- [MeetInviteNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L14) (2 connections)
-- [AuthContext](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L47) (1 connections)
-- [AuthProvider()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L57) (1 connections)
-- [googleProvider](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L52) (1 connections)
-- [ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L1) (1 connections)
-- [MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L1) (1 connections)
-- [active](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L106) (1 connections)
-- [navItems](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L25) (1 connections)
+- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L1) (16 connections)
+- [router](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/tutor/page.tsx#L98) (4 connections)
+- [stats](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L628) (2 connections)
+- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L160) (1 connections)
+- [coreFeatures](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L64) (1 connections)
+- [EASE_SMOOTH](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L30) (1 connections)
+- [fadeUp](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L33) (1 connections)
+- [handleStartClick()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L169) (1 connections)
+- [heroOpacity](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L166) (1 connections)
+- [parallaxY](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L165) (1 connections)
+- [prefersReduced](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L167) (1 connections)
+- [processSteps](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L130) (1 connections)
+- [rect](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L800) (1 connections)
+- [{ scrollYProgress }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L161) (1 connections)
+- [staggerContainer](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L43) (1 connections)
+- [staggerItem](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L51) (1 connections)
+- [{ user, signInWithGoogle }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx#L158) (1 connections)
 
 ## Relationships
 
@@ -24,15 +28,14 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\tutor\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/tutor/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/page.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 18 (75%)
-- INFERRED: 6 (25%)
+- EXTRACTED: 36 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

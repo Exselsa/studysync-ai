@@ -17,6 +17,7 @@ import {
   Trophy,
   Sparkles,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import { useAuth } from "@/lib/contexts/AuthContext";
@@ -25,6 +26,8 @@ import {
   updateStudyPlanTasks,
   updateStudyPlanStatus,
   resetStudyPlanTasks,
+  deleteStudyPlan,
+  normalizePlanTasks,
   type StudyPlan,
   type StudyTask,
 } from "@/lib/firebase/db";
@@ -36,18 +39,18 @@ import MaterialUploader from "@/components/study/MaterialUploader";
 const EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
 
 const containerVariants: Variants = {
-  hidden:  { opacity: 0 },
+  hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.06 } },
 };
 
 const cardVariants: Variants = {
-  hidden:  { opacity: 0, y: 20, filter: "blur(6px)" },
-  visible: { opacity: 1, y: 0,  filter: "blur(0px)", transition: { duration: 0.42, ease: EASE } },
+  hidden: { opacity: 0, y: 20, filter: "blur(6px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.42, ease: EASE } },
 };
 
 const taskVariants: Variants = {
-  hidden:  { opacity: 0, x: -10 },
-  visible: { opacity: 1, x: 0,   transition: { duration: 0.28, ease: EASE } },
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.28, ease: EASE } },
 };
 
 /* ------------------------------------------------------------------
@@ -124,7 +127,7 @@ function ProgressRing({ pct }: { pct: number }) {
 }
 
 /* ------------------------------------------------------------------
-   Task Row — single draggable-feel task with checkbox
+   Task Row — single task item with checkbox
 ------------------------------------------------------------------ */
 function TaskRow({
   task,
@@ -189,7 +192,7 @@ function TaskRow({
           {task.title}
         </p>
 
-        {/* Gemini description — always shown so demo reviewers see the AI detail */}
+        {/* Description */}
         {task.description && (
           <p
             style={{
@@ -210,7 +213,6 @@ function TaskRow({
 
         {/* Status badge + due date row */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.35rem", flexWrap: "wrap" }}>
-          {/* Status pill */}
           {task.status && (
             <span
               style={{
@@ -269,18 +271,28 @@ function PlanCard({
   onToggleTask,
   onCompletePlan,
   onResetPlan,
+  onDeletePlan,
 }: {
   plan: StudyPlan;
   onToggleTask: (planId: string, taskId: string) => void;
   onCompletePlan: (planId: string) => Promise<void>;
   onResetPlan: (planId: string) => Promise<void>;
+  onDeletePlan: (planId: string) => Promise<void>;
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [actionLoading, setActionLoading] = useState<"complete" | "reset" | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [actionLoading, setActionLoading] = useState<"complete" | "reset" | "delete" | null>(null);
+
+  // Retroactive UI Data Repair: extract tasks dynamically if plan.tasks is empty
+  const effectiveTasks =
+    Array.isArray(plan.tasks) && plan.tasks.length > 0
+      ? plan.tasks
+      : normalizePlanTasks(plan);
+
   const accent = subjectAccent(plan.subject);
-  const progress = computeProgress(plan.tasks);
-  const completedCount = plan.tasks.filter((t) => t.completed).length;
-  const isAllCompleted = plan.tasks.length > 0 && completedCount === plan.tasks.length;
+  const progress = computeProgress(effectiveTasks);
+  const completedCount = effectiveTasks.filter((t) => t.completed).length;
+  const isAllCompleted = effectiveTasks.length > 0 && completedCount === effectiveTasks.length;
 
   const handleComplete = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -304,316 +316,411 @@ function PlanCard({
     }
   };
 
-  return (
-    <m.article
-      layout
-      variants={cardVariants}
-      whileHover={{ y: -2, transition: { duration: 0.18 } }}
-      style={{
-        background: isAllCompleted ? "rgba(6,28,46,0.75)" : "rgba(6,16,46,0.6)",
-        border: isAllCompleted
-          ? "1px solid rgba(34,197,94,0.3)"
-          : "1px solid rgba(255,255,255,0.08)",
-        borderRadius: "18px",
-        overflow: "hidden",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        boxShadow: isAllCompleted
-          ? "0 8px 32px rgba(34,197,94,0.15), 0 0 0 1px rgba(34,197,94,0.1) inset"
-          : "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset",
-        transition: "box-shadow 200ms ease, border-color 200ms ease, background 200ms ease",
-      }}
-      aria-label={`Study plan: ${plan.title}`}
-    >
-      {/* ---- Card Header ---- */}
-      <button
-        type="button"
-        onClick={() => setCollapsed((c) => !c)}
-        style={{
-          width: "100%",
-          display: "flex",
-          alignItems: "center",
-          gap: "1rem",
-          padding: "1.125rem 1.25rem",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          textAlign: "left",
-        }}
-        aria-expanded={!collapsed}
-        aria-controls={`plan-tasks-${plan.id}`}
-      >
-        {/* Progress ring */}
-        <ProgressRing pct={progress} />
+  const handleConfirmDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (actionLoading) return;
+    setActionLoading("delete");
+    setShowDeleteModal(false);
+    try {
+      await onDeletePlan(plan.id);
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
-        {/* Title + meta */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p
-            style={{
-              fontFamily: "var(--font-outfit)",
-              fontWeight: 700,
-              fontSize: "0.9375rem",
-              color: "var(--color-silver-50)",
-              lineHeight: 1.3,
-              marginBottom: "0.3rem",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {plan.title}
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", flexWrap: "wrap" }}>
-            {/* Subject badge */}
-            <span
+  return (
+    <>
+      <m.article
+        layout
+        variants={cardVariants}
+        whileHover={{ y: -2, transition: { duration: 0.18 } }}
+        style={{
+          background: isAllCompleted ? "rgba(6,28,46,0.75)" : "rgba(6,16,46,0.6)",
+          border: isAllCompleted
+            ? "1px solid rgba(34,197,94,0.3)"
+            : "1px solid rgba(255,255,255,0.08)",
+          borderRadius: "18px",
+          overflow: "hidden",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          boxShadow: isAllCompleted
+            ? "0 8px 32px rgba(34,197,94,0.15), 0 0 0 1px rgba(34,197,94,0.1) inset"
+            : "0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.03) inset",
+          transition: "box-shadow 200ms ease, border-color 200ms ease, background 200ms ease",
+        }}
+        aria-label={`Study plan: ${plan.title}`}
+      >
+        {/* ---- Card Header ---- */}
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            padding: "1.125rem 1.25rem",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            textAlign: "left",
+          }}
+          onClick={() => setCollapsed((c) => !c)}
+          role="button"
+          aria-expanded={!collapsed}
+          aria-controls={`plan-tasks-${plan.id}`}
+        >
+          {/* Progress ring */}
+          <ProgressRing pct={progress} />
+
+          {/* Title + meta */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p
               style={{
-                fontSize: "0.6875rem",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                padding: "0.15rem 0.5rem",
-                borderRadius: "9999px",
-                background: accent.bg,
-                border: `1px solid ${accent.border}`,
-                color: accent.text,
+                fontFamily: "var(--font-outfit)",
+                fontWeight: 700,
+                fontSize: "0.9375rem",
+                color: "var(--color-silver-50)",
+                lineHeight: 1.3,
+                marginBottom: "0.3rem",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              {plan.subject}
-            </span>
-            {/* Task progress */}
-            <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
-              {completedCount} / {plan.tasks.length} tasks
-            </span>
-            {/* 100% Completion Badge */}
-            {isAllCompleted && (
+              {plan.title}
+            </p>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", flexWrap: "wrap" }}>
+              {/* Subject badge */}
               <span
                 style={{
                   fontSize: "0.6875rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.05em",
-                  padding: "0.15rem 0.55rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  padding: "0.15rem 0.5rem",
                   borderRadius: "9999px",
-                  background: "rgba(34,197,94,0.15)",
-                  border: "1px solid rgba(34,197,94,0.3)",
-                  color: "rgba(34,197,94,0.95)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "0.25rem",
+                  background: accent.bg,
+                  border: `1px solid ${accent.border}`,
+                  color: accent.text,
                 }}
               >
-                <Trophy size={11} /> 100% Selesai
+                {plan.subject}
               </span>
-            )}
-            {/* Date */}
-            {plan.createdAt && (
-              <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)", display: "flex", alignItems: "center", gap: "0.25rem" }}>
-                <CalendarDays size={10} aria-hidden="true" />
-                {formatDate(plan.createdAt)}
+              {/* Task progress */}
+              <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
+                {completedCount} / {effectiveTasks.length} tasks
               </span>
-            )}
+              {/* 100% Completion Badge */}
+              {isAllCompleted && (
+                <span
+                  style={{
+                    fontSize: "0.6875rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.05em",
+                    padding: "0.15rem 0.55rem",
+                    borderRadius: "9999px",
+                    background: "rgba(34,197,94,0.15)",
+                    border: "1px solid rgba(34,197,94,0.3)",
+                    color: "rgba(34,197,94,0.95)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.25rem",
+                  }}
+                >
+                  <Trophy size={11} /> 100% Selesai
+                </span>
+              )}
+              {/* Date */}
+              {plan.createdAt && (
+                <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)", display: "flex", alignItems: "center", gap: "0.25rem" }}>
+                  <CalendarDays size={10} aria-hidden="true" />
+                  {formatDate(plan.createdAt)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Action buttons: Hapus Plan 🗑️ */}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}>
+            <button
+              type="button"
+              id={`plan-delete-btn-${plan.id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDeleteModal(true);
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.3rem",
+                padding: "0.35rem 0.65rem",
+                borderRadius: "8px",
+                background: "rgba(239, 68, 68, 0.12)",
+                border: "1px solid rgba(239, 68, 68, 0.28)",
+                color: "#f87171",
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                transition: "background 150ms ease, border-color 150ms ease",
+              }}
+              title="Hapus Study Plan ini"
+            >
+              <Trash2 size={13} /> Hapus Plan 🗑️
+            </button>
+
+            {/* Collapse chevron */}
+            <div aria-hidden="true" style={{ color: "var(--color-silver-400)", flexShrink: 0 }}>
+              {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+            </div>
           </div>
         </div>
 
-        {/* Collapse chevron */}
-        <div aria-hidden="true" style={{ color: "var(--color-silver-400)", flexShrink: 0 }}>
-          {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-        </div>
-      </button>
-
-      {/* ---- Task List ---- */}
-      <AnimatePresence initial={false}>
-        {!collapsed && (
-          <m.div
-            id={`plan-tasks-${plan.id}`}
-            key="tasks"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1, transition: { duration: 0.3, ease: EASE } }}
-            exit={{ height: 0, opacity: 0, transition: { duration: 0.2, ease: EASE } }}
-            style={{ overflow: "hidden" }}
-          >
-            <div
-              style={{
-                borderTop: "1px solid rgba(255,255,255,0.06)",
-                padding: "0.75rem 1.25rem 1.125rem",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
-              }}
+        {/* ---- Task List ---- */}
+        <AnimatePresence initial={false}>
+          {!collapsed && (
+            <m.div
+              id={`plan-tasks-${plan.id}`}
+              key="tasks"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1, transition: { duration: 0.3, ease: EASE } }}
+              exit={{ height: 0, opacity: 0, transition: { duration: 0.2, ease: EASE } }}
+              style={{ overflow: "hidden" }}
             >
-              {plan.tasks.length === 0 ? (
-                <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)", textAlign: "center", padding: "0.75rem 0" }}>
-                  Belum ada tugas di plan ini.
-                </p>
-              ) : (
-                <AnimatePresence>
-                  {plan.tasks.map((task) => (
-                    <TaskRow
-                      key={task.id}
-                      task={task}
-                      onToggle={(taskId) => onToggleTask(plan.id, taskId)}
-                    />
-                  ))}
-                </AnimatePresence>
-              )}
+              <div
+                style={{
+                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  padding: "0.75rem 1.25rem 1.125rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                }}
+              >
+                {effectiveTasks.length === 0 ? (
+                  <p style={{ fontSize: "0.8125rem", color: "var(--color-silver-400)", textAlign: "center", padding: "0.75rem 0" }}>
+                    Belum ada tugas di plan ini.
+                  </p>
+                ) : (
+                  <AnimatePresence>
+                    {effectiveTasks.map((task) => (
+                      <TaskRow
+                        key={task.id}
+                        task={task}
+                        onToggle={(taskId) => onToggleTask(plan.id, taskId)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                )}
 
-              {/* Progress bar */}
-              <div style={{ marginTop: "0.625rem" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.375rem" }}>
-                  <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>Progress</span>
-                  <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: progress === 100 ? "rgba(34,197,94,0.85)" : "var(--color-gold-400)" }}>
-                    {progress}%
-                  </span>
+                {/* Progress bar */}
+                <div style={{ marginTop: "0.625rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.375rem" }}>
+                    <span style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>Progress</span>
+                    <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: progress === 100 ? "rgba(34,197,94,0.85)" : "var(--color-gold-400)" }}>
+                      {progress}%
+                    </span>
+                  </div>
+                  <div style={{ height: "4px", borderRadius: "9999px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                    <m.div
+                      layout
+                      style={{
+                        height: "100%",
+                        borderRadius: "9999px",
+                        background: progress === 100
+                          ? "linear-gradient(90deg, rgba(34,197,94,0.7), rgba(34,197,94,0.9))"
+                          : "linear-gradient(90deg, var(--color-gold-500), var(--color-gold-300))",
+                        width: `${progress}%`,
+                        transition: "width 0.4s ease",
+                      }}
+                    />
+                  </div>
                 </div>
-                <div style={{ height: "4px", borderRadius: "9999px", background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+
+                {/* Completion Banner & Action Controls */}
+                {isAllCompleted && (
                   <m.div
-                    layout
+                    initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: EASE }}
                     style={{
-                      height: "100%",
-                      borderRadius: "9999px",
-                      background: progress === 100
-                        ? "linear-gradient(90deg, rgba(34,197,94,0.7), rgba(34,197,94,0.9))"
-                        : "linear-gradient(90deg, var(--color-gold-500), var(--color-gold-300))",
-                      width: `${progress}%`,
-                      transition: "width 0.4s ease",
+                      marginTop: "1rem",
+                      padding: "1.125rem",
+                      borderRadius: "14px",
+                      background: "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(16,185,129,0.06))",
+                      border: "1px solid rgba(34,197,94,0.28)",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.875rem",
+                      boxShadow: "0 8px 24px rgba(34,197,94,0.12)",
                     }}
-                  />
-                </div>
+                  >
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
+                      <div
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "10px",
+                          background: "rgba(34,197,94,0.2)",
+                          border: "1px solid rgba(34,197,94,0.35)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "#4ade80",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Sparkles size={18} />
+                      </div>
+                      <div>
+                        <h4
+                          style={{
+                            fontFamily: "var(--font-outfit)",
+                            fontWeight: 700,
+                            fontSize: "0.9375rem",
+                            color: "var(--color-silver-50)",
+                            lineHeight: 1.3,
+                            margin: 0,
+                          }}
+                        >
+                          Selamat! Semua tugas telah selesai 🥳
+                        </h4>
+                        <p
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--color-silver-300)",
+                            lineHeight: 1.45,
+                            marginTop: "0.25rem",
+                          }}
+                        >
+                          Pilih <strong>&ldquo;Selesai&rdquo;</strong> untuk mengarsipkan plan ini, atau <strong>&ldquo;Ulangi&rdquo;</strong> untuk memulai kembali dari 0%.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+                      {/* Selesai Button */}
+                      <button
+                        type="button"
+                        id={`plan-complete-btn-${plan.id}`}
+                        onClick={handleComplete}
+                        disabled={actionLoading !== null}
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.4rem",
+                          padding: "0.625rem 1rem",
+                          borderRadius: "10px",
+                          background: "linear-gradient(135deg, #22c55e, #16a34a)",
+                          border: "none",
+                          color: "#030b22",
+                          fontSize: "0.8125rem",
+                          fontWeight: 700,
+                          cursor: actionLoading ? "not-allowed" : "pointer",
+                          opacity: actionLoading ? 0.7 : 1,
+                          boxShadow: "0 2px 10px rgba(34,197,94,0.3)",
+                          transition: "transform 120ms ease, opacity 120ms ease",
+                        }}
+                      >
+                        {actionLoading === "complete" ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : (
+                          <CheckCircle2 size={15} />
+                        )}
+                        Selesai
+                      </button>
+
+                      {/* Ulangi Button */}
+                      <button
+                        type="button"
+                        id={`plan-reset-btn-${plan.id}`}
+                        onClick={handleReset}
+                        disabled={actionLoading !== null}
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.4rem",
+                          padding: "0.625rem 1rem",
+                          borderRadius: "10px",
+                          background: "rgba(255,255,255,0.07)",
+                          border: "1px solid rgba(255,255,255,0.15)",
+                          color: "var(--color-silver-100)",
+                          fontSize: "0.8125rem",
+                          fontWeight: 600,
+                          cursor: actionLoading ? "not-allowed" : "pointer",
+                          opacity: actionLoading ? 0.7 : 1,
+                          transition: "background 120ms ease",
+                        }}
+                      >
+                        {actionLoading === "reset" ? (
+                          <Loader2 size={14} className="animate-spin" />
+                        ) : (
+                          <RotateCcw size={15} />
+                        )}
+                        Ulangi
+                      </button>
+                    </div>
+                  </m.div>
+                )}
+              </div>
+            </m.div>
+          )}
+        </AnimatePresence>
+      </m.article>
+
+      {/* CONFIRMATION MODAL: Delete Study Plan */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+            <m.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+                <Trash2 size={24} />
+              </div>
+              <div>
+                <h3
+                  className="text-lg font-black text-slate-100"
+                  style={{ fontFamily: "var(--font-outfit)" }}
+                >
+                  Hapus Study Plan? 🗑️
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  Yakin mau menghapus plan &ldquo;<strong>{plan.title}</strong>&rdquo;? Semua data tugas dan progres di plan ini akan dihapus permanen.
+                </p>
               </div>
 
-              {/* Completion Banner & Action Controls */}
-              {isAllCompleted && (
-                <m.div
-                  initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ duration: 0.35, ease: EASE }}
-                  style={{
-                    marginTop: "1rem",
-                    padding: "1.125rem",
-                    borderRadius: "14px",
-                    background: "linear-gradient(135deg, rgba(34,197,94,0.14), rgba(16,185,129,0.06))",
-                    border: "1px solid rgba(34,197,94,0.28)",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.875rem",
-                    boxShadow: "0 8px 24px rgba(34,197,94,0.12)",
-                  }}
+              <div className="flex items-center gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-900 text-slate-300 font-bold text-xs cursor-pointer"
                 >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-                    <div
-                      style={{
-                        width: "36px",
-                        height: "36px",
-                        borderRadius: "10px",
-                        background: "rgba(34,197,94,0.2)",
-                        border: "1px solid rgba(34,197,94,0.35)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "#4ade80",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Sparkles size={18} />
-                    </div>
-                    <div>
-                      <h4
-                        style={{
-                          fontFamily: "var(--font-outfit)",
-                          fontWeight: 700,
-                          fontSize: "0.9375rem",
-                          color: "var(--color-silver-50)",
-                          lineHeight: 1.3,
-                          margin: 0,
-                        }}
-                      >
-                        Selamat! Semua tugas telah selesai 🥳
-                      </h4>
-                      <p
-                        style={{
-                          fontSize: "0.75rem",
-                          color: "var(--color-silver-300)",
-                          lineHeight: 1.45,
-                          marginTop: "0.25rem",
-                        }}
-                      >
-                        Pilih <strong>"Selesai"</strong> untuk mengarsipkan plan ini, atau <strong>"Ulangi"</strong> untuk memulai kembali dari 0%.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-                    {/* Selesai Button */}
-                    <button
-                      type="button"
-                      id={`plan-complete-btn-${plan.id}`}
-                      onClick={handleComplete}
-                      disabled={actionLoading !== null}
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "0.4rem",
-                        padding: "0.625rem 1rem",
-                        borderRadius: "10px",
-                        background: "linear-gradient(135deg, #22c55e, #16a34a)",
-                        border: "none",
-                        color: "#030b22",
-                        fontSize: "0.8125rem",
-                        fontWeight: 700,
-                        cursor: actionLoading ? "not-allowed" : "pointer",
-                        opacity: actionLoading ? 0.7 : 1,
-                        boxShadow: "0 2px 10px rgba(34,197,94,0.3)",
-                        transition: "transform 120ms ease, opacity 120ms ease",
-                      }}
-                    >
-                      {actionLoading === "complete" ? (
-                        <Loader2 size={14} className="animate-spin" />
-                      ) : (
-                        <CheckCircle2 size={15} />
-                      )}
-                      Selesai
-                    </button>
-
-                    {/* Ulangi Button */}
-                    <button
-                      type="button"
-                      id={`plan-reset-btn-${plan.id}`}
-                      onClick={handleReset}
-                      disabled={actionLoading !== null}
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: "0.4rem",
-                        padding: "0.625rem 1rem",
-                        borderRadius: "10px",
-                        background: "rgba(255,255,255,0.07)",
-                        border: "1px solid rgba(255,255,255,0.15)",
-                        color: "var(--color-silver-100)",
-                        fontSize: "0.8125rem",
-                        fontWeight: 600,
-                        cursor: actionLoading ? "not-allowed" : "pointer",
-                        opacity: actionLoading ? 0.7 : 1,
-                        transition: "background 120ms ease",
-                      }}
-                    >
-                      {actionLoading === "reset" ? (
-                        <Loader2 size={14} className="animate-spin" />
-                      ) : (
-                        <RotateCcw size={15} />
-                      )}
-                      Ulangi
-                    </button>
-                  </div>
-                </m.div>
-              )}
-            </div>
-          </m.div>
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmDelete}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                >
+                  {actionLoading === "delete" ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" /> Menghapus...
+                    </>
+                  ) : (
+                    "Ya, Hapus"
+                  )}
+                </button>
+              </div>
+            </m.div>
+          </div>
         )}
       </AnimatePresence>
-    </m.article>
+    </>
   );
 }
 
@@ -621,14 +728,22 @@ function PlanCard({
    Summary Stats Strip
 ------------------------------------------------------------------ */
 function StatsStrip({ plans }: { plans: StudyPlan[] }) {
-  const totalTasks = plans.reduce((s, p) => s + p.tasks.length, 0);
-  const doneTasks  = plans.reduce((s, p) => s + p.tasks.filter((t) => t.completed).length, 0);
-  const avgPct     = plans.length ? Math.round(plans.reduce((s, p) => s + computeProgress(p.tasks), 0) / plans.length) : 0;
+  const totalTasks = plans.reduce((s, p) => s + (p.tasks?.length || 0), 0);
+  const doneTasks = plans.reduce(
+    (s, p) => s + (p.tasks?.filter((t) => t.completed).length || 0),
+    0
+  );
+  const avgPct = plans.length
+    ? Math.round(
+        plans.reduce((s, p) => s + computeProgress(p.tasks || []), 0) /
+          plans.length
+      )
+    : 0;
 
   const stats = [
-    { Icon: BookOpen,    label: "Total Plan",     value: String(plans.length)   },
-    { Icon: CheckCircle2, label: "Tugas Selesai",  value: `${doneTasks} / ${totalTasks}` },
-    { Icon: TrendingUp,  label: "Rata-rata Progres", value: `${avgPct}%`           },
+    { Icon: BookOpen, label: "Total Plan", value: String(plans.length) },
+    { Icon: CheckCircle2, label: "Tugas Selesai", value: `${doneTasks} / ${totalTasks}` },
+    { Icon: TrendingUp, label: "Rata-rata Progres", value: `${avgPct}%` },
   ];
 
   return (
@@ -690,7 +805,9 @@ function PlanContent() {
     }
   }, [user?.uid]);
 
-  useEffect(() => { fetchPlans(); }, [fetchPlans]);
+  useEffect(() => {
+    fetchPlans();
+  }, [fetchPlans]);
 
   /* ----------------------------------------------------------------
      Toggle Task & sync with Firestore
@@ -704,7 +821,12 @@ function PlanContent() {
       setPlans((prev) =>
         prev.map((plan) => {
           if (plan.id !== planId) return plan;
-          updatedTasks = plan.tasks.map((t) =>
+          const currentTasks =
+            Array.isArray(plan.tasks) && plan.tasks.length > 0
+              ? plan.tasks
+              : normalizePlanTasks(plan);
+
+          updatedTasks = currentTasks.map((t) =>
             t.id !== taskId
               ? t
               : { ...t, completed: !t.completed, status: !t.completed ? "done" : "pending" }
@@ -722,6 +844,25 @@ function PlanContent() {
         await updateStudyPlanTasks(user.uid, planId, updatedTasks);
       } catch (err) {
         console.error("Failed to update task in Firestore:", err);
+      }
+    },
+    [user?.uid]
+  );
+
+  /* ----------------------------------------------------------------
+     Delete Plan (Hapus Plan -> deleteDoc in Firestore & remove from UI)
+  ---------------------------------------------------------------- */
+  const handleDeletePlan = useCallback(
+    async (planId: string) => {
+      if (!user?.uid) return;
+
+      setPlans((prev) => prev.filter((p) => p.id !== planId));
+
+      try {
+        await deleteStudyPlan(user.uid, planId);
+      } catch (err) {
+        console.error("Failed to delete plan in Firestore:", err);
+        setError("Gagal menghapus plan di database. Silakan muat ulang.");
       }
     },
     [user?.uid]
@@ -846,7 +987,6 @@ function PlanContent() {
       </div>
     );
   }
-
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, padding: "1.5rem 2rem", overflowY: "auto", gap: "1.5rem", maxWidth: "900px", width: "100%", margin: "0 auto" }}>
@@ -987,6 +1127,7 @@ function PlanContent() {
                 onToggleTask={handleToggleTask}
                 onCompletePlan={handleCompletePlan}
                 onResetPlan={handleResetPlan}
+                onDeletePlan={handleDeletePlan}
               />
             ))}
           </AnimatePresence>

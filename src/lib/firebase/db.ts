@@ -11,12 +11,14 @@ import {
   collection,
   addDoc,
   getDocs,
+  getDoc,
   query,
   orderBy,
   serverTimestamp,
   Timestamp,
   doc,
   updateDoc,
+  deleteDoc,
   type DocumentData,
   type QueryDocumentSnapshot,
 } from "firebase/firestore";
@@ -35,7 +37,7 @@ export interface StudyTask {
   /** "pending" | "in_progress" | "done" */
   status?: string;
   completed: boolean;
-  dueDate?: string; // ISO date string
+  dueDate?: string; // ISO date string or relative label
 }
 
 export interface StudyPlan {
@@ -72,7 +74,7 @@ function userPlansCollection(userId: string) {
 }
 
 /* ----------------------------------------------------------------
-   Sanitizer Helpers — prevent undefined values from breaking Firestore
+   Sanitizer & Normalizer Helpers — prevent undefined & schema mismatch
 ---------------------------------------------------------------- */
 export function sanitizeTask(task: Partial<StudyTask>): StudyTask {
   return {
@@ -85,11 +87,135 @@ export function sanitizeTask(task: Partial<StudyTask>): StudyTask {
   };
 }
 
+/**
+ * Normalizes and flattens tasks from any raw plan object (including nested AI modules).
+ */
+export function normalizePlanTasks(rawPlan: any): StudyTask[] {
+  if (!rawPlan || typeof rawPlan !== "object") return [];
+
+  const tasks: StudyTask[] = [];
+
+  const pushTask = (
+    title: string,
+    description: string = "",
+    completed: boolean = false,
+    status?: string,
+    dueDate?: string,
+    id?: string
+  ) => {
+    const cleanTitle = title.trim();
+    if (!cleanTitle) return;
+    if (tasks.some((t) => t.title.toLowerCase() === cleanTitle.toLowerCase())) {
+      return;
+    }
+
+    tasks.push(
+      sanitizeTask({
+        id: id || crypto.randomUUID(),
+        title: cleanTitle,
+        description: description.trim(),
+        completed: Boolean(completed),
+        status: status || (completed ? "done" : "pending"),
+        dueDate: dueDate || "",
+      })
+    );
+  };
+
+  // 1. Direct top-level `tasks` array
+  if (Array.isArray(rawPlan.tasks) && rawPlan.tasks.length > 0) {
+    for (const t of rawPlan.tasks) {
+      if (t && typeof t === "object") {
+        pushTask(
+          t.title || t.name || "",
+          t.description || "",
+          Boolean(t.completed),
+          t.status,
+          t.dueDate,
+          t.id
+        );
+      } else if (typeof t === "string") {
+        pushTask(t);
+      }
+    }
+  }
+
+  // 2. Direct top-level `studyPlan.tasks` array if wrapped
+  if (
+    rawPlan.studyPlan &&
+    typeof rawPlan.studyPlan === "object" &&
+    Array.isArray(rawPlan.studyPlan.tasks) &&
+    rawPlan.studyPlan.tasks.length > 0
+  ) {
+    for (const t of rawPlan.studyPlan.tasks) {
+      if (t && typeof t === "object") {
+        pushTask(
+          t.title || t.name || "",
+          t.description || "",
+          Boolean(t.completed),
+          t.status,
+          t.dueDate,
+          t.id
+        );
+      } else if (typeof t === "string") {
+        pushTask(t);
+      }
+    }
+  }
+
+  // 3. Extract tasks wrapped inside `modules`, `dailyModules`, or `days` arrays
+  const modules = Array.isArray(rawPlan.modules)
+    ? rawPlan.modules
+    : Array.isArray(rawPlan.dailyModules)
+    ? rawPlan.dailyModules
+    : Array.isArray(rawPlan.days)
+    ? rawPlan.days
+    : [];
+
+  if (modules.length > 0) {
+    modules.forEach((mod: any, modIdx: number) => {
+      const dayNum = mod.dayNumber || mod.day || modIdx + 1;
+      const modTasks = Array.isArray(mod.tasks)
+        ? mod.tasks
+        : Array.isArray(mod.dailyTasks)
+        ? mod.dailyTasks
+        : Array.isArray(mod.items)
+        ? mod.items
+        : [];
+
+      if (modTasks.length > 0) {
+        modTasks.forEach((mt: any, tIdx: number) => {
+          if (mt && typeof mt === "object") {
+            pushTask(
+              mt.title || mt.name || `Tugas Hari ${dayNum}-${tIdx + 1}`,
+              mt.description || mod.goal || mod.title || "",
+              Boolean(mt.completed),
+              mt.status,
+              mt.dueDate || `Hari ke-${dayNum}`,
+              mt.id
+            );
+          } else if (typeof mt === "string") {
+            pushTask(mt, mod.goal || "", false, "pending", `Hari ke-${dayNum}`);
+          }
+        });
+      } else if (mod.goal || mod.title) {
+        pushTask(
+          mod.goal || mod.title || `Modul Hari ${dayNum}`,
+          mod.description || (Array.isArray(mod.topics) ? mod.topics.join(", ") : ""),
+          false,
+          "pending",
+          `Hari ke-${dayNum}`
+        );
+      }
+    });
+  }
+
+  return tasks;
+}
+
 export function sanitizeStudyPlan(
-  planData: Partial<StudyPlan>
+  planData: Partial<StudyPlan> & Record<string, any>
 ): Omit<StudyPlan, "id" | "createdAt"> & { status: "active" | "completed" | "archived" } {
-  const rawTasks = Array.isArray(planData.tasks) ? planData.tasks : [];
-  const tasks = rawTasks.map((t) => sanitizeTask(t));
+  const tasks = normalizePlanTasks(planData);
   const completedCount = tasks.filter((t) => t.completed).length;
   const progress = tasks.length
     ? Math.round((completedCount / tasks.length) * 100)
@@ -139,8 +265,6 @@ export async function getStudyPlans(userId: string): Promise<StudyPlan[]> {
     .map((docSnap: QueryDocumentSnapshot<DocumentData>) => {
       const data = docSnap.data();
 
-      // Convert Firestore Timestamp → ISO string (gracefully handle null for
-      // optimistic writes that haven't resolved serverTimestamp yet)
       let createdAt = "";
       if (data.createdAt instanceof Timestamp) {
         createdAt = data.createdAt.toDate().toISOString();
@@ -148,11 +272,7 @@ export async function getStudyPlans(userId: string): Promise<StudyPlan[]> {
         createdAt = data.createdAt;
       }
 
-      const rawTasks = Array.isArray(data.tasks) ? data.tasks : [];
-      const tasks = rawTasks.map((t: unknown) =>
-        sanitizeTask((t && typeof t === "object" ? t : {}) as Partial<StudyTask>)
-      );
-
+      const tasks = normalizePlanTasks(data);
       const completedCount = tasks.filter((t) => t.completed).length;
       const computedProgress = tasks.length
         ? Math.round((completedCount / tasks.length) * 100)
@@ -160,8 +280,8 @@ export async function getStudyPlans(userId: string): Promise<StudyPlan[]> {
 
       return {
         id: docSnap.id,
-        title: data.title ?? "",
-        subject: data.subject ?? "",
+        title: data.title ?? "Study Plan",
+        subject: data.subject ?? "Umum",
         tasks,
         progress: typeof data.progress === "number" ? data.progress : computedProgress,
         status: (data.status as "active" | "completed" | "archived") ?? "active",
@@ -209,6 +329,18 @@ export async function updateStudyPlanStatus(
 }
 
 /* ----------------------------------------------------------------
+   deleteStudyPlan
+   Permanently deletes a study plan document from Firestore
+---------------------------------------------------------------- */
+export async function deleteStudyPlan(
+  userId: string,
+  planId: string
+): Promise<void> {
+  const planRef = doc(db, "users", userId, "studyPlans", planId);
+  await deleteDoc(planRef);
+}
+
+/* ----------------------------------------------------------------
    resetStudyPlanTasks
    Resets all task checkboxes to uncompleted (0% progress) in Firestore
 ---------------------------------------------------------------- */
@@ -218,11 +350,13 @@ export async function resetStudyPlanTasks(
   tasks: StudyTask[]
 ): Promise<StudyTask[]> {
   const planRef = doc(db, "users", userId, "studyPlans", planId);
-  const resetTasks = tasks.map((t) => sanitizeTask({
-    ...t,
-    completed: false,
-    status: "pending",
-  }));
+  const resetTasks = tasks.map((t) =>
+    sanitizeTask({
+      ...t,
+      completed: false,
+      status: "pending",
+    })
+  );
 
   await updateDoc(planRef, {
     tasks: resetTasks,

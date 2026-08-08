@@ -2,27 +2,27 @@
   "hotspots": [
     {
       "label": "ChallengeNotificationToast()",
-      "risk": 0.607,
+      "risk": 0.606,
       "type": "FUNCTION"
     },
     {
       "label": "handleAttack()",
-      "risk": 0.547,
+      "risk": 0.546,
       "type": "FUNCTION"
     },
     {
       "label": "MeetInviteNotificationToast()",
-      "risk": 0.428,
+      "risk": 0.427,
       "type": "FUNCTION"
     },
     {
       "label": "unsub",
-      "risk": 0.421,
+      "risk": 0.42,
       "type": "FUNCTION"
     },
     {
       "label": "POST()",
-      "risk": 0.395,
+      "risk": 0.392,
       "type": "FUNCTION"
     }
   ],
