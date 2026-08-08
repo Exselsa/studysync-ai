@@ -27,6 +27,7 @@ import {
 import { db } from "./clientApp";
 import { normalizeStudyPlanData } from "../normalizeStudyPlan";
 import type { StudyPlanTask, StudyPlan } from "../types";
+import { addStudyMinutes } from "./userStats";
 
 export type { StudyPlanTask, StudyPlan };
 
@@ -119,8 +120,9 @@ export async function toggleTaskCompletion(
   taskId: string
 ): Promise<StudyPlanTask[]> {
   const planRef = doc(db, "users", userId, "studyPlans", planId);
+  let newlyCompleted = false;
 
-  return await runTransaction(db, async (transaction) => {
+  const updatedTasks = await runTransaction(db, async (transaction) => {
     const docSnap = await transaction.get(planRef);
     if (!docSnap.exists()) {
       throw new Error("Study plan document not found.");
@@ -129,13 +131,26 @@ export async function toggleTaskCompletion(
     const data = docSnap.data();
     const tasks = normalizeStudyPlanData(data.tasks ?? data);
 
-    const updatedTasks = tasks.map((t) =>
-      t.id === taskId ? { ...t, completed: !t.completed } : t
-    );
+    const mappedTasks = tasks.map((t) => {
+      if (t.id === taskId) {
+        const nextStatus = !t.completed;
+        if (nextStatus) newlyCompleted = true;
+        return { ...t, completed: nextStatus };
+      }
+      return t;
+    });
 
-    transaction.update(planRef, { tasks: updatedTasks });
-    return updatedTasks;
+    transaction.update(planRef, { tasks: mappedTasks });
+    return mappedTasks;
   });
+
+  if (newlyCompleted) {
+    addStudyMinutes(userId, 15).catch((err) =>
+      console.error("Failed to reward study minutes:", err)
+    );
+  }
+
+  return updatedTasks;
 }
 
 /* ----------------------------------------------------------------

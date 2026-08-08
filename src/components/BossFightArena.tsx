@@ -44,6 +44,7 @@ import {
 } from "@/lib/firebase/friends";
 import { useSearchParams, useRouter } from "next/navigation";
 import FriendsPanel from "@/components/friends/FriendsPanel";
+import { useStudyTimer } from "@/hooks/useStudyTimer";
 
 /* ---------------------------------------------------------------
    Types & Constants
@@ -263,6 +264,7 @@ function HealthBar({
    --------------------------------------------------------------- */
 export default function BossFightArena() {
   const { user } = useAuth();
+  useStudyTimer(user?.uid);
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlTopic = searchParams.get("topic");

@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- [POST()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L14) (13 connections)
+- [POST()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L14) (14 connections)
 - [study-materials.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L1) (6 connections)
 - [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L1) (5 connections)
 - [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts#L1) (5 connections)
@@ -22,8 +22,8 @@
 - [sanitizeText()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/utils/file-parser.ts#L132) (2 connections)
 - [buildFallbackExplanation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/meet/explain/route.ts#L46) (2 connections)
 - [offsetDate()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L151) (2 connections)
-- [buildFallbackExplanation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L297) (2 connections)
-- [buildFallbackStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L222) (2 connections)
+- [buildFallbackExplanation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L191) (2 connections)
+- [buildFallbackStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L175) (2 connections)
 - [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/explain/route.ts#L1) (1 connections)
 - [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/generate-plan/route.ts#L1) (1 connections)
 - [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L1) (1 connections)
@@ -49,8 +49,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 82 (93%)
-- INFERRED: 6 (7%)
+- EXTRACTED: 82 (92%)
+- INFERRED: 7 (8%)
 - AMBIGUOUS: 0 (0%)
 
 ---

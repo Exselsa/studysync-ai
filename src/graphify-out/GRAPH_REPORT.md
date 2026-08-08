@@ -1,12 +1,12 @@
 # Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
 
 ## Corpus Check
-- 37 files · ~90,759 words
+- 39 files · ~90,583 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 421 nodes · 457 edges · 23 communities detected
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 28 edges (avg confidence: 0.8)
+- 423 nodes · 460 edges · 24 communities detected
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 32 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -33,30 +33,31 @@
 - [[_COMMUNITY_Community 20|Community 20]]
 - [[_COMMUNITY_Community 21|Community 21]]
 - [[_COMMUNITY_Community 22|Community 22]]
+- [[_COMMUNITY_Community 23|Community 23]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `POST()` - 13 edges
-2. `parseFileBuffer()` - 5 edges
-3. `router` - 4 edges
-4. `RESPONSE_SCHEMA` - 4 edges
-5. `EASE` - 4 edges
-6. `handleAttack()` - 4 edges
-7. `useAuth()` - 4 edges
-8. `saveStudyPlan()` - 4 edges
-9. `getStudyPlans()` - 4 edges
-10. `sendFriendRequest()` - 4 edges
+1. `POST()` - 14 edges
+2. `normalizeStudyPlanData()` - 5 edges
+3. `parseFileBuffer()` - 5 edges
+4. `router` - 4 edges
+5. `RESPONSE_SCHEMA` - 4 edges
+6. `EASE` - 4 edges
+7. `handleToggleTask` - 4 edges
+8. `handleAttack()` - 4 edges
+9. `useAuth()` - 4 edges
+10. `saveStudyPlan()` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `POST()` --calls--> `buildFallbackExplanation()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\ai\study-materials.ts
 - `POST()` --calls--> `buildFallbackStudyPlan()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\ai\study-materials.ts
+- `POST()` --calls--> `normalizeStudyPlanData()`  [INFERRED]
+  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\normalizeStudyPlan.ts
 - `POST()` --calls--> `buildFallbackExplanation()`  [EXTRACTED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\meet\explain\route.ts
 - `POST()` --calls--> `parseFileBuffer()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts
-- `handleToggleTask` --calls--> `updateStudyPlanTasks()`  [INFERRED]
-  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
 
 ## Communities
 
@@ -92,8 +93,8 @@ Nodes (20): extractPrintableStrings(), extractTextFromDocx(), extractTextFromPdf
 
 ### Community 6 - "Community 6"
 
-Cohesion: 0.07
-Nodes (20): accent, [actionLoading, setActionLoading], cardVariants, circ, [collapsed, setCollapsed], completedCount, dash, effectiveTasks (+12 more)
+Cohesion: 0.08
+Nodes (19): accent, [actionLoading, setActionLoading], cardVariants, circ, [collapsed, setCollapsed], completedCount, dash, [error, setError] (+11 more)
 
 ### Community 7 - "Community 7"
 
@@ -107,13 +108,13 @@ Nodes (12): async(), handleAttack(), handleKeyDown(), commitDuelEvaluation(), fi
 
 ### Community 9 - "Community 9"
 
-Cohesion: 0.12
-Nodes (15): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+7 more)
+Cohesion: 0.14
+Nodes (11): fetchPlans(), getStudyPlans(), saveStudyPlan(), toggleTaskCompletion(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore() (+3 more)
 
 ### Community 10 - "Community 10"
 
-Cohesion: 0.17
-Nodes (10): fetchPlans(), getStudyPlans(), normalizePlanTasks(), sanitizeStudyPlan(), saveStudyPlan(), updateStudyPlanTasks(), userPlansCollection(), loadTopics() (+2 more)
+Cohesion: 0.12
+Nodes (15): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+7 more)
 
 ### Community 11 - "Community 11"
 
@@ -175,8 +176,13 @@ _Unable to determine domain due to missing code entities._
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 23 - "Community 23"
+_Unable to determine domain due to missing code entities._
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **255 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+250 more)
+- **254 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+249 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 18`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -187,4 +193,6 @@ Nodes (0):
 - **Thin community `Community 21`** (1 nodes): `loading.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 22`** (1 nodes): `Providers.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 23`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

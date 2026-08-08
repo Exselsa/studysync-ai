@@ -4,7 +4,7 @@
 
 ## Key Concepts
 
-- [Providers.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/providers/Providers.tsx#L1) (0 connections)
+- [types.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/types.ts#L1) (0 connections)
 
 ## Relationships
 
@@ -12,7 +12,7 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\providers\Providers.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/providers/Providers.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\types.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/types.ts)
 
 ## Audit Trail
 

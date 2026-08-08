@@ -1,30 +1,28 @@
-# parseFileBuffer()
+# normalizeStudyPlanData()
 
-> God node · 5 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/utils/file-parser.ts#L17)
+> God node · 5 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\normalizeStudyPlan.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts#L61)
 
 ## Call Trace Diagram
 
 ```mermaid
 sequenceDiagram
-    participant P0 as parseFileBuffer()
+    participant P0 as normalizeStudyPlanData()
     participant P1 as POST()
-    participant P2 as normalizeStudyPlanData()
-    participant P3 as saveStudyPlan()
-    participant P4 as updateStudyPlanTasks()
-    participant P5 as generateTaskId()
+    participant P2 as parseFileBuffer()
+    participant P3 as extractTextFromPdf()
+    participant P4 as extractTextFromDocx()
+    participant P5 as sanitizeText()
     participant P6 as buildFallbackResponse()
     participant P7 as offsetDate()
     participant P8 as buildFallback()
     participant P9 as buildFallbackExplanation()
     participant P10 as buildFallbackExplanation()
     participant P11 as buildFallbackStudyPlan()
-    participant P12 as extractTextFromPdf()
-    participant P13 as extractTextFromDocx()
-    participant P14 as sanitizeText()
+    participant P12 as saveStudyPlan()
+    participant P13 as updateStudyPlanTasks()
+    participant P14 as generateTaskId()
     P0->>+ P1: calls
     P1-->>- P0: return
-    P1->>+ P0: calls
-    P0-->>- P1: return
     P1->>+ P2: calls
     P2-->>- P1: return
     P2->>+ P1: calls
@@ -35,6 +33,8 @@ sequenceDiagram
     P4-->>- P2: return
     P2->>+ P5: calls
     P5-->>- P2: return
+    P1->>+ P0: calls
+    P0-->>- P1: return
     P1->>+ P6: calls
     P6-->>- P1: return
     P6->>+ P1: calls
@@ -65,12 +65,12 @@ sequenceDiagram
 
 ### calls
 - [[POST()]] `INFERRED`
-- [[extractTextFromPdf()]] `EXTRACTED`
-- [[extractTextFromDocx()]] `EXTRACTED`
-- [[sanitizeText()]] `EXTRACTED`
+- [[saveStudyPlan()]] `INFERRED`
+- [[updateStudyPlanTasks()]] `INFERRED`
+- [[generateTaskId()]] `EXTRACTED`
 
 ### contains
-- [[file-parser.ts]] `EXTRACTED`
+- [[normalizeStudyPlan.ts]] `EXTRACTED`
 
 ---
 

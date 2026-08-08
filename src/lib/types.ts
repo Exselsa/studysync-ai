@@ -15,3 +15,10 @@ export interface StudyPlan {
   tasks: StudyPlanTask[];
   createdAt: any;
 }
+
+export interface UserStats {
+  currentStreak: number;
+  lastActiveDate: string; // ISO date format "YYYY-MM-DD"
+  totalStudyMinutesThisMonth: number;
+  lastResetMonth: number; // Current month index (0-11) for monthly resets
+}

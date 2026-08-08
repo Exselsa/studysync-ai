@@ -27,6 +27,8 @@ import {
   type StudyPlan,
   type StudyPlanTask,
 } from "@/lib/firebase/db";
+import { recordDailyActivity } from "@/lib/firebase/userStats";
+import type { UserStats } from "@/lib/types";
 
 /* ---------------------------------------------------------------
    Types
@@ -160,7 +162,15 @@ function DashboardContent() {
   const [plans, setPlans] = useState<StudyPlan[]>([]);
   const [loadingPlans, setLoadingPlans] = useState<boolean>(true);
 
-  // Fetch active study plans from Firestore
+  const [userStats, setUserStats] = useState<UserStats>({
+    currentStreak: 1,
+    lastActiveDate: "",
+    totalStudyMinutesThisMonth: 0,
+    lastResetMonth: new Date().getMonth(),
+  });
+  const [loadingStats, setLoadingStats] = useState<boolean>(true);
+
+  // Fetch active study plans & record daily activity stats from Firestore
   useEffect(() => {
     if (!user) return;
     let isMounted = true;
@@ -175,6 +185,18 @@ function DashboardContent() {
       .catch((err) => {
         console.error("Error fetching study plans for dashboard:", err);
         if (isMounted) setLoadingPlans(false);
+      });
+
+    recordDailyActivity(user.uid)
+      .then((stats) => {
+        if (isMounted) {
+          setUserStats(stats);
+          setLoadingStats(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Error recording daily activity:", err);
+        if (isMounted) setLoadingStats(false);
       });
 
     return () => {
@@ -207,6 +229,9 @@ function DashboardContent() {
       setPlans((prev) =>
         prev.map((p) => (p.id === planId ? { ...p, tasks: serverTasks } : p))
       );
+      // Re-fetch user stats to update study hours if task completion awarded minutes
+      const updatedStats = await recordDailyActivity(user.uid);
+      setUserStats(updatedStats);
     } catch (err) {
       console.error("Failed to update task in Firestore:", err);
     }
@@ -229,9 +254,13 @@ function DashboardContent() {
       id: "stat-streak",
       Icon: Flame,
       label: "Streak Belajar",
-      value: "14",
+      value: loadingStats ? "..." : userStats.currentStreak.toString(),
       unit: "hari",
-      delta: "+2 dibanding minggu lalu",
+      delta: loadingStats
+        ? "Memuat streak..."
+        : userStats.currentStreak > 1
+        ? `${userStats.currentStreak} hari beruntun! 🔥`
+        : "Pertahankan streak kamu!",
       deltaPositive: true,
       accent: "rgba(245, 158, 11, 0.10)",
       accentBorder: "rgba(245, 158, 11, 0.22)",
@@ -241,9 +270,13 @@ function DashboardContent() {
       id: "stat-hours",
       Icon: Clock,
       label: "Jam Belajar",
-      value: "47.5",
+      value: loadingStats
+        ? "..."
+        : (userStats.totalStudyMinutesThisMonth / 60).toFixed(1),
       unit: "jam bulan ini",
-      delta: "+8.2 dibanding bulan lalu",
+      delta: loadingStats
+        ? "Memuat jam..."
+        : `${userStats.totalStudyMinutesThisMonth} menit tercatat`,
       deltaPositive: true,
       accent: "rgba(56, 189, 248, 0.08)",
       accentBorder: "rgba(56, 189, 248, 0.18)",

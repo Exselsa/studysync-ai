@@ -31,6 +31,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { useStudyTimer } from "@/hooks/useStudyTimer";
 import { getStudyPlans, type StudyPlan } from "@/lib/firebase/db";
 import {
   subscribeToFriends,
@@ -85,6 +86,7 @@ function RemoteAudioElement({
 
 export default function StudyMeetPage() {
   const { user, loading: authLoading } = useAuth();
+  useStudyTimer(user?.uid);
   const searchParams = useSearchParams();
   const router = useRouter();
 

@@ -24,6 +24,7 @@ import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import LiquidMetalButton from "@/components/ui/liquid-metal-button";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { saveStudyPlan } from "@/lib/firebase/db";
+import { useStudyTimer } from "@/hooks/useStudyTimer";
 import type { StudyPlanPayload } from "@/app/api/chat/route";
 
 /* ------------------------------------------------------------------
@@ -735,6 +736,8 @@ function GuidedSetupModal({
 ------------------------------------------------------------------ */
 function TutorContent() {
   const { user } = useAuth();
+  useStudyTimer(user?.uid);
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);

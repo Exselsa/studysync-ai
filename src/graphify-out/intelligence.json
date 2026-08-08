@@ -1,36 +1,36 @@
 {
   "hotspots": [
     {
-      "label": "normalizePlanTasks()",
-      "risk": 0.556,
+      "label": "normalizeStudyPlanData()",
+      "risk": 0.579,
       "type": "FUNCTION"
     },
     {
       "label": "ChallengeNotificationToast()",
-      "risk": 0.439,
+      "risk": 0.435,
       "type": "FUNCTION"
     },
     {
       "label": "handleAttack()",
-      "risk": 0.392,
+      "risk": 0.389,
       "type": "FUNCTION"
     },
     {
       "label": "MeetInviteNotificationToast()",
-      "risk": 0.311,
+      "risk": 0.308,
       "type": "FUNCTION"
     },
     {
       "label": "POST()",
-      "risk": 0.29,
+      "risk": 0.291,
       "type": "FUNCTION"
     }
   ],
   "blast_radius": {
-    "POST()": 13,
+    "POST()": 14,
+    "normalizeStudyPlanData()": 5,
     "parseFileBuffer()": 5,
     "router": 4,
-    "RESPONSE_SCHEMA": 4,
-    "EASE": 4
+    "RESPONSE_SCHEMA": 4
   }
 }
