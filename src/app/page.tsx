@@ -13,10 +13,11 @@ import {
   ChevronRight,
   Shield,
   Clock,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 
 /* ---------------------------------------------------------------
@@ -731,6 +732,262 @@ function CtaSection() {
 }
 
 /* ---------------------------------------------------------------
+   Instagram SVG Icon Component
+--------------------------------------------------------------- */
+function InstagramIcon({ className = "w-4 h-4", ...props }: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      {...props}
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+/* ---------------------------------------------------------------
+   Team Data & Avatar Component
+--------------------------------------------------------------- */
+const teamMembers = [
+  {
+    name: "Muh.D.Firdaus",
+    role: "Full-Stack Dev",
+    handle: "@_daffafirdaus0",
+    instagram: "https://www.instagram.com/_daffafirdaus0?igsh=MTMwdjI5OXhuY2hyMQ==",
+    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Muh.D.Firdaus",
+    fallbackAvatar: "https://ui-avatars.com/api/?name=Muh.D.Firdaus&background=0d1f52&color=f59e0b&bold=true",
+    bio: "Merancang arsitektur sistem terpadu dan engine cerdas agar abang ganteng selalu siap membantu kamu.",
+    accentGlow: "rgba(245, 158, 11, 0.3)",
+    roleBadgeStyle: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+  },
+  {
+    name: "Rio Arrasyid H",
+    role: "Frontend Dev",
+    handle: "@riorasyidd",
+    instagram: "https://www.instagram.com/riorasyidd?igsh=MWgyYmN6NWhiag==",
+    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Rio%20Arrasyid%20H",
+    fallbackAvatar: "https://ui-avatars.com/api/?name=Rio+Arrasyid+H&background=0d1f52&color=38bdf8&bold=true",
+    bio: "Pakar UI/UX yang menghadirkan tampilan visual memukau, animasi mulus, dan kenyamanan belajar buat kamu.",
+    accentGlow: "rgba(56, 189, 248, 0.3)",
+    roleBadgeStyle: "bg-sky-500/10 text-sky-400 border-sky-500/30",
+  },
+  {
+    name: "Arief Rachman",
+    role: "Backend Dev",
+    handle: "@arippyon",
+    instagram: "https://www.instagram.com/arippyon?igsh=MXYwaGNlZ29mNngxdw==",
+    avatarUrl: "https://api.dicebear.com/7.x/bottts/svg?seed=Arief%20Rachman",
+    fallbackAvatar: "https://ui-avatars.com/api/?name=Arief+Rachman&background=0d1f52&color=a855f7&bold=true",
+    bio: "Mengendalikan arsitektur server, optimasi data, dan keandalan sistem agar performa belajar kamu selalu cepat.",
+    accentGlow: "rgba(168, 85, 247, 0.3)",
+    roleBadgeStyle: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+  },
+];
+
+function AvatarImage({ src, fallbackSrc, alt }: { src: string; fallbackSrc: string; alt: string }) {
+  const [imgSrc, setImgSrc] = useState(src);
+  return (
+    <img
+      src={imgSrc}
+      alt={alt}
+      onError={() => setImgSrc(fallbackSrc)}
+      className="w-full h-full object-cover p-1.5 drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300"
+      loading="lazy"
+    />
+  );
+}
+
+/* ---------------------------------------------------------------
+   About Us Section ("Kenalan Sama Tim")
+--------------------------------------------------------------- */
+function AboutUsSection() {
+  const prefersReduced = useReducedMotion();
+
+  return (
+    <section
+      id="about-us"
+      className="relative px-6 py-24 max-w-7xl mx-auto w-full"
+      aria-labelledby="about-heading"
+    >
+      <div className="divider-glass mb-20" aria-hidden="true" />
+
+      {/* Section Header */}
+      <m.div
+        className="text-center mb-16"
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-80px" }}
+      >
+        <span className="badge-gold mb-4 inline-flex" aria-label="About Us">
+          Kenalan Sama Tim
+        </span>
+        <h2
+          id="about-heading"
+          className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+          style={{
+            fontFamily: "var(--font-outfit)",
+            color: "var(--color-silver-50)",
+          }}
+        >
+          Tim Dibalik <span className="text-gradient-gold">StudySync-AI</span>
+        </h2>
+        <p
+          className="text-base max-w-xl mx-auto leading-relaxed"
+          style={{ color: "var(--color-silver-300)" }}
+        >
+          Kenalan sama 3 orang yang bikin abang ganteng tetap eksis!
+        </p>
+      </m.div>
+
+      {/* 3-Column Team Grid */}
+      <m.div
+        className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+      >
+        {teamMembers.map((member, index) => (
+          <m.article
+            key={member.name}
+            variants={staggerItem}
+            className="backdrop-blur-xl bg-slate-900/60 border border-white/15 rounded-3xl p-7 flex flex-col items-center text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_20px_45px_rgba(0,0,0,0.7)] group"
+          >
+            {/* Top Gloss Highlight Sheen */}
+            <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/35 to-transparent pointer-events-none" />
+
+            {/* Ambient Translucent Glow Highlight */}
+            <div
+              className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-3xl opacity-25 pointer-events-none group-hover:opacity-60 transition-opacity duration-300"
+              style={{ background: member.accentGlow }}
+            />
+
+            {/* Floating 3D Avatar Badge Frame */}
+            <m.div
+              className="relative mb-6"
+              animate={prefersReduced ? {} : { y: [0, -7, 0] }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: index * 0.4,
+              }}
+            >
+              {/* Outer 3D Bevel Ring with Glow */}
+              <div
+                className="p-1.5 rounded-full shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_10px_25px_rgba(0,0,0,0.6)] transition-all duration-300 group-hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_0_30px_rgba(245,158,11,0.3)]"
+                style={{
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.15) 100%)",
+                }}
+              >
+                {/* Inner Bevel Glass Container */}
+                <div className="relative w-28 h-28 rounded-full overflow-hidden flex items-center justify-center bg-slate-950/80 border border-white/20 shadow-[inset_0_2px_6px_rgba(0,0,0,0.85)]">
+                  <AvatarImage
+                    src={member.avatarUrl}
+                    fallbackSrc={member.fallbackAvatar}
+                    alt={`Avatar ${member.name}`}
+                  />
+                </div>
+              </div>
+
+              {/* Skeuomorphic Dev Tag Badge */}
+              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-900 border border-white/20 text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_10px_rgba(0,0,0,0.5)]">
+                Core Dev
+              </div>
+            </m.div>
+
+            {/* Member Details */}
+            <div className="space-y-2 mb-6 flex-1 flex flex-col items-center">
+              <h3
+                className="text-xl font-bold tracking-tight text-slate-100 group-hover:text-amber-300 transition-colors"
+                style={{ fontFamily: "var(--font-outfit)" }}
+              >
+                {member.name}
+              </h3>
+
+              <div
+                className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] ${member.roleBadgeStyle}`}
+              >
+                {member.role}
+              </div>
+
+              <p
+                className="text-xs sm:text-sm leading-relaxed max-w-xs mt-3"
+                style={{ color: "var(--color-silver-300)" }}
+              >
+                {member.bio}
+              </p>
+            </div>
+
+            {/* Tactile Skeuomorphic Instagram Button */}
+            <a
+              href={member.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mt-auto flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-500 hover:via-pink-500 hover:to-amber-400 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_18px_rgba(219,39,119,0.35)] active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] active:scale-[0.97] border border-white/25 transition-all duration-200 group/btn"
+              aria-label={`Kunjungi profil Instagram ${member.name}`}
+            >
+              <InstagramIcon className="w-4 h-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)] group-hover/btn:rotate-6 transition-transform" />
+              <span>{member.handle}</span>
+              <ExternalLink size={13} className="text-white/80 opacity-70 group-hover/btn:opacity-100 group-hover/btn:translate-x-0.5 transition-all" />
+            </a>
+          </m.article>
+        ))}
+      </m.div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------
+   Footer Section
+--------------------------------------------------------------- */
+function FooterSection() {
+  return (
+    <footer className="w-full border-t border-white/10 bg-slate-950/80 backdrop-blur-xl py-12 px-6 mt-12 text-center text-xs text-slate-400 relative">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col items-center md:items-start gap-1">
+          <span className="text-base font-bold text-slate-100 tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>
+            StudySync<span className="text-amber-400">-AI</span>
+          </span>
+          <p className="text-slate-400 text-xs">
+            Platform Belajar Adaptif Berbasis AI
+          </p>
+        </div>
+
+        <div className="flex items-center gap-6 text-xs font-medium text-slate-300">
+          <Link href="#features" className="hover:text-amber-400 transition-colors">
+            Fitur
+          </Link>
+          <Link href="#how-it-works" className="hover:text-amber-400 transition-colors">
+            Cara Kerja
+          </Link>
+          <Link href="#about-us" className="hover:text-amber-400 transition-colors">
+            Tim Kami
+          </Link>
+          <Link href="/dashboard" className="hover:text-amber-400 transition-colors">
+            Dashboard
+          </Link>
+        </div>
+
+        <p className="text-slate-500 text-xs">
+          © {new Date().getFullYear()} StudySync-AI. Dibuat dengan sepenuh hati oleh Tim StudySync-AI & abang ganteng.
+        </p>
+      </div>
+    </footer>
+  );
+}
+
+/* ---------------------------------------------------------------
    Page Root
 --------------------------------------------------------------- */
 export default function HomePage() {
@@ -740,6 +997,9 @@ export default function HomePage() {
       <FeatureGrid />
       <HowItWorksSection />
       <CtaSection />
+      <AboutUsSection />
+      <FooterSection />
     </div>
   );
 }
+

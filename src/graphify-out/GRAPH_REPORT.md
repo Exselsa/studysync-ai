@@ -1,12 +1,12 @@
-# Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-07)
+# Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
 
 ## Corpus Check
-- 33 files · ~69,051 words
+- 33 files · ~70,863 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 311 nodes · 336 edges · 22 communities detected
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.8)
+- 314 nodes · 333 edges · 22 communities detected
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -37,25 +37,25 @@
 1. `POST()` - 11 edges
 2. `parseFileBuffer()` - 5 edges
 3. `EASE` - 4 edges
-4. `{ user }` - 4 edges
-5. `sendMessage()` - 4 edges
-6. `handleAttack()` - 4 edges
-7. `saveStudyPlan()` - 4 edges
-8. `getStudyPlans()` - 4 edges
-9. `sendFriendRequest()` - 4 edges
-10. `router` - 3 edges
+4. `handleAttack()` - 4 edges
+5. `getStudyPlans()` - 4 edges
+6. `sendFriendRequest()` - 4 edges
+7. `router` - 3 edges
+8. `RESPONSE_SCHEMA` - 3 edges
+9. `buildFallbackResponse()` - 3 edges
+10. `buildFallback()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `POST()` --calls--> `parseFileBuffer()`  [INFERRED]
-  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts
 - `POST()` --calls--> `buildFallbackExplanation()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\ai\study-materials.ts
 - `POST()` --calls--> `buildFallbackStudyPlan()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\ai\study-materials.ts
-- `sendMessage()` --calls--> `saveStudyPlan()`  [INFERRED]
-  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\tutor\page.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
+- `POST()` --calls--> `parseFileBuffer()`  [INFERRED]
+  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\utils\file-parser.ts
 - `handleToggleTask` --calls--> `updateStudyPlanTasks()`  [INFERRED]
   C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
+- `fetchPlans()` --calls--> `getStudyPlans()`  [INFERRED]
+  C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\BossFightArena.tsx → C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts
 
 ## Communities
 
@@ -66,13 +66,13 @@ Nodes (42): [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, 
 
 ### Community 1 - "Community 1"
 
-Cohesion: 0.06
-Nodes (37): [aiInsights, setAiInsights], allPendingTasks, containerVariants, dateString, [deleteConfirm, setDeleteConfirm], dismissToast, displayName, [displayName, setDisplayName] (+29 more)
+Cohesion: 0.07
+Nodes (27): sendMatchChallenge(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId], [customTopic, setCustomTopic] (+19 more)
 
 ### Community 2 - "Community 2"
 
-Cohesion: 0.07
-Nodes (27): sendMatchChallenge(), [activeTab, setActiveTab], [addEmail, setAddEmail], [addLoading, setAddLoading], [addStatus, setAddStatus], [challengeFriend, setChallengeFriend], [challengeId, setChallengeId], [customTopic, setCustomTopic] (+19 more)
+Cohesion: 0.11
+Nodes (19): extractPrintableStrings(), extractTextFromDocx(), extractTextFromPdf(), parseFileBuffer(), sanitizeText(), BASE_SYSTEM_INSTRUCTION, buildFallback(), buildFallbackResponse() (+11 more)
 
 ### Community 3 - "Community 3"
 
@@ -91,23 +91,23 @@ Nodes (12): handleAttack(), handleKeyDown(), acceptFriendRequest(), commitDuelEv
 
 ### Community 6 - "Community 6"
 
-Cohesion: 0.15
-Nodes (13): buildFallback(), buildFallbackResponse(), FALLBACK_QUESTIONS, offsetDate(), POST(), RESPONSE_SCHEMA, SYSTEM_INSTRUCTION, buildFallbackExplanation() (+5 more)
+Cohesion: 0.08
+Nodes (21): [aiInsights, setAiInsights], allPendingTasks, containerVariants, dateString, [deleteConfirm, setDeleteConfirm], displayName, [displayName, setDisplayName], dynamicStatCards (+13 more)
 
 ### Community 7 - "Community 7"
+
+Cohesion: 0.11
+Nodes (16): canProceedStep2, canProceedStep3, canProceedStep4, [customMajor, setCustomMajor], finalMajor, [isCustomMajor, setIsCustomMajor], isSuccess, isUser (+8 more)
+
+### Community 8 - "Community 8"
 
 Cohesion: 0.12
 Nodes (14): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+6 more)
 
-### Community 8 - "Community 8"
+### Community 9 - "Community 9"
 
 Cohesion: 0.17
 Nodes (10): containerRef, [isHovered, setIsHovered], isIcon, mount, parent, rippleIdRef, [ripples, setRipples], SHADER_COLOR_BACK (+2 more)
-
-### Community 9 - "Community 9"
-
-Cohesion: 0.18
-Nodes (7): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems
 
 ### Community 10 - "Community 10"
 
@@ -116,18 +116,18 @@ Nodes (8): fetchPlans(), getStudyPlans(), saveStudyPlan(), updateStudyPlanTasks(
 
 ### Community 11 - "Community 11"
 
-Cohesion: 0.25
-Nodes (4): inter, metadata, outfit, viewport
+Cohesion: 0.18
+Nodes (7): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems
 
 ### Community 12 - "Community 12"
 _Unable to determine domain due to missing code entities._
-Cohesion: 0.29
-Nodes (5): isActive, navLinks, pathname, [signingIn, setSigningIn], { user, loading, signInWithGoogle }
+Cohesion: 0.25
+Nodes (4): inter, metadata, outfit, viewport
 
 ### Community 13 - "Community 13"
 _Unable to determine domain due to missing code entities._
-Cohesion: 0.67
-Nodes (5): extractPrintableStrings(), extractTextFromDocx(), extractTextFromPdf(), parseFileBuffer(), sanitizeText()
+Cohesion: 0.29
+Nodes (5): isActive, navLinks, pathname, [signingIn, setSigningIn], { user, loading, signInWithGoogle }
 
 ### Community 14 - "Community 14"
 _Unable to determine domain due to missing code entities._
@@ -170,7 +170,7 @@ Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **186 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+181 more)
+- **191 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+186 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **Thin community `Community 17`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

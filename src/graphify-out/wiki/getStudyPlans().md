@@ -9,30 +9,27 @@ sequenceDiagram
     participant P0 as getStudyPlans()
     participant P1 as userPlansCollection()
     participant P2 as saveStudyPlan()
-    participant P3 as sendMessage()
-    participant P4 as handleSaveToFirestore()
-    participant P5 as fetchPlans()
-    participant P6 as loadTopics()
+    participant P3 as handleSaveToFirestore()
+    participant P4 as fetchPlans()
+    participant P5 as loadTopics()
     P0->>+ P1: calls
     P1-->>- P0: return
-    P1->>+ P2: calls
-    P2-->>- P1: return
-    P2->>+ P3: calls
-    P3-->>- P2: return
-    P2->>+ P1: calls
-    P1-->>- P2: return
-    P2->>+ P4: calls
-    P4-->>- P2: return
     P1->>+ P0: calls
     P0-->>- P1: return
+    P1->>+ P2: calls
+    P2-->>- P1: return
+    P2->>+ P1: calls
+    P1-->>- P2: return
+    P2->>+ P3: calls
+    P3-->>- P2: return
+    P0->>+ P4: calls
+    P4-->>- P0: return
+    P4->>+ P0: calls
+    P0-->>- P4: return
     P0->>+ P5: calls
     P5-->>- P0: return
     P5->>+ P0: calls
     P0-->>- P5: return
-    P0->>+ P6: calls
-    P6-->>- P0: return
-    P6->>+ P0: calls
-    P0-->>- P6: return
 ```
 
 ## Connections by Relation

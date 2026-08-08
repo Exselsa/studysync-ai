@@ -30,7 +30,7 @@
     "POST()": 11,
     "parseFileBuffer()": 5,
     "EASE": 4,
-    "{ user }": 4,
-    "sendMessage()": 4
+    "handleAttack()": 4,
+    "getStudyPlans()": 4
   }
 }
