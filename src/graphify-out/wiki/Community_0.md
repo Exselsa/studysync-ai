@@ -1,35 +1,35 @@
 # Community 0
 
-> 57 nodes · cohesion 0.04
+> 72 nodes · cohesion 0.03
 
 ## Key Concepts
 
-- [BossFightArena.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L1) (60 connections)
-- [[activeTaunt, setActiveTaunt]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L311) (1 connections)
-- [[animPhase, setAnimPhase]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L292) (1 connections)
-- [[attackText, setAttackText]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L290) (1 connections)
-- [[battleLog, setBattleLog]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L291) (1 connections)
-- [BOSS_MAX_HP](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L85) (1 connections)
-- [[bossHp, setBossHp]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L284) (1 connections)
-- [[combo, setCombo]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L293) (1 connections)
-- [[currentQuestion, setCurrentQuestion]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L286) (1 connections)
-- [DEFAULT_CS_CONCEPTS](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L88) (1 connections)
-- [defaultTopics](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L512) (1 connections)
-- [diffInfo](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L305) (1 connections)
-- [FloatingDamage()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L162) (1 connections)
-- [[gameMode, setGameMode]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L272) (1 connections)
-- [getBossAnimation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L917) (1 connections)
-- [getKnightAnimation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L902) (1 connections)
-- [getQuestionDifficultyWeight()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L103) (1 connections)
-- [handleBackToSelect](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L333) (1 connections)
-- [handleRerollQuestion](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L616) (1 connections)
-- [handleReset()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L879) (1 connections)
-- [handleTimeout](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L785) (1 connections)
-- [handleTopicChange](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L604) (1 connections)
-- [info](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L328) (1 connections)
-- [inputRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L349) (1 connections)
-- [interval](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L359) (1 connections)
-- *... and 32 more nodes in this community*
+- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L1) (55 connections)
+- [meet.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L1) (16 connections)
+- [importStudyPlanToRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L247) (3 connections)
+- [joinStudyMeetRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L142) (3 connections)
+- [handleRequestAiExplanation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L406) (3 connections)
+- [appendAiExplanationToRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L268) (2 connections)
+- [clearSharedBoard()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L236) (2 connections)
+- [createStudyMeetRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L92) (2 connections)
+- [deleteStudyMeetRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L189) (2 connections)
+- [parseRoomDoc()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L484) (2 connections)
+- [sendMeetChatMessage()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L346) (2 connections)
+- [sendMeetInvite()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L406) (2 connections)
+- [setRoomAiGenerating()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L294) (2 connections)
+- [updateSharedDocument()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L222) (2 connections)
+- [handleConfirmClearBoard()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L324) (2 connections)
+- [handleConfirmDeleteRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L312) (2 connections)
+- [handleCreateRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L271) (2 connections)
+- [handleImportSelectedPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L384) (2 connections)
+- [handleJoinRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L292) (2 connections)
+- [handleSendChatMessage()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L336) (2 connections)
+- [handleSendInviteToFriend()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx#L361) (2 connections)
+- [respondToMeetInvite()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L438) (1 connections)
+- [subscribeToIncomingMeetInvites()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L451) (1 connections)
+- [subscribeToMeetChatMessages()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L370) (1 connections)
+- [subscribeToStudyMeetRoom()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts#L200) (1 connections)
+- *... and 47 more nodes in this community*
 
 ## Relationships
 
@@ -37,12 +37,13 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\BossFightArena.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\meet\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/meet/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\meet.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/meet.ts)
 
 ## Audit Trail
 
-- EXTRACTED: 116 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 145 (89%)
+- INFERRED: 18 (11%)
 - AMBIGUOUS: 0 (0%)
 
 ---

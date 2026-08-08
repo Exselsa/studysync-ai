@@ -27,6 +27,7 @@ import {
   MessageSquare,
   Volume2,
   X,
+  DoorOpen,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { getStudyPlans, type StudyPlan } from "@/lib/firebase/db";
@@ -39,6 +40,7 @@ import {
   joinStudyMeetRoom,
   deleteStudyMeetRoom,
   subscribeToStudyMeetRoom,
+  subscribeToUserActiveStudyMeetRooms,
   updateSharedDocument,
   clearSharedBoard,
   importStudyPlanToRoom,
@@ -48,10 +50,35 @@ import {
   updateParticipantMicState,
   sendMeetChatMessage,
   subscribeToMeetChatMessages,
+  RTC_ICE_SERVERS,
   type StudyMeetRoom,
   type RoomParticipant,
   type MeetChatMessage,
 } from "@/lib/firebase/meet";
+
+/* ----------------------------------------------------------------
+   Helper Component — Dynamic DOM Hidden Audio Element for WebRTC
+---------------------------------------------------------------- */
+function RemoteAudioElement({
+  peerUid,
+  stream,
+}: {
+  peerUid: string;
+  stream: MediaStream;
+}) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioRef.current && stream) {
+      audioRef.current.srcObject = stream;
+      audioRef.current
+        .play()
+        .catch((err) => console.warn("Remote audio playback note:", err));
+    }
+  }, [stream]);
+
+  return <audio ref={audioRef} autoPlay playsInline style={{ display: "none" }} />;
+}
 
 export default function StudyMeetPage() {
   const { user, loading: authLoading } = useAuth();
@@ -64,6 +91,7 @@ export default function StudyMeetPage() {
      State
   ---------------------------------------------------------------- */
   const [currentRoom, setCurrentRoom] = useState<StudyMeetRoom | null>(null);
+  const [userActiveRooms, setUserActiveRooms] = useState<StudyMeetRoom[]>([]);
   const [roomLoading, setRoomLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -80,10 +108,14 @@ export default function StudyMeetPage() {
   const [showDeleteRoomModal, setShowDeleteRoomModal] = useState(false);
   const [showClearBoardModal, setShowClearBoardModal] = useState(false);
 
-  // Voice Chat & Mic State
+  // Voice Chat & WebRTC Streams State
   const [isMuted, setIsMuted] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [remoteStreams, setRemoteStreams] = useState<Map<string, MediaStream>>(
+    new Map()
+  );
   const mediaStreamRef = useRef<MediaStream | null>(null);
+  const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
@@ -109,7 +141,21 @@ export default function StudyMeetPage() {
   const isHost = user && currentRoom && user.uid === currentRoom.hostId;
 
   /* ----------------------------------------------------------------
-     1. Room Subscription & Sync
+     1. Lobby Persistence: Fetch Active Rooms ("Ruang Belajar Saya")
+  ---------------------------------------------------------------- */
+  useEffect(() => {
+    if (!user) return;
+    const unsubUserRooms = subscribeToUserActiveStudyMeetRooms(
+      user.uid,
+      (rooms) => {
+        setUserActiveRooms(rooms);
+      }
+    );
+    return () => unsubUserRooms();
+  }, [user]);
+
+  /* ----------------------------------------------------------------
+     2. Room Subscription & Sync
   ---------------------------------------------------------------- */
   useEffect(() => {
     if (!urlRoomId || !user) {
@@ -130,7 +176,6 @@ export default function StudyMeetPage() {
         setErrorMsg("Ruang Study Meet telah ditutup oleh host.");
         setCurrentRoom(null);
         setRoomLoading(false);
-        // Redirect participant back to lobby
         router.push("/dashboard/meet");
         return;
       }
@@ -144,7 +189,7 @@ export default function StudyMeetPage() {
   }, [urlRoomId, user, router]);
 
   /* ----------------------------------------------------------------
-     2. Realtime In-Room Text Chat Subscription
+     3. Realtime In-Room Text Chat Subscription
   ---------------------------------------------------------------- */
   useEffect(() => {
     if (!urlRoomId || !currentRoom) {
@@ -163,7 +208,7 @@ export default function StudyMeetPage() {
   }, [urlRoomId, currentRoom?.roomId]);
 
   /* ----------------------------------------------------------------
-     3. Fetch Friends & Plans for Host Modals
+     4. Fetch Friends & Plans for Host Modals
   ---------------------------------------------------------------- */
   useEffect(() => {
     if (!user) return;
@@ -179,7 +224,7 @@ export default function StudyMeetPage() {
   }, [user]);
 
   /* ----------------------------------------------------------------
-     4. Open Mic (Voice Chat) Audio Stream & Speaking Detection
+     5. WebRTC Voice Stream & STUN Peer Connections
   ---------------------------------------------------------------- */
   const toggleMicrophone = useCallback(async () => {
     if (!urlRoomId || !user) return;
@@ -188,7 +233,7 @@ export default function StudyMeetPage() {
 
     try {
       if (!nextMuteState) {
-        // Request browser audio mic stream
+        // Get local microphone audio stream
         if (!mediaStreamRef.current) {
           const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
@@ -237,9 +282,19 @@ export default function StudyMeetPage() {
         } else {
           mediaStreamRef.current.getAudioTracks().forEach((t) => (t.enabled = true));
         }
+
+        // Attach local audio tracks to existing RTCPeerConnections
+        peerConnectionsRef.current.forEach((pc) => {
+          if (mediaStreamRef.current) {
+            mediaStreamRef.current.getAudioTracks().forEach((track) => {
+              pc.addTrack(track, mediaStreamRef.current!);
+            });
+          }
+        });
+
         await updateParticipantMicState(urlRoomId, user.uid, false, isSpeaking);
       } else {
-        // Mute mic tracks
+        // Mute tracks
         if (mediaStreamRef.current) {
           mediaStreamRef.current.getAudioTracks().forEach((t) => (t.enabled = false));
         }
@@ -247,7 +302,7 @@ export default function StudyMeetPage() {
         await updateParticipantMicState(urlRoomId, user.uid, true, false);
       }
     } catch (err) {
-      console.warn("Microphone access permission note:", err);
+      console.warn("Microphone access note:", err);
       setIsMuted(true);
       await updateParticipantMicState(urlRoomId, user.uid, true, false);
     }
@@ -262,6 +317,7 @@ export default function StudyMeetPage() {
       if (audioContextRef.current) {
         audioContextRef.current.close().catch(() => {});
       }
+      peerConnectionsRef.current.forEach((pc) => pc.close());
     };
   }, []);
 
@@ -463,6 +519,11 @@ export default function StudyMeetPage() {
   if (!urlRoomId || !currentRoom) {
     return (
       <section className="flex flex-col gap-8 w-full max-w-5xl mx-auto px-4 py-8">
+        {/* Render Dynamic DOM Hidden Audio Elements for Remote WebRTC Peers */}
+        {Array.from(remoteStreams.entries()).map(([peerUid, stream]) => (
+          <RemoteAudioElement key={peerUid} peerUid={peerUid} stream={stream} />
+        ))}
+
         {/* Header Hero Banner */}
         <m.div
           initial={{ opacity: 0, y: -16 }}
@@ -505,6 +566,67 @@ export default function StudyMeetPage() {
         {errorMsg && (
           <div className="p-4 rounded-2xl bg-rose-950/80 border border-rose-500/40 text-rose-300 text-xs font-bold text-center animate-fadeIn">
             ⚠️ {errorMsg}
+          </div>
+        )}
+
+        {/* SECTION: Ruang Belajar Saya (Active Room Persistence & Re-entry) */}
+        {userActiveRooms.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <DoorOpen size={18} className="text-cyan-400" />
+              <h2
+                className="text-lg font-black text-slate-100"
+                style={{ fontFamily: "var(--font-outfit)" }}
+              >
+                Ruang Belajar Saya 🚪
+              </h2>
+              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
+                {userActiveRooms.length} Ruang Aktif
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userActiveRooms.map((room) => {
+                const isUserHost = user && room.hostId === user.uid;
+
+                return (
+                  <m.div
+                    key={room.roomId}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-5 rounded-2xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-xl shadow-lg flex flex-col justify-between gap-4 hover:border-cyan-400/60 transition-all"
+                  >
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                          {isUserHost ? "Host Ruang" : "Peserta"}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          {room.participants.length} Anggota
+                        </span>
+                      </div>
+                      <h3
+                        className="text-base font-extrabold text-slate-50 line-clamp-1"
+                        style={{ fontFamily: "var(--font-outfit)" }}
+                      >
+                        {room.title}
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        Host: <strong className="text-cyan-300">{room.hostName}</strong>
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/dashboard/meet?roomId=${room.roomId}`)}
+                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md transition-all active:scale-95 cursor-pointer"
+                    >
+                      <DoorOpen size={15} /> Masuk Kembali 🚪
+                    </button>
+                  </m.div>
+                );
+              })}
+            </div>
           </div>
         )}
 
@@ -623,6 +745,11 @@ export default function StudyMeetPage() {
   ---------------------------------------------------------------- */
   return (
     <section className="flex flex-col gap-5 w-full max-w-6xl mx-auto px-4 py-6">
+      {/* Render Dynamic DOM Hidden Audio Elements for Remote WebRTC Peers */}
+      {Array.from(remoteStreams.entries()).map(([peerUid, stream]) => (
+        <RemoteAudioElement key={peerUid} peerUid={peerUid} stream={stream} />
+      ))}
+
       {/* Room Header Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-xl shadow-xl">
         <div className="flex items-center gap-3">
@@ -889,6 +1016,7 @@ export default function StudyMeetPage() {
             backdropFilter: "blur(16px)",
           }}
         >
+          {/* Shared Board Header with Prominent Host-Only "Bersihkan Papan 🧹" Button */}
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
               <FileText size={15} className="text-cyan-400" />
@@ -896,9 +1024,25 @@ export default function StudyMeetPage() {
                 Papan Catatan Real-Time Room
               </span>
             </div>
-            <span className="text-[10px] text-slate-400 font-mono">
-              {isHost ? "Host can edit directly" : "Synced via Firestore onSnapshot"}
-            </span>
+
+            <div className="flex items-center gap-3">
+              {/* Host-Exclusive "Bersihkan Papan 🧹" Button */}
+              {isHost && (
+                <button
+                  type="button"
+                  id="meet-clear-board-header-btn"
+                  onClick={() => setShowClearBoardModal(true)}
+                  className="px-3 py-1 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+                  title="Kosongkan seluruh papan catatan secara real-time"
+                >
+                  <Eraser size={13} className="text-rose-400" /> Bersihkan Papan 🧹
+                </button>
+              )}
+
+              <span className="text-[10px] text-slate-400 font-mono">
+                {isHost ? "Host Edit" : "Realtime View"}
+              </span>
+            </div>
           </div>
 
           {isEditorView ? (

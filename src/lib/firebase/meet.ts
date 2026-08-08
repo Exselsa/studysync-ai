@@ -3,7 +3,7 @@
  *
  * Realtime synchronization for Collaborative Study Meet rooms, shared documents,
  * WebRTC voice chat signaling, in-room text chat, friend invitations,
- * and host-exclusive AI explanations by "abang ganteng".
+ * user active room persistence, and host-exclusive AI explanations by "abang ganteng".
  */
 
 import {
@@ -81,6 +81,15 @@ export interface MeetChatMessage {
   text: string;
   createdAt: string;
 }
+
+/* ----------------------------------------------------------------
+   STUN & WebRTC Configuration
+---------------------------------------------------------------- */
+export const RTC_ICE_SERVERS: RTCConfiguration = {
+  iceServers: [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+  ],
+};
 
 /* ----------------------------------------------------------------
    Room Creation, Join, Delete & Persistence Operations
@@ -209,6 +218,31 @@ export function subscribeToStudyMeetRoom(
       return;
     }
     callback(parseRoomDoc(docSnap.id, docSnap.data()));
+  });
+}
+
+/**
+ * Subscribe to active Study Meet rooms created by or joined by a user ("Ruang Belajar Saya").
+ */
+export function subscribeToUserActiveStudyMeetRooms(
+  userId: string,
+  callback: (rooms: StudyMeetRoom[]) => void
+): Unsubscribe {
+  const q = query(
+    collection(db, "study_meets"),
+    where("status", "==", "active")
+  );
+
+  return onSnapshot(q, (snap) => {
+    const allActive = snap.docs.map((d) => parseRoomDoc(d.id, d.data()));
+    // Filter rooms where user is host or participant or invited
+    const userRooms = allActive.filter(
+      (r) =>
+        r.hostId === userId ||
+        r.participants.some((p) => p.uid === userId) ||
+        r.invitedFriendIds.includes(userId)
+    );
+    callback(userRooms);
   });
 }
 
