@@ -13,7 +13,7 @@
 7. `RESPONSE_SCHEMA` (4 edges)
 8. `EASE` (4 edges)
 9. `handleAttack()` (4 edges)
-10. `useAuth()` (4 edges)
+10. `saveStudyPlan()` (4 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 

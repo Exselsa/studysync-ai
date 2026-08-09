@@ -1,21 +1,18 @@
 # Community 11
 
-> 12 nodes · cohesion 0.17
+> 9 nodes · cohesion 0.22
 
 ## Key Concepts
 
-- [liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L1) (11 connections)
-- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L50) (1 connections)
-- [handleClick()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L109) (1 connections)
-- [[isHovered, setIsHovered]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L53) (1 connections)
-- [isIcon](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L120) (1 connections)
-- [mount](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L63) (1 connections)
-- [parent](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L60) (1 connections)
-- [rippleIdRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L54) (1 connections)
-- [[ripples, setRipples]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L52) (1 connections)
-- [SHADER_COLOR_BACK](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L35) (1 connections)
-- [SHADER_COLOR_TINT](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L36) (1 connections)
-- [shaderMountRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L51) (1 connections)
+- [AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L1) (4 connections)
+- [useAuth()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116) (3 connections)
+- [ChallengeNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L15) (2 connections)
+- [MeetInviteNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L14) (2 connections)
+- [AuthContext](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L47) (1 connections)
+- [AuthProvider()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L57) (1 connections)
+- [googleProvider](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L52) (1 connections)
+- [ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L1) (1 connections)
+- [MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L1) (1 connections)
 
 ## Relationships
 
@@ -23,12 +20,14 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\ui\liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 22 (100%)
-- INFERRED: 0 (0%)
+- EXTRACTED: 12 (75%)
+- INFERRED: 4 (25%)
 - AMBIGUOUS: 0 (0%)
 
 ---
