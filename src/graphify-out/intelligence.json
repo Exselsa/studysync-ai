@@ -21,16 +21,16 @@
       "type": "FUNCTION"
     },
     {
-      "label": "BossFightArena.tsx",
-      "risk": 0.205,
+      "label": "POST()",
+      "risk": 0.213,
       "type": "FUNCTION"
     }
   ],
   "blast_radius": {
-    "POST()": 15,
+    "POST()": 20,
     "data": 15,
     "recordDailyActivity()": 6,
     "handleToggleTask": 5,
-    "match": 5
+    "normalizeStudyPlanData()": 5
   }
 }

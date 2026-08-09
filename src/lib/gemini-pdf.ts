@@ -130,7 +130,49 @@ LANGUAGE AND TONE RULES:
 `;
 
 /* ------------------------------------------------------------------
-   4. Files API Helper: Upload PDF to Gemini
+   4. Retry Helper with Exponential Backoff (max 3 retries)
+------------------------------------------------------------------ */
+
+export async function withExponentialBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  initialDelayMs: number = 1000
+): Promise<T> {
+  let attempt = 0;
+  while (true) {
+    try {
+      return await fn();
+    } catch (err: unknown) {
+      attempt++;
+      const errorObj = err as any;
+      const errorMessage = String(errorObj?.message || errorObj || "").toLowerCase();
+      const status = errorObj?.status || errorObj?.statusCode || errorObj?.code;
+
+      const isUnavailableOrRateLimited =
+        status === 503 ||
+        status === 429 ||
+        errorMessage.includes("503") ||
+        errorMessage.includes("unavailable") ||
+        errorMessage.includes("overloaded") ||
+        errorMessage.includes("resource_exhausted") ||
+        errorMessage.includes("rate limit") ||
+        errorMessage.includes("429");
+
+      if (attempt > maxRetries || !isUnavailableOrRateLimited) {
+        throw err;
+      }
+
+      const delayMs = initialDelayMs * Math.pow(2, attempt - 1) + Math.floor(Math.random() * 200);
+      console.warn(
+        `[Gemini Retry] Attempt ${attempt}/${maxRetries} failed (${errorMessage.slice(0, 100)}). Retrying in ${delayMs}ms...`
+      );
+      await new Promise((res) => setTimeout(res, delayMs));
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   5. Files API Helper: Upload PDF to Gemini
 ------------------------------------------------------------------ */
 
 export async function uploadPdfToGemini(
@@ -151,13 +193,15 @@ export async function uploadPdfToGemini(
   try {
     await fs.writeFile(tempPath, buffer);
 
-    const uploadedFile = await ai.files.upload({
-      file: tempPath,
-      config: {
-        mimeType: "application/pdf",
-        displayName: fileName,
-      },
-    });
+    const uploadedFile = await withExponentialBackoff(() =>
+      ai.files.upload({
+        file: tempPath,
+        config: {
+          mimeType: "application/pdf",
+          displayName: fileName,
+        },
+      })
+    );
 
     if (!uploadedFile.uri) {
       throw new Error("Failed to obtain fileUri from Gemini Files API.");
@@ -174,7 +218,7 @@ export async function uploadPdfToGemini(
 }
 
 /* ------------------------------------------------------------------
-   5. Analyze PDF Document Helper
+   6. Analyze PDF Document Helper
 ------------------------------------------------------------------ */
 
 export async function analyzePdfDocument(
@@ -194,27 +238,29 @@ Ekstrak ringkasan eksekutif, poin-poin konsep kunci, rumus matematika (dengan La
 Pastikan output sepenuhnya sesuai dengan JSON schema yang ditentukan.
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: [
-      {
-        fileData: {
-          fileUri,
-          mimeType: "application/pdf",
+  const response = await withExponentialBackoff(() =>
+    ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: [
+        {
+          fileData: {
+            fileUri,
+            mimeType: "application/pdf",
+          },
         },
+        {
+          text: promptText,
+        },
+      ],
+      config: {
+        systemInstruction: GEMINI_PDF_SYSTEM_INSTRUCTION,
+        responseMimeType: "application/json",
+        responseSchema: PDF_ANALYSIS_RESPONSE_SCHEMA,
+        mediaResolution: MediaResolution.MEDIA_RESOLUTION_HIGH,
+        // Note: temperature & top_p are omitted as they are deprecated in 3.6-flash
       },
-      {
-        text: promptText,
-      },
-    ],
-    config: {
-      systemInstruction: GEMINI_PDF_SYSTEM_INSTRUCTION,
-      responseMimeType: "application/json",
-      responseSchema: PDF_ANALYSIS_RESPONSE_SCHEMA,
-      mediaResolution: MediaResolution.MEDIA_RESOLUTION_HIGH,
-      // Note: temperature & top_p are omitted as they are deprecated in 3.6-flash
-    },
-  });
+    })
+  );
 
   const rawJsonText = response.text;
   if (!rawJsonText) {
@@ -233,7 +279,7 @@ Pastikan output sepenuhnya sesuai dengan JSON schema yang ditentukan.
 }
 
 /* ------------------------------------------------------------------
-   6. Generate Study Plan directly from Gemini File URI
+   7. Generate Study Plan directly from Gemini File URI
 ------------------------------------------------------------------ */
 
 export const STUDY_PLAN_RESPONSE_SCHEMA: Schema = {
@@ -290,26 +336,28 @@ NEVER output generic statements like 'berkas materi kamu berisikan data format b
 Output harus dalam Bahasa Indonesia yang santai, ramah, dan tidak kaku (selalu gunakan 'kamu').
 `;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: [
-      {
-        fileData: {
-          fileUri,
-          mimeType: "application/pdf",
+  const response = await withExponentialBackoff(() =>
+    ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: [
+        {
+          fileData: {
+            fileUri,
+            mimeType: "application/pdf",
+          },
         },
+        {
+          text: promptText,
+        },
+      ],
+      config: {
+        systemInstruction: GEMINI_PDF_SYSTEM_INSTRUCTION,
+        responseMimeType: "application/json",
+        responseSchema: STUDY_PLAN_RESPONSE_SCHEMA,
+        mediaResolution: MediaResolution.MEDIA_RESOLUTION_HIGH,
       },
-      {
-        text: promptText,
-      },
-    ],
-    config: {
-      systemInstruction: GEMINI_PDF_SYSTEM_INSTRUCTION,
-      responseMimeType: "application/json",
-      responseSchema: STUDY_PLAN_RESPONSE_SCHEMA,
-      mediaResolution: MediaResolution.MEDIA_RESOLUTION_HIGH,
-    },
-  });
+    })
+  );
 
   const rawJsonText = response.text;
   if (!rawJsonText) {
@@ -330,4 +378,5 @@ Output harus dalam Bahasa Indonesia yang santai, ramah, dan tidak kaku (selalu g
     tasks: Array.isArray(parsed.tasks) ? parsed.tasks : [],
   };
 }
+
 

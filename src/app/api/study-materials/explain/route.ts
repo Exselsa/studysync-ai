@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { GoogleGenAI, MediaResolution } from "@google/genai";
 import { parseFileBuffer } from "@/lib/utils/file-parser";
-import { uploadPdfToGemini } from "@/lib/gemini-pdf";
+import { uploadPdfToGemini, withExponentialBackoff } from "@/lib/gemini-pdf";
 import {
   EXPLAIN_MATERIAL_SCHEMA,
   EXPLAIN_MATERIAL_SYSTEM_INSTRUCTION,
@@ -125,17 +125,19 @@ Gunakan Bahasa Indonesia yang santai, ramah, dan tidak kaku (selalu pakai 'kamu'
 
     contentsParts.push({ text: promptText });
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: contentsParts,
-      config: {
-        systemInstruction: EXPLAIN_MATERIAL_SYSTEM_INSTRUCTION,
-        responseMimeType: "application/json",
-        responseSchema: EXPLAIN_MATERIAL_SCHEMA,
-        mediaResolution: MediaResolution.MEDIA_RESOLUTION_HIGH,
-        // temperature & top_p omitted (deprecated in 3.6-flash)
-      },
-    });
+    const response = await withExponentialBackoff(() =>
+      ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: contentsParts,
+        config: {
+          systemInstruction: EXPLAIN_MATERIAL_SYSTEM_INSTRUCTION,
+          responseMimeType: "application/json",
+          responseSchema: EXPLAIN_MATERIAL_SCHEMA,
+          mediaResolution: MediaResolution.MEDIA_RESOLUTION_HIGH,
+          // temperature & top_p omitted (deprecated in 3.6-flash)
+        },
+      })
+    );
 
     const rawText = response.text;
     if (!rawText) {

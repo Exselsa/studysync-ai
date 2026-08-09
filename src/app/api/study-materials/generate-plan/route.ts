@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { GoogleGenAI, MediaResolution } from "@google/genai";
 import { parseFileBuffer } from "@/lib/utils/file-parser";
 import { normalizeStudyPlanData } from "@/lib/normalizeStudyPlan";
-import { uploadPdfToGemini, generateStudyPlanFromPdfUri } from "@/lib/gemini-pdf";
+import { uploadPdfToGemini, generateStudyPlanFromPdfUri, withExponentialBackoff } from "@/lib/gemini-pdf";
 import {
   GENERATE_PLAN_SCHEMA,
   GENERATE_PLAN_SYSTEM_INSTRUCTION,
@@ -133,16 +133,18 @@ Buatkan structured study plan untuk target durasi: ${days} hari.
 Pastikan output memenuhi schema JSON dan seluruh teks ditulis dalam Bahasa Indonesia yang santai, ramah, dan tidak kaku (selalu gunakan 'kamu').
 `;
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: [promptText],
-      config: {
-        systemInstruction: GENERATE_PLAN_SYSTEM_INSTRUCTION,
-        responseMimeType: "application/json",
-        responseSchema: GENERATE_PLAN_SCHEMA,
-        // temperature & top_p omitted (deprecated in 3.6-flash)
-      },
-    });
+    const response = await withExponentialBackoff(() =>
+      ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: [promptText],
+        config: {
+          systemInstruction: GENERATE_PLAN_SYSTEM_INSTRUCTION,
+          responseMimeType: "application/json",
+          responseSchema: GENERATE_PLAN_SCHEMA,
+          // temperature & top_p omitted (deprecated in 3.6-flash)
+        },
+      })
+    );
 
     const rawText = response.text;
     if (!rawText) {

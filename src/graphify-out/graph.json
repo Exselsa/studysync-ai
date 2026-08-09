@@ -112,7 +112,7 @@
       "heat": 0.054,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_page_tsx",
-      "community": 3,
+      "community": 2,
       "norm_label": "page.tsx"
     },
     {
@@ -128,7 +128,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_ease_emil_out_arr",
-      "community": 3,
+      "community": 2,
       "norm_label": "ease_emil_out_arr"
     },
     {
@@ -144,7 +144,7 @@
       "heat": 0.012,
       "owner": "unowned",
       "id": "page_fadeup",
-      "community": 3,
+      "community": 2,
       "norm_label": "fadeup"
     },
     {
@@ -160,7 +160,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "page_staggercontainer",
-      "community": 3,
+      "community": 2,
       "norm_label": "staggercontainer"
     },
     {
@@ -176,7 +176,7 @@
       "heat": 0.012,
       "owner": "unowned",
       "id": "page_staggeritem",
-      "community": 3,
+      "community": 2,
       "norm_label": "staggeritem"
     },
     {
@@ -192,7 +192,7 @@
       "heat": 0.031,
       "owner": "unowned",
       "id": "page_corefeatures",
-      "community": 3,
+      "community": 2,
       "norm_label": "corefeatures"
     },
     {
@@ -208,7 +208,7 @@
       "heat": 0.017,
       "owner": "unowned",
       "id": "page_processsteps",
-      "community": 3,
+      "community": 2,
       "norm_label": "processsteps"
     },
     {
@@ -224,7 +224,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "page_ctx",
-      "community": 3,
+      "community": 2,
       "norm_label": "ctx"
     },
     {
@@ -240,7 +240,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "page_cardref",
-      "community": 3,
+      "community": 2,
       "norm_label": "cardref"
     },
     {
@@ -256,7 +256,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "page_mousepos_setmousepos",
-      "community": 3,
+      "community": 2,
       "norm_label": "[mousepos, setmousepos]"
     },
     {
@@ -272,7 +272,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "page_ishovered_setishovered",
-      "community": 3,
+      "community": 2,
       "norm_label": "[ishovered, setishovered]"
     },
     {
@@ -288,7 +288,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_prefersreduced",
-      "community": 3,
+      "community": 2,
       "norm_label": "prefersreduced"
     },
     {
@@ -304,7 +304,7 @@
       "heat": 0.027,
       "owner": "unowned",
       "id": "page_handlemousemove",
-      "community": 3,
+      "community": 2,
       "norm_label": "handlemousemove()"
     },
     {
@@ -320,7 +320,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "page_cn",
-      "community": 3,
+      "community": 2,
       "norm_label": "cn()"
     },
     {
@@ -336,7 +336,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_user_signinwithgoogle",
-      "community": 3,
+      "community": 2,
       "norm_label": "{ user, signinwithgoogle }"
     },
     {
@@ -352,7 +352,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_router",
-      "community": 3,
+      "community": 2,
       "norm_label": "router"
     },
     {
@@ -368,7 +368,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "page_handlestartclick",
-      "community": 3,
+      "community": 2,
       "norm_label": "handlestartclick()"
     },
     {
@@ -384,7 +384,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_chat_route_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -400,7 +400,7 @@
       "heat": 0.023,
       "owner": "unowned",
       "id": "route_response_schema",
-      "community": 5,
+      "community": 3,
       "norm_label": "response_schema"
     },
     {
@@ -416,7 +416,7 @@
       "heat": 0.012,
       "owner": "unowned",
       "id": "route_base_system_instruction",
-      "community": 5,
+      "community": 3,
       "norm_label": "base_system_instruction"
     },
     {
@@ -432,7 +432,7 @@
       "heat": 0.034,
       "owner": "unowned",
       "id": "route_buildfallbackresponse",
-      "community": 5,
+      "community": 3,
       "norm_label": "buildfallbackresponse()"
     },
     {
@@ -448,24 +448,56 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "route_offsetdate",
-      "community": 5,
+      "community": 3,
       "norm_label": "offsetdate()"
     },
     {
       "label": "POST()",
       "file_type": "code",
       "type": "FUNCTION",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\parse\\route.ts",
-      "source_location": "L14",
-      "complexity": 22,
-      "loc": 89,
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-plan\\route.ts",
+      "source_location": "L7",
+      "complexity": 25,
+      "loc": 78,
       "level": 0,
       "granularity": "low",
-      "heat": 0.188,
+      "heat": 0.213,
       "owner": "unowned",
       "id": "route_post",
-      "community": 5,
+      "community": 3,
       "norm_label": "post()"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\documents\\analyze\\route.ts",
+      "source_location": "L1",
+      "complexity": 1,
+      "loc": 1,
+      "level": 2,
+      "granularity": "low",
+      "heat": 0.011,
+      "owner": "unowned",
+      "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_documents_analyze_route_ts",
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "maxDuration",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-plan\\route.ts",
+      "source_location": "L5",
+      "complexity": 1,
+      "loc": 1,
+      "level": 1,
+      "granularity": "low",
+      "heat": 0.018,
+      "owner": "unowned",
+      "id": "route_maxduration",
+      "community": 3,
+      "norm_label": "maxduration"
     },
     {
       "label": "route.ts",
@@ -480,7 +512,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_evaluate_route_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -496,7 +528,7 @@
       "heat": 0.017,
       "owner": "unowned",
       "id": "route_system_instruction",
-      "community": 5,
+      "community": 3,
       "norm_label": "system_instruction"
     },
     {
@@ -512,7 +544,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "route_fallback_questions",
-      "community": 5,
+      "community": 3,
       "norm_label": "fallback_questions"
     },
     {
@@ -528,7 +560,7 @@
       "heat": 0.096,
       "owner": "unowned",
       "id": "route_buildfallback",
-      "community": 5,
+      "community": 3,
       "norm_label": "buildfallback()"
     },
     {
@@ -544,7 +576,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_evaluate_duel_route_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -560,7 +592,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_meet_explain_route_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -576,7 +608,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "route_buildfallbackexplanation",
-      "community": 5,
+      "community": 3,
       "norm_label": "buildfallbackexplanation()"
     },
     {
@@ -587,12 +619,12 @@
       "source_location": "L1",
       "complexity": 1,
       "loc": 1,
-      "level": 3,
+      "level": 2,
       "granularity": "low",
-      "heat": 0.008,
+      "heat": 0.011,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_explain_route_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -603,12 +635,12 @@
       "source_location": "L1",
       "complexity": 1,
       "loc": 1,
-      "level": 3,
+      "level": 2,
       "granularity": "low",
-      "heat": 0.008,
+      "heat": 0.011,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_generate_plan_route_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -624,7 +656,23 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_parse_route_ts",
-      "community": 5,
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-plan\\route.ts",
+      "source_location": "L1",
+      "complexity": 1,
+      "loc": 1,
+      "level": 2,
+      "granularity": "low",
+      "heat": 0.011,
+      "owner": "unowned",
+      "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_plan_route_ts",
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -672,7 +720,7 @@
       "heat": 0.005,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_loading_tsx",
-      "community": 28,
+      "community": 27,
       "norm_label": "loading.tsx"
     },
     {
@@ -688,7 +736,7 @@
       "heat": 0.085,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_page_tsx",
-      "community": 3,
+      "community": 2,
       "norm_label": "page.tsx"
     },
     {
@@ -768,7 +816,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_radius",
-      "community": 3,
+      "community": 2,
       "norm_label": "radius"
     },
     {
@@ -784,7 +832,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_circumference",
-      "community": 3,
+      "community": 2,
       "norm_label": "circumference"
     },
     {
@@ -800,7 +848,7 @@
       "heat": 0.023,
       "owner": "unowned",
       "id": "page_strokedashoffset",
-      "community": 3,
+      "community": 2,
       "norm_label": "strokedashoffset"
     },
     {
@@ -816,7 +864,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "page_user",
-      "community": 3,
+      "community": 2,
       "norm_label": "{ user }"
     },
     {
@@ -832,7 +880,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "page_displayname",
-      "community": 3,
+      "community": 2,
       "norm_label": "displayname"
     },
     {
@@ -848,7 +896,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "page_plans_setplans",
-      "community": 3,
+      "community": 2,
       "norm_label": "[plans, setplans]"
     },
     {
@@ -864,7 +912,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_loadingplans_setloadingplans",
-      "community": 3,
+      "community": 2,
       "norm_label": "[loadingplans, setloadingplans]"
     },
     {
@@ -880,7 +928,7 @@
       "heat": 0.01,
       "owner": "unowned",
       "id": "page_userstats_setuserstats",
-      "community": 3,
+      "community": 2,
       "norm_label": "[userstats, setuserstats]"
     },
     {
@@ -896,7 +944,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_loadingstats_setloadingstats",
-      "community": 3,
+      "community": 2,
       "norm_label": "[loadingstats, setloadingstats]"
     },
     {
@@ -912,7 +960,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_ismounted",
-      "community": 3,
+      "community": 2,
       "norm_label": "ismounted"
     },
     {
@@ -928,7 +976,7 @@
       "heat": 0.067,
       "owner": "unowned",
       "id": "page_handletoggletask",
-      "community": 6,
+      "community": 7,
       "norm_label": "handletoggletask"
     },
     {
@@ -944,7 +992,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "page_allpendingtasks",
-      "community": 3,
+      "community": 2,
       "norm_label": "allpendingtasks"
     },
     {
@@ -960,7 +1008,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_today",
-      "community": 3,
+      "community": 2,
       "norm_label": "today"
     },
     {
@@ -976,7 +1024,7 @@
       "heat": 0.01,
       "owner": "unowned",
       "id": "page_datestring",
-      "community": 3,
+      "community": 2,
       "norm_label": "datestring"
     },
     {
@@ -992,7 +1040,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "page_hoursthismonth",
-      "community": 3,
+      "community": 2,
       "norm_label": "hoursthismonth"
     },
     {
@@ -1008,7 +1056,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_streakpercent",
-      "community": 3,
+      "community": 2,
       "norm_label": "streakpercent"
     },
     {
@@ -1024,7 +1072,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_hourspercent",
-      "community": 3,
+      "community": 2,
       "norm_label": "hourspercent"
     },
     {
@@ -1040,7 +1088,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_boss_fight_page_tsx",
-      "community": 20,
+      "community": 19,
       "norm_label": "page.tsx"
     },
     {
@@ -1056,7 +1104,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "page_metadata",
-      "community": 20,
+      "community": 19,
       "norm_label": "metadata"
     },
     {
@@ -1072,7 +1120,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_game_page_tsx",
-      "community": 20,
+      "community": 19,
       "norm_label": "page.tsx"
     },
     {
@@ -2017,7 +2065,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_meet_roomid_page_tsx",
-      "community": 22,
+      "community": 21,
       "norm_label": "page.tsx"
     },
     {
@@ -2033,7 +2081,7 @@
       "heat": 0.03,
       "owner": "unowned",
       "id": "page_studymeetroompage",
-      "community": 22,
+      "community": 21,
       "norm_label": "studymeetroompage()"
     },
     {
@@ -2049,7 +2097,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_plan_loading_tsx",
-      "community": 23,
+      "community": 22,
       "norm_label": "loading.tsx"
     },
     {
@@ -2065,7 +2113,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "loading_skeletonpulse",
-      "community": 23,
+      "community": 22,
       "norm_label": "skeletonpulse()"
     },
     {
@@ -2081,7 +2129,7 @@
       "heat": 0.11,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_dashboard_plan_page_tsx",
-      "community": 2,
+      "community": 4,
       "norm_label": "page.tsx"
     },
     {
@@ -2097,7 +2145,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "page_cardvariants",
-      "community": 2,
+      "community": 4,
       "norm_label": "cardvariants"
     },
     {
@@ -2113,7 +2161,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "page_taskvariants",
-      "community": 2,
+      "community": 4,
       "norm_label": "taskvariants"
     },
     {
@@ -2129,7 +2177,7 @@
       "heat": 0.029,
       "owner": "unowned",
       "id": "page_computeprogress",
-      "community": 2,
+      "community": 4,
       "norm_label": "computeprogress()"
     },
     {
@@ -2145,7 +2193,7 @@
       "heat": 0.02,
       "owner": "unowned",
       "id": "page_formatdate",
-      "community": 2,
+      "community": 4,
       "norm_label": "formatdate()"
     },
     {
@@ -2161,7 +2209,7 @@
       "heat": 0.08,
       "owner": "unowned",
       "id": "page_subjectaccent",
-      "community": 2,
+      "community": 4,
       "norm_label": "subjectaccent()"
     },
     {
@@ -2177,7 +2225,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_r",
-      "community": 2,
+      "community": 4,
       "norm_label": "r"
     },
     {
@@ -2193,7 +2241,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_circ",
-      "community": 2,
+      "community": 4,
       "norm_label": "circ"
     },
     {
@@ -2209,7 +2257,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_dash",
-      "community": 2,
+      "community": 4,
       "norm_label": "dash"
     },
     {
@@ -2225,7 +2273,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_collapsed_setcollapsed",
-      "community": 2,
+      "community": 4,
       "norm_label": "[collapsed, setcollapsed]"
     },
     {
@@ -2241,7 +2289,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_showdeletemodal_setshowdeletemodal",
-      "community": 2,
+      "community": 4,
       "norm_label": "[showdeletemodal, setshowdeletemodal]"
     },
     {
@@ -2257,7 +2305,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_actionloading_setactionloading",
-      "community": 2,
+      "community": 4,
       "norm_label": "[actionloading, setactionloading]"
     },
     {
@@ -2273,7 +2321,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_sortedtasks",
-      "community": 2,
+      "community": 4,
       "norm_label": "sortedtasks"
     },
     {
@@ -2289,7 +2337,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_accent",
-      "community": 2,
+      "community": 4,
       "norm_label": "accent"
     },
     {
@@ -2305,7 +2353,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_progress",
-      "community": 2,
+      "community": 4,
       "norm_label": "progress"
     },
     {
@@ -2321,7 +2369,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_completedcount",
-      "community": 2,
+      "community": 4,
       "norm_label": "completedcount"
     },
     {
@@ -2337,7 +2385,7 @@
       "heat": 0.023,
       "owner": "unowned",
       "id": "page_isallcompleted",
-      "community": 2,
+      "community": 4,
       "norm_label": "isallcompleted"
     },
     {
@@ -2353,7 +2401,7 @@
       "heat": 0.022,
       "owner": "unowned",
       "id": "page_handlecomplete",
-      "community": 2,
+      "community": 4,
       "norm_label": "handlecomplete()"
     },
     {
@@ -2369,7 +2417,7 @@
       "heat": 0.022,
       "owner": "unowned",
       "id": "page_handlereset",
-      "community": 2,
+      "community": 4,
       "norm_label": "handlereset()"
     },
     {
@@ -2385,7 +2433,7 @@
       "heat": 0.022,
       "owner": "unowned",
       "id": "page_handleconfirmdelete",
-      "community": 2,
+      "community": 4,
       "norm_label": "handleconfirmdelete()"
     },
     {
@@ -2401,7 +2449,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "page_totaltasks",
-      "community": 2,
+      "community": 4,
       "norm_label": "totaltasks"
     },
     {
@@ -2417,7 +2465,7 @@
       "heat": 0.019,
       "owner": "unowned",
       "id": "page_donetasks",
-      "community": 2,
+      "community": 4,
       "norm_label": "donetasks"
     },
     {
@@ -2433,7 +2481,7 @@
       "heat": 0.025,
       "owner": "unowned",
       "id": "page_avgpct",
-      "community": 2,
+      "community": 4,
       "norm_label": "avgpct"
     },
     {
@@ -2449,7 +2497,7 @@
       "heat": 0.01,
       "owner": "unowned",
       "id": "page_stats",
-      "community": 2,
+      "community": 4,
       "norm_label": "stats"
     },
     {
@@ -2465,7 +2513,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_loading_setloading",
-      "community": 2,
+      "community": 4,
       "norm_label": "[loading, setloading]"
     },
     {
@@ -2481,7 +2529,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "page_error_seterror",
-      "community": 2,
+      "community": 4,
       "norm_label": "[error, seterror]"
     },
     {
@@ -2497,7 +2545,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "page_fetchplans",
-      "community": 2,
+      "community": 4,
       "norm_label": "fetchplans"
     },
     {
@@ -2513,7 +2561,7 @@
       "heat": 0.032,
       "owner": "unowned",
       "id": "page_handledeleteplan",
-      "community": 2,
+      "community": 4,
       "norm_label": "handledeleteplan"
     },
     {
@@ -2529,7 +2577,7 @@
       "heat": 0.032,
       "owner": "unowned",
       "id": "page_handlecompleteplan",
-      "community": 2,
+      "community": 4,
       "norm_label": "handlecompleteplan"
     },
     {
@@ -2545,7 +2593,7 @@
       "heat": 0.047,
       "owner": "unowned",
       "id": "page_handleresetplan",
-      "community": 2,
+      "community": 4,
       "norm_label": "handleresetplan"
     },
     {
@@ -3777,7 +3825,7 @@
       "heat": 0.104,
       "owner": "unowned",
       "id": "bossfightarena_fetchplans",
-      "community": 6,
+      "community": 7,
       "norm_label": "fetchplans()"
     },
     {
@@ -3825,7 +3873,7 @@
       "heat": 0.225,
       "owner": "unowned",
       "id": "bossfightarena_handleattack",
-      "community": 4,
+      "community": 5,
       "norm_label": "handleattack"
     },
     {
@@ -3857,7 +3905,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "bossfightarena_handlekeydown",
-      "community": 4,
+      "community": 5,
       "norm_label": "handlekeydown()"
     },
     {
@@ -3937,7 +3985,7 @@
       "heat": 0.034,
       "owner": "unowned",
       "id": "bossfightarena_async",
-      "community": 4,
+      "community": 5,
       "norm_label": "async()"
     },
     {
@@ -3953,7 +4001,7 @@
       "heat": 0.005,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_voicechat_tsx",
-      "community": 29,
+      "community": 28,
       "norm_label": "voicechat.tsx"
     },
     {
@@ -4001,7 +4049,7 @@
       "heat": 0.067,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_friends_friendspanel_tsx",
-      "community": 7,
+      "community": 8,
       "norm_label": "friendspanel.tsx"
     },
     {
@@ -4017,7 +4065,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "friendspanel_default_cs_topics",
-      "community": 7,
+      "community": 8,
       "norm_label": "default_cs_topics"
     },
     {
@@ -4033,7 +4081,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_router",
-      "community": 7,
+      "community": 8,
       "norm_label": "router"
     },
     {
@@ -4049,7 +4097,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_studyplantopics_setstudyplantopics",
-      "community": 7,
+      "community": 8,
       "norm_label": "[studyplantopics, setstudyplantopics]"
     },
     {
@@ -4065,7 +4113,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_selectedtopic_setselectedtopic",
-      "community": 7,
+      "community": 8,
       "norm_label": "[selectedtopic, setselectedtopic]"
     },
     {
@@ -4081,7 +4129,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_customtopic_setcustomtopic",
-      "community": 7,
+      "community": 8,
       "norm_label": "[customtopic, setcustomtopic]"
     },
     {
@@ -4097,7 +4145,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_loading_setloading",
-      "community": 7,
+      "community": 8,
       "norm_label": "[loading, setloading]"
     },
     {
@@ -4113,7 +4161,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_waitingforfriend_setwaitingforfriend",
-      "community": 7,
+      "community": 8,
       "norm_label": "[waitingforfriend, setwaitingforfriend]"
     },
     {
@@ -4129,7 +4177,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_challengeid_setchallengeid",
-      "community": 7,
+      "community": 8,
       "norm_label": "[challengeid, setchallengeid]"
     },
     {
@@ -4145,7 +4193,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "friendspanel_error_seterror",
-      "community": 7,
+      "community": 8,
       "norm_label": "[error, seterror]"
     },
     {
@@ -4161,7 +4209,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "friendspanel_targetfriendid",
-      "community": 7,
+      "community": 8,
       "norm_label": "targetfriendid"
     },
     {
@@ -4177,7 +4225,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "friendspanel_targetfriendname",
-      "community": 7,
+      "community": 8,
       "norm_label": "targetfriendname"
     },
     {
@@ -4193,7 +4241,7 @@
       "heat": 0.049,
       "owner": "unowned",
       "id": "friendspanel_loadtopics",
-      "community": 6,
+      "community": 7,
       "norm_label": "loadtopics()"
     },
     {
@@ -4209,7 +4257,7 @@
       "heat": 0.038,
       "owner": "unowned",
       "id": "friendspanel_unsub",
-      "community": 7,
+      "community": 8,
       "norm_label": "unsub"
     },
     {
@@ -4225,7 +4273,7 @@
       "heat": 0.065,
       "owner": "unowned",
       "id": "friendspanel_handlesendchallenge",
-      "community": 7,
+      "community": 8,
       "norm_label": "handlesendchallenge()"
     },
     {
@@ -4241,7 +4289,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "friendspanel_handletoast",
-      "community": 7,
+      "community": 8,
       "norm_label": "handletoast()"
     },
     {
@@ -4257,7 +4305,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "friendspanel_unsubfriends",
-      "community": 7,
+      "community": 8,
       "norm_label": "unsubfriends"
     },
     {
@@ -4273,7 +4321,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "friendspanel_unsubpending",
-      "community": 7,
+      "community": 8,
       "norm_label": "unsubpending"
     },
     {
@@ -4289,7 +4337,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "friendspanel_handleclosemodals",
-      "community": 7,
+      "community": 8,
       "norm_label": "handleclosemodals()"
     },
     {
@@ -4305,7 +4353,7 @@
       "heat": 0.014,
       "owner": "unowned",
       "id": "friendspanel_friendname",
-      "community": 7,
+      "community": 8,
       "norm_label": "friendname"
     },
     {
@@ -4321,7 +4369,7 @@
       "heat": 0.014,
       "owner": "unowned",
       "id": "friendspanel_friendemail",
-      "community": 7,
+      "community": 8,
       "norm_label": "friendemail"
     },
     {
@@ -4369,7 +4417,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_layout_backgroundcanvas_tsx",
-      "community": 24,
+      "community": 23,
       "norm_label": "backgroundcanvas.tsx"
     },
     {
@@ -4385,7 +4433,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "backgroundcanvas_orbs",
-      "community": 24,
+      "community": 23,
       "norm_label": "orbs"
     },
     {
@@ -4657,7 +4705,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_layout_protectedroute_tsx",
-      "community": 15,
+      "community": 14,
       "norm_label": "protectedroute.tsx"
     },
     {
@@ -4673,7 +4721,7 @@
       "heat": 0.012,
       "owner": "unowned",
       "id": "protectedroute_spinnervariants",
-      "community": 15,
+      "community": 14,
       "norm_label": "spinnervariants"
     },
     {
@@ -4689,7 +4737,7 @@
       "heat": 0.012,
       "owner": "unowned",
       "id": "protectedroute_containervariants",
-      "community": 15,
+      "community": 14,
       "norm_label": "containervariants"
     },
     {
@@ -4705,7 +4753,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "protectedroute_user_loading",
-      "community": 15,
+      "community": 14,
       "norm_label": "{ user, loading }"
     },
     {
@@ -4721,7 +4769,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "protectedroute_router",
-      "community": 15,
+      "community": 14,
       "norm_label": "router"
     },
     {
@@ -4737,7 +4785,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "protectedroute_ismountedref",
-      "community": 15,
+      "community": 14,
       "norm_label": "ismountedref"
     },
     {
@@ -4753,7 +4801,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_layout_smoothscrollprovider_tsx",
-      "community": 25,
+      "community": 24,
       "norm_label": "smoothscrollprovider.tsx"
     },
     {
@@ -4769,7 +4817,7 @@
       "heat": 0.062,
       "owner": "unowned",
       "id": "smoothscrollprovider_smoothscrollprovider",
-      "community": 25,
+      "community": 24,
       "norm_label": "smoothscrollprovider()"
     },
     {
@@ -4785,7 +4833,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_meet_voicechat_tsx",
-      "community": 16,
+      "community": 15,
       "norm_label": "voicechat.tsx"
     },
     {
@@ -4801,7 +4849,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "voicechat_user",
-      "community": 16,
+      "community": 15,
       "norm_label": "{ user }"
     },
     {
@@ -4817,7 +4865,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "voicechat_remotestreams_connectionstates_voiceparticipants_ismuted_isaudioblocked_firestoreerror_togglemute_resumeaudio_attachaudioelement",
-      "community": 16,
+      "community": 15,
       "norm_label": "{\r\n    remotestreams,\r\n    connectionstates,\r\n    voiceparticipants,\r\n    ismuted,\r\n    isaudioblocked,\r\n    firestoreerror,\r\n    togglemute,\r\n    resumeaudio,\r\n    attachaudioelement,\r\n  }"
     },
     {
@@ -4833,7 +4881,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "voicechat_remotecount",
-      "community": 16,
+      "community": 15,
       "norm_label": "remotecount"
     },
     {
@@ -4849,7 +4897,7 @@
       "heat": 0.014,
       "owner": "unowned",
       "id": "voicechat_connectedpeercount",
-      "community": 16,
+      "community": 15,
       "norm_label": "connectedpeercount"
     },
     {
@@ -4865,7 +4913,7 @@
       "heat": 0.015,
       "owner": "unowned",
       "id": "voicechat_handletogglemute",
-      "community": 16,
+      "community": 15,
       "norm_label": "handletogglemute()"
     },
     {
@@ -4881,7 +4929,7 @@
       "heat": 0.005,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_providers_providers_tsx",
-      "community": 30,
+      "community": 29,
       "norm_label": "providers.tsx"
     },
     {
@@ -4897,7 +4945,7 @@
       "heat": 0.07,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "community": 8,
+      "community": 6,
       "norm_label": "materialuploader.tsx"
     },
     {
@@ -4913,7 +4961,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "materialuploader_ease",
-      "community": 8,
+      "community": 6,
       "norm_label": "ease"
     },
     {
@@ -4929,7 +4977,7 @@
       "heat": 0.062,
       "owner": "unowned",
       "id": "materialuploader_renderformattedtext",
-      "community": 8,
+      "community": 6,
       "norm_label": "renderformattedtext()"
     },
     {
@@ -4945,7 +4993,7 @@
       "heat": 0.04,
       "owner": "unowned",
       "id": "materialuploader_structuredmarkdown",
-      "community": 8,
+      "community": 6,
       "norm_label": "structuredmarkdown()"
     },
     {
@@ -4961,7 +5009,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "materialuploader_trimmed",
-      "community": 8,
+      "community": 6,
       "norm_label": "trimmed"
     },
     {
@@ -4977,7 +5025,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "materialuploader_textcontent",
-      "community": 8,
+      "community": 6,
       "norm_label": "textcontent"
     },
     {
@@ -4990,10 +5038,10 @@
       "loc": 1,
       "level": 1,
       "granularity": "low",
-      "heat": 0.021,
+      "heat": 0.018,
       "owner": "unowned",
       "id": "materialuploader_match",
-      "community": 14,
+      "community": 6,
       "norm_label": "match"
     },
     {
@@ -5009,7 +5057,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "materialuploader_file",
-      "community": 8,
+      "community": 6,
       "norm_label": "file"
     },
     {
@@ -5025,7 +5073,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "materialuploader_validextensions",
-      "community": 8,
+      "community": 6,
       "norm_label": "validextensions"
     },
     {
@@ -5041,79 +5089,47 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "materialuploader_ext",
-      "community": 8,
+      "community": 6,
       "norm_label": "ext"
     },
     {
-      "label": "extractedText",
+      "label": "isSelectedPdf",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
       "source_location": "L255",
-      "complexity": 1,
+      "complexity": 3,
       "loc": 1,
       "level": 3,
       "granularity": "low",
-      "heat": 0.008,
+      "heat": 0.018,
       "owner": "unowned",
-      "id": "materialuploader_extractedtext",
-      "community": 8,
-      "norm_label": "extractedtext"
+      "id": "materialuploader_isselectedpdf",
+      "community": 6,
+      "norm_label": "isselectedpdf"
     },
     {
-      "label": "fileBase64",
+      "label": "res",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L256",
+      "source_location": "L259",
       "complexity": 1,
       "loc": 1,
       "level": 3,
       "granularity": "low",
       "heat": 0.008,
       "owner": "unowned",
-      "id": "materialuploader_filebase64",
-      "community": 8,
-      "norm_label": "filebase64"
-    },
-    {
-      "label": "mimeType",
-      "file_type": "code",
-      "type": "FUNCTION",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L257",
-      "complexity": 1,
-      "loc": 1,
-      "level": 3,
-      "granularity": "low",
-      "heat": 0.008,
-      "owner": "unowned",
-      "id": "materialuploader_mimetype",
-      "community": 8,
-      "norm_label": "mimetype"
-    },
-    {
-      "label": "isPdf",
-      "file_type": "code",
-      "type": "FUNCTION",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L258",
-      "complexity": 1,
-      "loc": 1,
-      "level": 3,
-      "granularity": "low",
-      "heat": 0.008,
-      "owner": "unowned",
-      "id": "materialuploader_ispdf",
-      "community": 8,
-      "norm_label": "ispdf"
+      "id": "materialuploader_res",
+      "community": 6,
+      "norm_label": "res"
     },
     {
       "label": "formData",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L263",
+      "source_location": "L262",
       "complexity": 1,
       "loc": 1,
       "level": 1,
@@ -5121,27 +5137,27 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "materialuploader_formdata",
-      "community": 5,
+      "community": 3,
       "norm_label": "formdata"
     },
     {
-      "label": "parseRes",
+      "label": "extractedText",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L266",
+      "source_location": "L270",
       "complexity": 1,
-      "loc": 4,
+      "loc": 1,
       "level": 3,
       "granularity": "low",
-      "heat": 0.009,
+      "heat": 0.008,
       "owner": "unowned",
-      "id": "materialuploader_parseres",
-      "community": 8,
-      "norm_label": "parseres"
+      "id": "materialuploader_extractedtext",
+      "community": 6,
+      "norm_label": "extractedtext"
     },
     {
-      "label": "parseData",
+      "label": "fileBase64",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
@@ -5152,32 +5168,64 @@
       "granularity": "low",
       "heat": 0.008,
       "owner": "unowned",
-      "id": "materialuploader_parsedata",
-      "community": 8,
-      "norm_label": "parsedata"
+      "id": "materialuploader_filebase64",
+      "community": 6,
+      "norm_label": "filebase64"
     },
     {
-      "label": "res",
+      "label": "mimeType",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L285",
+      "source_location": "L272",
       "complexity": 1,
-      "loc": 11,
+      "loc": 1,
       "level": 3,
       "granularity": "low",
-      "heat": 0.012,
+      "heat": 0.008,
       "owner": "unowned",
-      "id": "materialuploader_res",
-      "community": 8,
-      "norm_label": "res"
+      "id": "materialuploader_mimetype",
+      "community": 6,
+      "norm_label": "mimetype"
+    },
+    {
+      "label": "parseRes",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L278",
+      "complexity": 1,
+      "loc": 4,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.009,
+      "owner": "unowned",
+      "id": "materialuploader_parseres",
+      "community": 6,
+      "norm_label": "parseres"
+    },
+    {
+      "label": "parseData",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L282",
+      "complexity": 1,
+      "loc": 1,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.008,
+      "owner": "unowned",
+      "id": "materialuploader_parsedata",
+      "community": 6,
+      "norm_label": "parsedata"
     },
     {
       "label": "data",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L297",
+      "source_location": "L303",
       "complexity": 1,
       "loc": 1,
       "level": 0,
@@ -5185,7 +5233,7 @@
       "heat": 0.051,
       "owner": "unowned",
       "id": "materialuploader_data",
-      "community": 4,
+      "community": 5,
       "norm_label": "data"
     },
     {
@@ -5193,7 +5241,7 @@
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L429",
+      "source_location": "L467",
       "complexity": 2,
       "loc": 1,
       "level": 3,
@@ -5201,7 +5249,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "materialuploader_isactive",
-      "community": 8,
+      "community": 6,
       "norm_label": "isactive"
     },
     {
@@ -5209,7 +5257,7 @@
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L722",
+      "source_location": "L760",
       "complexity": 2,
       "loc": 1,
       "level": 3,
@@ -5217,7 +5265,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "materialuploader_isopen",
-      "community": 8,
+      "community": 6,
       "norm_label": "isopen"
     },
     {
@@ -5225,7 +5273,7 @@
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L723",
+      "source_location": "L761",
       "complexity": 1,
       "loc": 1,
       "level": 3,
@@ -5233,7 +5281,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "materialuploader_showhint",
-      "community": 8,
+      "community": 6,
       "norm_label": "showhint"
     },
     {
@@ -5249,7 +5297,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_ui_field_tsx",
-      "community": 17,
+      "community": 16,
       "norm_label": "field.tsx"
     },
     {
@@ -5265,7 +5313,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "field_fieldgroup",
-      "community": 17,
+      "community": 16,
       "norm_label": "fieldgroup()"
     },
     {
@@ -5281,7 +5329,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "field_field",
-      "community": 17,
+      "community": 16,
       "norm_label": "field()"
     },
     {
@@ -5297,7 +5345,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "field_fieldlabel",
-      "community": 17,
+      "community": 16,
       "norm_label": "fieldlabel()"
     },
     {
@@ -5313,7 +5361,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "field_fielddescription",
-      "community": 17,
+      "community": 16,
       "norm_label": "fielddescription()"
     },
     {
@@ -5329,7 +5377,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "field_fielderror",
-      "community": 17,
+      "community": 16,
       "norm_label": "fielderror()"
     },
     {
@@ -5537,7 +5585,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_hooks_usestudytimer_ts",
-      "community": 26,
+      "community": 25,
       "norm_label": "usestudytimer.ts"
     },
     {
@@ -5553,7 +5601,7 @@
       "heat": 0.056,
       "owner": "unowned",
       "id": "usestudytimer_usestudytimer",
-      "community": 26,
+      "community": 25,
       "norm_label": "usestudytimer()"
     },
     {
@@ -5569,7 +5617,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_hooks_usewebrtcvoicechat_ts",
-      "community": 21,
+      "community": 20,
       "norm_label": "usewebrtcvoicechat.ts"
     },
     {
@@ -5585,7 +5633,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "usewebrtcvoicechat_ice_servers",
-      "community": 21,
+      "community": 20,
       "norm_label": "ice_servers"
     },
     {
@@ -5601,7 +5649,7 @@
       "heat": 0.603,
       "owner": "unowned",
       "id": "usewebrtcvoicechat_usewebrtcvoicechat",
-      "community": 21,
+      "community": 20,
       "norm_label": "usewebrtcvoicechat()"
     },
     {
@@ -5617,7 +5665,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_cn_ts",
-      "community": 27,
+      "community": 26,
       "norm_label": "cn.ts"
     },
     {
@@ -5633,8 +5681,184 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "cn_cn",
-      "community": 27,
+      "community": 26,
       "norm_label": "cn()"
+    },
+    {
+      "label": "gemini-pdf.ts",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L1",
+      "complexity": 1,
+      "loc": 1,
+      "level": 0,
+      "granularity": "low",
+      "heat": 0.036,
+      "owner": "unowned",
+      "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "community": 3,
+      "norm_label": "gemini-pdf.ts"
+    },
+    {
+      "label": "KeyConceptSchema",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L11",
+      "complexity": 1,
+      "loc": 4,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.009,
+      "owner": "unowned",
+      "id": "gemini_pdf_keyconceptschema",
+      "community": 3,
+      "norm_label": "keyconceptschema"
+    },
+    {
+      "label": "EquationSchema",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L16",
+      "complexity": 1,
+      "loc": 5,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.01,
+      "owner": "unowned",
+      "id": "gemini_pdf_equationschema",
+      "community": 3,
+      "norm_label": "equationschema"
+    },
+    {
+      "label": "DailyStudyPlanSchema",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L22",
+      "complexity": 1,
+      "loc": 5,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.01,
+      "owner": "unowned",
+      "id": "gemini_pdf_dailystudyplanschema",
+      "community": 3,
+      "norm_label": "dailystudyplanschema"
+    },
+    {
+      "label": "PdfAnalysisSchema",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L28",
+      "complexity": 1,
+      "loc": 8,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.011,
+      "owner": "unowned",
+      "id": "gemini_pdf_pdfanalysisschema",
+      "community": 3,
+      "norm_label": "pdfanalysisschema"
+    },
+    {
+      "label": "PDF_ANALYSIS_RESPONSE_SCHEMA",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L43",
+      "complexity": 1,
+      "loc": 65,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.034,
+      "owner": "unowned",
+      "id": "gemini_pdf_pdf_analysis_response_schema",
+      "community": 3,
+      "norm_label": "pdf_analysis_response_schema"
+    },
+    {
+      "label": "GEMINI_PDF_SYSTEM_INSTRUCTION",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L113",
+      "complexity": 1,
+      "loc": 18,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.015,
+      "owner": "unowned",
+      "id": "gemini_pdf_gemini_pdf_system_instruction",
+      "community": 3,
+      "norm_label": "gemini_pdf_system_instruction"
+    },
+    {
+      "label": "uploadPdfToGemini()",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L136",
+      "complexity": 4,
+      "loc": 39,
+      "level": 2,
+      "granularity": "low",
+      "heat": 0.041,
+      "owner": "unowned",
+      "id": "gemini_pdf_uploadpdftogemini",
+      "community": 3,
+      "norm_label": "uploadpdftogemini()"
+    },
+    {
+      "label": "analyzePdfDocument()",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L180",
+      "complexity": 3,
+      "loc": 54,
+      "level": 2,
+      "granularity": "low",
+      "heat": 0.042,
+      "owner": "unowned",
+      "id": "gemini_pdf_analyzepdfdocument",
+      "community": 3,
+      "norm_label": "analyzepdfdocument()"
+    },
+    {
+      "label": "STUDY_PLAN_RESPONSE_SCHEMA",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L239",
+      "complexity": 1,
+      "loc": 30,
+      "level": 3,
+      "granularity": "low",
+      "heat": 0.02,
+      "owner": "unowned",
+      "id": "gemini_pdf_study_plan_response_schema",
+      "community": 3,
+      "norm_label": "study_plan_response_schema"
+    },
+    {
+      "label": "generateStudyPlanFromPdfUri()",
+      "file_type": "code",
+      "type": "FUNCTION",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L270",
+      "complexity": 6,
+      "loc": 63,
+      "level": 2,
+      "granularity": "low",
+      "heat": 0.06,
+      "owner": "unowned",
+      "id": "gemini_pdf_generatestudyplanfrompdfuri",
+      "community": 3,
+      "norm_label": "generatestudyplanfrompdfuri()"
     },
     {
       "label": "gsap.ts",
@@ -5649,7 +5873,7 @@
       "heat": 0.014,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gsap_ts",
-      "community": 19,
+      "community": 18,
       "norm_label": "gsap.ts"
     },
     {
@@ -5665,7 +5889,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "gsap_emil_ease_out",
-      "community": 19,
+      "community": 18,
       "norm_label": "emil_ease_out"
     },
     {
@@ -5681,7 +5905,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "gsap_emil_ease_in_out",
-      "community": 19,
+      "community": 18,
       "norm_label": "emil_ease_in_out"
     },
     {
@@ -5697,7 +5921,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "gsap_emil_spring_transition",
-      "community": 19,
+      "community": 18,
       "norm_label": "emil_spring_transition"
     },
     {
@@ -5713,7 +5937,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_normalizestudyplan_ts",
-      "community": 6,
+      "community": 7,
       "norm_label": "normalizestudyplan.ts"
     },
     {
@@ -5729,7 +5953,7 @@
       "heat": 0.058,
       "owner": "unowned",
       "id": "normalizestudyplan_generatetaskid",
-      "community": 6,
+      "community": 7,
       "norm_label": "generatetaskid()"
     },
     {
@@ -5745,7 +5969,7 @@
       "heat": 0.069,
       "owner": "unowned",
       "id": "normalizestudyplan_parsedaynumber",
-      "community": 6,
+      "community": 7,
       "norm_label": "parsedaynumber()"
     },
     {
@@ -5761,7 +5985,7 @@
       "heat": 0.078,
       "owner": "unowned",
       "id": "normalizestudyplan_extracttitle",
-      "community": 6,
+      "community": 7,
       "norm_label": "extracttitle()"
     },
     {
@@ -5777,7 +6001,7 @@
       "heat": 0.372,
       "owner": "unowned",
       "id": "normalizestudyplan_normalizestudyplandata",
-      "community": 6,
+      "community": 7,
       "norm_label": "normalizestudyplandata()"
     },
     {
@@ -5793,7 +6017,7 @@
       "heat": 0.005,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_types_ts",
-      "community": 31,
+      "community": 30,
       "norm_label": "types.ts"
     },
     {
@@ -5809,7 +6033,7 @@
       "heat": 0.024,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_ai_study_materials_ts",
-      "community": 5,
+      "community": 3,
       "norm_label": "study-materials.ts"
     },
     {
@@ -5825,7 +6049,7 @@
       "heat": 0.02,
       "owner": "unowned",
       "id": "study_materials_generate_plan_schema",
-      "community": 5,
+      "community": 3,
       "norm_label": "generate_plan_schema"
     },
     {
@@ -5841,7 +6065,7 @@
       "heat": 0.014,
       "owner": "unowned",
       "id": "study_materials_generate_plan_system_instruction",
-      "community": 5,
+      "community": 3,
       "norm_label": "generate_plan_system_instruction"
     },
     {
@@ -5857,7 +6081,7 @@
       "heat": 0.025,
       "owner": "unowned",
       "id": "study_materials_explain_material_schema",
-      "community": 5,
+      "community": 3,
       "norm_label": "explain_material_schema"
     },
     {
@@ -5873,7 +6097,7 @@
       "heat": 0.017,
       "owner": "unowned",
       "id": "study_materials_explain_material_system_instruction",
-      "community": 5,
+      "community": 3,
       "norm_label": "explain_material_system_instruction"
     },
     {
@@ -5889,7 +6113,7 @@
       "heat": 0.022,
       "owner": "unowned",
       "id": "study_materials_buildfallbackstudyplan",
-      "community": 5,
+      "community": 3,
       "norm_label": "buildfallbackstudyplan()"
     },
     {
@@ -5905,7 +6129,7 @@
       "heat": 0.036,
       "owner": "unowned",
       "id": "study_materials_buildfallbackexplanation",
-      "community": 5,
+      "community": 3,
       "norm_label": "buildfallbackexplanation()"
     },
     {
@@ -6006,7 +6230,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_firebase_clientapp_ts",
-      "community": 18,
+      "community": 17,
       "norm_label": "clientapp.ts"
     },
     {
@@ -6022,7 +6246,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "clientapp_firebaseconfig",
-      "community": 18,
+      "community": 17,
       "norm_label": "firebaseconfig"
     },
     {
@@ -6038,7 +6262,7 @@
       "heat": 0.013,
       "owner": "unowned",
       "id": "clientapp_app",
-      "community": 18,
+      "community": 17,
       "norm_label": "app"
     },
     {
@@ -6055,7 +6279,7 @@
       "owner": "unowned",
       "sensitivity": "HIGH",
       "id": "clientapp_auth",
-      "community": 18,
+      "community": 17,
       "norm_label": "auth"
     },
     {
@@ -6071,7 +6295,7 @@
       "heat": 0.008,
       "owner": "unowned",
       "id": "clientapp_db",
-      "community": 18,
+      "community": 17,
       "norm_label": "db"
     },
     {
@@ -6087,7 +6311,7 @@
       "heat": 0.03,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_firebase_db_ts",
-      "community": 6,
+      "community": 7,
       "norm_label": "db.ts"
     },
     {
@@ -6103,7 +6327,7 @@
       "heat": 0.015,
       "owner": "unowned",
       "id": "db_userplanscollection",
-      "community": 6,
+      "community": 7,
       "norm_label": "userplanscollection()"
     },
     {
@@ -6119,7 +6343,7 @@
       "heat": 0.047,
       "owner": "unowned",
       "id": "db_savestudyplan",
-      "community": 6,
+      "community": 7,
       "norm_label": "savestudyplan()"
     },
     {
@@ -6135,7 +6359,7 @@
       "heat": 0.093,
       "owner": "unowned",
       "id": "db_getstudyplans",
-      "community": 6,
+      "community": 7,
       "norm_label": "getstudyplans()"
     },
     {
@@ -6151,7 +6375,7 @@
       "heat": 0.058,
       "owner": "unowned",
       "id": "db_toggletaskcompletion",
-      "community": 6,
+      "community": 7,
       "norm_label": "toggletaskcompletion()"
     },
     {
@@ -6167,7 +6391,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "db_updatestudyplantasks",
-      "community": 6,
+      "community": 7,
       "norm_label": "updatestudyplantasks()"
     },
     {
@@ -6183,7 +6407,7 @@
       "heat": 0.012,
       "owner": "unowned",
       "id": "db_updatestudyplanstatus",
-      "community": 6,
+      "community": 7,
       "norm_label": "updatestudyplanstatus()"
     },
     {
@@ -6199,7 +6423,7 @@
       "heat": 0.011,
       "owner": "unowned",
       "id": "db_deletestudyplan",
-      "community": 6,
+      "community": 7,
       "norm_label": "deletestudyplan()"
     },
     {
@@ -6215,7 +6439,7 @@
       "heat": 0.015,
       "owner": "unowned",
       "id": "db_resetstudyplantasks",
-      "community": 6,
+      "community": 7,
       "norm_label": "resetstudyplantasks()"
     },
     {
@@ -6231,7 +6455,7 @@
       "heat": 0.076,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_firebase_friends_ts",
-      "community": 4,
+      "community": 5,
       "norm_label": "friends.ts"
     },
     {
@@ -6247,7 +6471,7 @@
       "heat": 0.046,
       "owner": "unowned",
       "id": "friends_saveuserprofile",
-      "community": 4,
+      "community": 5,
       "norm_label": "saveuserprofile()"
     },
     {
@@ -6263,7 +6487,7 @@
       "heat": 0.05,
       "owner": "unowned",
       "id": "friends_finduserbyemail",
-      "community": 4,
+      "community": 5,
       "norm_label": "finduserbyemail()"
     },
     {
@@ -6279,7 +6503,7 @@
       "heat": 0.081,
       "owner": "unowned",
       "id": "friends_sendfriendrequest",
-      "community": 4,
+      "community": 5,
       "norm_label": "sendfriendrequest()"
     },
     {
@@ -6295,7 +6519,7 @@
       "heat": 0.01,
       "owner": "unowned",
       "id": "friends_acceptfriendrequest",
-      "community": 4,
+      "community": 5,
       "norm_label": "acceptfriendrequest()"
     },
     {
@@ -6311,7 +6535,7 @@
       "heat": 0.009,
       "owner": "unowned",
       "id": "friends_removefriendrelationship",
-      "community": 4,
+      "community": 5,
       "norm_label": "removefriendrelationship()"
     },
     {
@@ -6327,7 +6551,7 @@
       "heat": 0.045,
       "owner": "unowned",
       "id": "friends_subscribetofriends",
-      "community": 4,
+      "community": 5,
       "norm_label": "subscribetofriends()"
     },
     {
@@ -6343,7 +6567,7 @@
       "heat": 0.025,
       "owner": "unowned",
       "id": "friends_subscribetopendingfriendrequests",
-      "community": 4,
+      "community": 5,
       "norm_label": "subscribetopendingfriendrequests()"
     },
     {
@@ -6359,7 +6583,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "friends_sendmatchchallenge",
-      "community": 7,
+      "community": 8,
       "norm_label": "sendmatchchallenge()"
     },
     {
@@ -6375,7 +6599,7 @@
       "heat": 0.016,
       "owner": "unowned",
       "id": "friends_respondtochallenge",
-      "community": 4,
+      "community": 5,
       "norm_label": "respondtochallenge()"
     },
     {
@@ -6391,7 +6615,7 @@
       "heat": 0.025,
       "owner": "unowned",
       "id": "friends_subscribetoincomingchallenges",
-      "community": 4,
+      "community": 5,
       "norm_label": "subscribetoincomingchallenges()"
     },
     {
@@ -6407,7 +6631,7 @@
       "heat": 0.028,
       "owner": "unowned",
       "id": "friends_subscribetochallengestatus",
-      "community": 4,
+      "community": 5,
       "norm_label": "subscribetochallengestatus()"
     },
     {
@@ -6423,7 +6647,7 @@
       "heat": 0.025,
       "owner": "unowned",
       "id": "friends_subscribetouseracceptedchallenges",
-      "community": 4,
+      "community": 5,
       "norm_label": "subscribetouseracceptedchallenges()"
     },
     {
@@ -6439,7 +6663,7 @@
       "heat": 0.12,
       "owner": "unowned",
       "id": "friends_createorgetmultiplayermatch",
-      "community": 4,
+      "community": 5,
       "norm_label": "createorgetmultiplayermatch()"
     },
     {
@@ -6455,7 +6679,7 @@
       "heat": 0.051,
       "owner": "unowned",
       "id": "friends_setplayerreadyinmatch",
-      "community": 4,
+      "community": 5,
       "norm_label": "setplayerreadyinmatch()"
     },
     {
@@ -6471,7 +6695,7 @@
       "heat": 0.121,
       "owner": "unowned",
       "id": "friends_subscribetomultiplayermatch",
-      "community": 4,
+      "community": 5,
       "norm_label": "subscribetomultiplayermatch()"
     },
     {
@@ -6487,7 +6711,7 @@
       "heat": 0.018,
       "owner": "unowned",
       "id": "friends_senddueltaunt",
-      "community": 4,
+      "community": 5,
       "norm_label": "senddueltaunt()"
     },
     {
@@ -6503,7 +6727,7 @@
       "heat": 0.101,
       "owner": "unowned",
       "id": "friends_getmatchstatus",
-      "community": 4,
+      "community": 5,
       "norm_label": "getmatchstatus()"
     },
     {
@@ -6519,7 +6743,7 @@
       "heat": 0.027,
       "owner": "unowned",
       "id": "friends_updatematchheartbeat",
-      "community": 4,
+      "community": 5,
       "norm_label": "updatematchheartbeat()"
     },
     {
@@ -6535,7 +6759,7 @@
       "heat": 0.015,
       "owner": "unowned",
       "id": "friends_forfeitmatchduetodisconnect",
-      "community": 4,
+      "community": 5,
       "norm_label": "forfeitmatchduetodisconnect()"
     },
     {
@@ -6551,7 +6775,7 @@
       "heat": 0.035,
       "owner": "unowned",
       "id": "friends_surrendermatch",
-      "community": 4,
+      "community": 5,
       "norm_label": "surrendermatch()"
     },
     {
@@ -6567,7 +6791,7 @@
       "heat": 0.115,
       "owner": "unowned",
       "id": "friends_submitduelanswer",
-      "community": 4,
+      "community": 5,
       "norm_label": "submitduelanswer()"
     },
     {
@@ -6583,7 +6807,7 @@
       "heat": 0.105,
       "owner": "unowned",
       "id": "friends_commitduelevaluation",
-      "community": 4,
+      "community": 5,
       "norm_label": "commitduelevaluation()"
     },
     {
@@ -6599,7 +6823,7 @@
       "heat": 0.135,
       "owner": "unowned",
       "id": "friends_submitmultiplayerturn",
-      "community": 4,
+      "community": 5,
       "norm_label": "submitmultiplayerturn()"
     },
     {
@@ -6839,7 +7063,7 @@
       "heat": 0.036,
       "owner": "unowned",
       "id": "meet_updateparticipantmicstate",
-      "community": 4,
+      "community": 5,
       "norm_label": "updateparticipantmicstate()"
     },
     {
@@ -6951,7 +7175,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_firebase_userstats_ts",
-      "community": 6,
+      "community": 7,
       "norm_label": "userstats.ts"
     },
     {
@@ -6967,7 +7191,7 @@
       "heat": 0.024,
       "owner": "unowned",
       "id": "userstats_getlocaldatestring",
-      "community": 6,
+      "community": 7,
       "norm_label": "getlocaldatestring()"
     },
     {
@@ -6983,7 +7207,7 @@
       "heat": 0.021,
       "owner": "unowned",
       "id": "userstats_getyesterdaydatestring",
-      "community": 6,
+      "community": 7,
       "norm_label": "getyesterdaydatestring()"
     },
     {
@@ -6999,7 +7223,7 @@
       "heat": 0.065,
       "owner": "unowned",
       "id": "userstats_getuserstats",
-      "community": 6,
+      "community": 7,
       "norm_label": "getuserstats()"
     },
     {
@@ -7015,7 +7239,7 @@
       "heat": 0.109,
       "owner": "unowned",
       "id": "userstats_recorddailyactivity",
-      "community": 6,
+      "community": 7,
       "norm_label": "recorddailyactivity()"
     },
     {
@@ -7031,7 +7255,7 @@
       "heat": 0.04,
       "owner": "unowned",
       "id": "userstats_addstudyminutes",
-      "community": 6,
+      "community": 7,
       "norm_label": "addstudyminutes()"
     },
     {
@@ -7044,10 +7268,10 @@
       "loc": 1,
       "level": 1,
       "granularity": "low",
-      "heat": 0.021,
+      "heat": 0.018,
       "owner": "unowned",
       "id": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
-      "community": 14,
+      "community": 6,
       "norm_label": "file-parser.ts"
     },
     {
@@ -7055,15 +7279,15 @@
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L17",
-      "complexity": 17,
-      "loc": 42,
+      "source_location": "L18",
+      "complexity": 14,
+      "loc": 35,
       "level": 1,
       "granularity": "low",
-      "heat": 0.114,
+      "heat": 0.094,
       "owner": "unowned",
       "id": "file_parser_parsefilebuffer",
-      "community": 14,
+      "community": 6,
       "norm_label": "parsefilebuffer()"
     },
     {
@@ -7071,47 +7295,31 @@
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L64",
+      "source_location": "L58",
       "complexity": 4,
-      "loc": 15,
+      "loc": 14,
       "level": 1,
       "granularity": "low",
-      "heat": 0.038,
+      "heat": 0.037,
       "owner": "unowned",
       "id": "file_parser_extracttextfromdocx",
-      "community": 14,
+      "community": 6,
       "norm_label": "extracttextfromdocx()"
-    },
-    {
-      "label": "extractTextFromPdf()",
-      "file_type": "code",
-      "type": "FUNCTION",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L84",
-      "complexity": 9,
-      "loc": 31,
-      "level": 1,
-      "granularity": "low",
-      "heat": 0.068,
-      "owner": "unowned",
-      "id": "file_parser_extracttextfrompdf",
-      "community": 14,
-      "norm_label": "extracttextfrompdf()"
     },
     {
       "label": "extractPrintableStrings()",
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L119",
+      "source_location": "L76",
       "complexity": 3,
-      "loc": 9,
+      "loc": 8,
       "level": 1,
       "granularity": "low",
-      "heat": 0.03,
+      "heat": 0.027,
       "owner": "unowned",
       "id": "file_parser_extractprintablestrings",
-      "community": 14,
+      "community": 6,
       "norm_label": "extractprintablestrings()"
     },
     {
@@ -7119,7 +7327,7 @@
       "file_type": "code",
       "type": "FUNCTION",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L132",
+      "source_location": "L88",
       "complexity": 1,
       "loc": 7,
       "level": 2,
@@ -7127,7 +7335,7 @@
       "heat": 0.014,
       "owner": "unowned",
       "id": "file_parser_sanitizetext",
-      "community": 14,
+      "community": 6,
       "norm_label": "sanitizetext()"
     }
   ],
@@ -7603,6 +7811,18 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\documents\\analyze\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_documents_analyze_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_documents_analyze_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\evaluate\\route.ts",
       "source_location": "L114",
       "weight": 1.0,
@@ -7664,7 +7884,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\explain\\route.ts",
-      "source_location": "L36",
+      "source_location": "L13",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_explain_route_ts",
       "_tgt": "route_post",
@@ -7676,7 +7896,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\generate-plan\\route.ts",
-      "source_location": "L24",
+      "source_location": "L13",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_generate_plan_route_ts",
       "_tgt": "route_post",
@@ -7697,6 +7917,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-plan\\route.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_plan_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_plan_route_ts",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "calls",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
@@ -7712,6 +7944,30 @@
       "relation": "calls",
       "confidence": "INFERRED",
       "confidence_score": 0.8,
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\documents\\analyze\\route.ts",
+      "source_location": "L53",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "gemini_pdf_uploadpdftogemini",
+      "source": "route_post",
+      "target": "gemini_pdf_uploadpdftogemini"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\documents\\analyze\\route.ts",
+      "source_location": "L57",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "gemini_pdf_analyzepdfdocument",
+      "source": "route_post",
+      "target": "gemini_pdf_analyzepdfdocument"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\explain\\route.ts",
       "source_location": "L53",
       "weight": 1.0,
@@ -7719,6 +7975,30 @@
       "_tgt": "file_parser_parsefilebuffer",
       "source": "route_post",
       "target": "file_parser_parsefilebuffer"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\generate-plan\\route.ts",
+      "source_location": "L100",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "gemini_pdf_generatestudyplanfrompdfuri",
+      "source": "route_post",
+      "target": "gemini_pdf_generatestudyplanfrompdfuri"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\generate-plan\\route.ts",
+      "source_location": "L139",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "normalizestudyplan_normalizestudyplandata",
+      "source": "route_post",
+      "target": "normalizestudyplan_normalizestudyplandata"
     },
     {
       "relation": "calls",
@@ -7745,16 +8025,52 @@
       "target": "study_materials_buildfallbackstudyplan"
     },
     {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\generate-plan\\route.ts",
-      "source_location": "L139",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\documents\\analyze\\route.ts",
+      "source_location": "L4",
       "weight": 1.0,
-      "_src": "route_post",
-      "_tgt": "normalizestudyplan_normalizestudyplandata",
-      "source": "route_post",
-      "target": "normalizestudyplan_normalizestudyplandata"
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_documents_analyze_route_ts",
+      "_tgt": "route_maxduration",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_documents_analyze_route_ts",
+      "target": "route_maxduration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\explain\\route.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_explain_route_ts",
+      "_tgt": "route_maxduration",
+      "source": "route_maxduration",
+      "target": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_explain_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-materials\\generate-plan\\route.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_generate_plan_route_ts",
+      "_tgt": "route_maxduration",
+      "source": "route_maxduration",
+      "target": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_materials_generate_plan_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\app\\api\\study-plan\\route.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_plan_route_ts",
+      "_tgt": "route_maxduration",
+      "source": "route_maxduration",
+      "target": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_app_api_study_plan_route_ts",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11327,88 +11643,16 @@
       "source_location": "L255",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_extractedtext",
+      "_tgt": "materialuploader_isselectedpdf",
       "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_extractedtext",
+      "target": "materialuploader_isselectedpdf",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L256",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_filebase64",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_filebase64",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L257",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_mimetype",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_mimetype",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L258",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_ispdf",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_ispdf",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L263",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_formdata",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_formdata",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L266",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_parseres",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_parseres",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L271",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "_tgt": "materialuploader_parsedata",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
-      "target": "materialuploader_parsedata",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L304",
+      "source_location": "L310",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
       "_tgt": "materialuploader_res",
@@ -11420,7 +11664,79 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L316",
+      "source_location": "L327",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "_tgt": "materialuploader_formdata",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "target": "materialuploader_formdata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L321",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "_tgt": "materialuploader_extractedtext",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "target": "materialuploader_extractedtext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L322",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "_tgt": "materialuploader_filebase64",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "target": "materialuploader_filebase64",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L323",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "_tgt": "materialuploader_mimetype",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "target": "materialuploader_mimetype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L329",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "_tgt": "materialuploader_parseres",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "target": "materialuploader_parseres",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L333",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "_tgt": "materialuploader_parsedata",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
+      "target": "materialuploader_parsedata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
+      "source_location": "L354",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
       "_tgt": "materialuploader_data",
@@ -11432,7 +11748,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L429",
+      "source_location": "L467",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
       "_tgt": "materialuploader_isactive",
@@ -11444,7 +11760,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L722",
+      "source_location": "L760",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
       "_tgt": "materialuploader_isopen",
@@ -11456,7 +11772,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\components\\study\\MaterialUploader.tsx",
-      "source_location": "L723",
+      "source_location": "L761",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_components_study_materialuploader_tsx",
       "_tgt": "materialuploader_showhint",
@@ -11471,8 +11787,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\normalizeStudyPlan.ts",
       "source_location": "L24",
       "weight": 1.0,
-      "_src": "normalizestudyplan_parsedaynumber",
-      "_tgt": "materialuploader_match",
+      "_src": "materialuploader_match",
+      "_tgt": "normalizestudyplan_parsedaynumber",
       "source": "materialuploader_match",
       "target": "normalizestudyplan_parsedaynumber"
     },
@@ -11483,8 +11799,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
       "source_location": "L66",
       "weight": 1.0,
-      "_src": "file_parser_extracttextfromdocx",
-      "_tgt": "materialuploader_match",
+      "_src": "materialuploader_match",
+      "_tgt": "file_parser_extracttextfromdocx",
       "source": "materialuploader_match",
       "target": "file_parser_extracttextfromdocx"
     },
@@ -11493,22 +11809,10 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L89",
-      "weight": 1.0,
-      "_src": "file_parser_extracttextfrompdf",
-      "_tgt": "materialuploader_match",
-      "source": "materialuploader_match",
-      "target": "file_parser_extracttextfrompdf"
-    },
-    {
-      "relation": "calls",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
       "source_location": "L122",
       "weight": 1.0,
-      "_src": "file_parser_extractprintablestrings",
-      "_tgt": "materialuploader_match",
+      "_src": "materialuploader_match",
+      "_tgt": "file_parser_extractprintablestrings",
       "source": "materialuploader_match",
       "target": "file_parser_extractprintablestrings"
     },
@@ -11519,8 +11823,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L139",
       "weight": 1.0,
-      "_src": "friends_finduserbyemail",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_finduserbyemail",
       "source": "materialuploader_data",
       "target": "friends_finduserbyemail"
     },
@@ -11531,8 +11835,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L494",
       "weight": 1.0,
-      "_src": "friends_createorgetmultiplayermatch",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_createorgetmultiplayermatch",
       "source": "materialuploader_data",
       "target": "friends_createorgetmultiplayermatch"
     },
@@ -11543,8 +11847,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L590",
       "weight": 1.0,
-      "_src": "friends_setplayerreadyinmatch",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_setplayerreadyinmatch",
       "source": "materialuploader_data",
       "target": "friends_setplayerreadyinmatch"
     },
@@ -11555,8 +11859,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L699",
       "weight": 1.0,
-      "_src": "friends_getmatchstatus",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_getmatchstatus",
       "source": "materialuploader_data",
       "target": "friends_getmatchstatus"
     },
@@ -11567,8 +11871,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L748",
       "weight": 1.0,
-      "_src": "friends_updatematchheartbeat",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_updatematchheartbeat",
       "source": "materialuploader_data",
       "target": "friends_updatematchheartbeat"
     },
@@ -11579,8 +11883,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L792",
       "weight": 1.0,
-      "_src": "friends_surrendermatch",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_surrendermatch",
       "source": "materialuploader_data",
       "target": "friends_surrendermatch"
     },
@@ -11591,8 +11895,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L825",
       "weight": 1.0,
-      "_src": "friends_submitduelanswer",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_submitduelanswer",
       "source": "materialuploader_data",
       "target": "friends_submitduelanswer"
     },
@@ -11603,8 +11907,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L890",
       "weight": 1.0,
-      "_src": "friends_commitduelevaluation",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_commitduelevaluation",
       "source": "materialuploader_data",
       "target": "friends_commitduelevaluation"
     },
@@ -11615,8 +11919,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\friends.ts",
       "source_location": "L942",
       "weight": 1.0,
-      "_src": "friends_submitmultiplayerturn",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "friends_submitmultiplayerturn",
       "source": "materialuploader_data",
       "target": "friends_submitmultiplayerturn"
     },
@@ -11627,8 +11931,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\meet.ts",
       "source_location": "L166",
       "weight": 1.0,
-      "_src": "meet_joinstudymeetroom",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "meet_joinstudymeetroom",
       "source": "materialuploader_data",
       "target": "meet_joinstudymeetroom"
     },
@@ -11639,8 +11943,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\meet.ts",
       "source_location": "L226",
       "weight": 1.0,
-      "_src": "meet_leavestudymeetroom",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "meet_leavestudymeetroom",
       "source": "materialuploader_data",
       "target": "meet_leavestudymeetroom"
     },
@@ -11651,8 +11955,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\meet.ts",
       "source_location": "L389",
       "weight": 1.0,
-      "_src": "meet_updateparticipantmicstate",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "meet_updateparticipantmicstate",
       "source": "materialuploader_data",
       "target": "meet_updateparticipantmicstate"
     },
@@ -11663,8 +11967,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\userStats.ts",
       "source_location": "L43",
       "weight": 1.0,
-      "_src": "userstats_getuserstats",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "userstats_getuserstats",
       "source": "materialuploader_data",
       "target": "userstats_getuserstats"
     },
@@ -11675,8 +11979,8 @@
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\firebase\\userStats.ts",
       "source_location": "L83",
       "weight": 1.0,
-      "_src": "userstats_recorddailyactivity",
-      "_tgt": "materialuploader_data",
+      "_src": "materialuploader_data",
+      "_tgt": "userstats_recorddailyactivity",
       "source": "materialuploader_data",
       "target": "userstats_recorddailyactivity"
     },
@@ -11918,6 +12222,126 @@
       "_tgt": "cn_cn",
       "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_cn_ts",
       "target": "cn_cn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_keyconceptschema",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_keyconceptschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_equationschema",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_equationschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_dailystudyplanschema",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_dailystudyplanschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_pdfanalysisschema",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_pdfanalysisschema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_pdf_analysis_response_schema",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_pdf_analysis_response_schema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_gemini_pdf_system_instruction",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_gemini_pdf_system_instruction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L136",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_uploadpdftogemini",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_uploadpdftogemini",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L180",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_analyzepdfdocument",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_analyzepdfdocument",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L239",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_study_plan_response_schema",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_study_plan_response_schema",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\gemini-pdf.ts",
+      "source_location": "L270",
+      "weight": 1.0,
+      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "_tgt": "gemini_pdf_generatestudyplanfrompdfuri",
+      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_gemini_pdf_ts",
+      "target": "gemini_pdf_generatestudyplanfrompdfuri",
       "confidence_score": 1.0
     },
     {
@@ -13028,7 +13452,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
       "_tgt": "file_parser_parsefilebuffer",
@@ -13040,7 +13464,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L64",
+      "source_location": "L58",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
       "_tgt": "file_parser_extracttextfromdocx",
@@ -13052,19 +13476,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L84",
-      "weight": 1.0,
-      "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
-      "_tgt": "file_parser_extracttextfrompdf",
-      "source": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
-      "target": "file_parser_extracttextfrompdf",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L119",
+      "source_location": "L76",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
       "_tgt": "file_parser_extractprintablestrings",
@@ -13076,7 +13488,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L132",
+      "source_location": "L88",
       "weight": 1.0,
       "_src": "c_users_asus_gemini_antigravity_scratch_studysync_ai_src_lib_utils_file_parser_ts",
       "_tgt": "file_parser_sanitizetext",
@@ -13088,19 +13500,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L30",
-      "weight": 1.0,
-      "_src": "file_parser_parsefilebuffer",
-      "_tgt": "file_parser_extracttextfrompdf",
-      "source": "file_parser_parsefilebuffer",
-      "target": "file_parser_extracttextfrompdf",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L41",
+      "source_location": "L35",
       "weight": 1.0,
       "_src": "file_parser_parsefilebuffer",
       "_tgt": "file_parser_extracttextfromdocx",
@@ -13112,7 +13512,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L48",
+      "source_location": "L42",
       "weight": 1.0,
       "_src": "file_parser_parsefilebuffer",
       "_tgt": "file_parser_sanitizetext",
@@ -13124,23 +13524,11 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L77",
+      "source_location": "L70",
       "weight": 1.0,
       "_src": "file_parser_extracttextfromdocx",
       "_tgt": "file_parser_extractprintablestrings",
       "source": "file_parser_extracttextfromdocx",
-      "target": "file_parser_extractprintablestrings",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "C:\\Users\\Asus\\.gemini\\antigravity\\scratch\\studysync-ai\\src\\lib\\utils\\file-parser.ts",
-      "source_location": "L113",
-      "weight": 1.0,
-      "_src": "file_parser_extracttextfrompdf",
-      "_tgt": "file_parser_extractprintablestrings",
-      "source": "file_parser_extracttextfrompdf",
       "target": "file_parser_extractprintablestrings",
       "confidence_score": 1.0
     }

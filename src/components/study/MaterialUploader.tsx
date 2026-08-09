@@ -155,6 +155,47 @@ function StructuredMarkdown({ content }: { content: string }) {
   return <div className="space-y-1">{elements}</div>;
 }
 
+function formatUserFriendlyErrorMessage(err: unknown): string {
+  if (!err) return "Terjadi kesalahan yang tidak diketahui. Coba lagi ya.";
+
+  let rawMessage = typeof err === "string" ? err : err instanceof Error ? err.message : String(err);
+
+  // Parse embedded JSON string if present
+  if (typeof rawMessage === "string" && rawMessage.includes("{")) {
+    try {
+      const jsonStart = rawMessage.indexOf("{");
+      const jsonEnd = rawMessage.lastIndexOf("}");
+      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+        const parsed = JSON.parse(rawMessage.slice(jsonStart, jsonEnd + 1));
+        if (parsed.confidenceNote) {
+          return `${parsed.error || "Dokumen PDF tidak dapat dibaca"}: ${parsed.confidenceNote}`;
+        }
+        if (parsed.error && typeof parsed.error === "string") return parsed.error;
+        if (parsed.message && typeof parsed.message === "string") return parsed.message;
+      }
+    } catch {
+      // Ignore JSON parse failure
+    }
+  }
+
+  if (rawMessage.includes("503") || rawMessage.includes("UNAVAILABLE") || rawMessage.includes("overloaded")) {
+    return "Layanan AI sedang padat saat ini. Silakan coba beberapa saat lagi ya.";
+  }
+
+  if (rawMessage.includes("422") || rawMessage.includes("Unprocessable Entity")) {
+    return "Dokumen PDF kamu tidak dapat dibaca atau terenkripsi. Mohon periksa kembali file PDF kamu ya.";
+  }
+
+  if (rawMessage.includes("404")) {
+    return "Dokumen tidak ditemukan atau file akses telah kadaluwarsa.";
+  }
+
+  // Clean developer prefixes
+  rawMessage = rawMessage.replace(/^(Error:\s*)+/i, "").trim();
+
+  return rawMessage || "Terjadi kesalahan saat memproses materi. Coba lagi ya.";
+}
+
 export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps) {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -221,8 +262,8 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
       return;
     }
 
-    if (file.size > 15 * 1024 * 1024) {
-      setError("Ukuran file terlalu besar (maksimal 15 MB).");
+    if (file.size > 50 * 1024 * 1024) {
+      setError("Ukuran file terlalu besar (maksimal 50 MB).");
       return;
     }
 
@@ -281,7 +322,10 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
             });
             const parseData = await parseRes.json();
             if (!parseRes.ok || !parseData.success) {
-              throw new Error(parseData.error || "Gagal mengekstrak teks materi.");
+              const errMsg = parseData.confidenceNote
+                ? `${parseData.error}: ${parseData.confidenceNote}`
+                : parseData.error || "Gagal mengekstrak teks materi.";
+              throw new Error(errMsg);
             }
             extractedText = parseData.text;
             fileBase64 = parseData.fileBase64;
@@ -302,7 +346,10 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
 
         const data = await res.json();
         if (!res.ok || !data.success) {
-          throw new Error(data.error || "Gagal membuat Study Plan.");
+          const errMsg = data.confidenceNote
+            ? `${data.error}: ${data.confidenceNote}`
+            : data.error || "Gagal membuat Study Plan.";
+          throw new Error(errMsg);
         }
         setPlanResult(data.result);
       } else {
@@ -332,7 +379,10 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
             });
             const parseData = await parseRes.json();
             if (!parseRes.ok || !parseData.success) {
-              throw new Error(parseData.error || "Gagal mengekstrak teks materi.");
+              const errMsg = parseData.confidenceNote
+                ? `${parseData.error}: ${parseData.confidenceNote}`
+                : parseData.error || "Gagal mengekstrak teks materi.";
+              throw new Error(errMsg);
             }
             extractedText = parseData.text;
             fileBase64 = parseData.fileBase64;
@@ -353,17 +403,16 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
 
         const data = await res.json();
         if (!res.ok || !data.success) {
-          throw new Error(data.error || "Gagal menyederhanakan materi.");
+          const errMsg = data.confidenceNote
+            ? `${data.error}: ${data.confidenceNote}`
+            : data.error || "Gagal menyederhanakan materi.";
+          throw new Error(errMsg);
         }
         setExplainResult(data.result);
       }
     } catch (err: unknown) {
       console.error("Processing error:", err);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Terjadi kesalahan saat memproses materi. Coba lagi ya."
-      );
+      setError(formatUserFriendlyErrorMessage(err));
     } finally {
       setLoading(false);
       setLoadingStep("");
