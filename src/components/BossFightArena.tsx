@@ -24,6 +24,7 @@ import {
   Flag,
   MessageSquare,
   Smile,
+  CheckCircle2,
 } from "lucide-react";
 import type { EvaluateResponse } from "@/app/api/evaluate/route";
 import type { DuelEvaluateResponse } from "@/app/api/evaluate-duel/route";
@@ -39,6 +40,7 @@ import {
   surrenderMatch,
   sendDuelTaunt,
   getMatchStatus,
+  setPlayerReadyInMatch,
   type MultiplayerMatch,
   type DuelTaunt,
 } from "@/lib/firebase/friends";
@@ -1035,6 +1037,125 @@ export default function BossFightArena() {
               <FriendsPanel />
             </div>
           </m.div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ---------------------------------------------------------------
+     1.5 PRE-MATCH READY SCREEN UI (1v1 Duel Ready Check)
+     --------------------------------------------------------------- */
+  if (gameMode === "vs_player" && matchId && multiplayerMatch?.status === "waiting_ready") {
+    const isChallenger = user?.uid === multiplayerMatch.challengerId;
+    const isSelfReady = isChallenger
+      ? Boolean(multiplayerMatch.challengerReady || multiplayerMatch.player1Ready)
+      : Boolean(multiplayerMatch.opponentReady || multiplayerMatch.player2Ready);
+
+    const isOpponentReady = isChallenger
+      ? Boolean(multiplayerMatch.opponentReady || multiplayerMatch.player2Ready)
+      : Boolean(multiplayerMatch.challengerReady || multiplayerMatch.player1Ready);
+
+    const selfName = isChallenger ? multiplayerMatch.challengerName : multiplayerMatch.opponentName;
+    const oppName = isChallenger ? multiplayerMatch.opponentName : multiplayerMatch.challengerName;
+
+    return (
+      <section
+        id="boss-fight-pre-match"
+        className="flex flex-col items-center gap-8 w-full max-w-3xl mx-auto px-4 py-12"
+      >
+        <m.div
+          className="flex flex-col items-center text-center gap-2"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <button
+            type="button"
+            onClick={handleBackToSelect}
+            className="self-start text-xs font-bold text-slate-400 hover:text-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer px-3 py-1.5 rounded-full bg-slate-900/60 border border-slate-800 mb-2"
+          >
+            <ArrowLeft size={14} /> Back to Mode Select
+          </button>
+          <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-xl mb-1">
+            <Swords size={32} className="animate-pulse" />
+          </div>
+          <h1
+            className="text-3xl sm:text-4xl font-black text-slate-50 tracking-tight"
+            style={{ fontFamily: "var(--font-outfit)" }}
+          >
+            Persiapan Feynman Duel ⚔️
+          </h1>
+          <p className="text-sm text-slate-300">
+            Topik: <strong className="text-cyan-300">&ldquo;{multiplayerMatch.topic}&rdquo;</strong>
+          </p>
+        </m.div>
+
+        {/* Player Versus Cards & Ready Status Badges */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-2xl">
+          {/* Self Player Card */}
+          <div className="p-6 rounded-3xl bg-slate-900/80 border border-cyan-500/40 backdrop-blur-xl flex flex-col items-center gap-4 text-center shadow-xl">
+            <div className="w-16 h-16 rounded-full bg-cyan-950 border-2 border-cyan-400 flex items-center justify-center text-xl font-black text-cyan-300 shadow-lg">
+              {selfName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h3 className="font-extrabold text-slate-100 text-lg">{selfName} (Kamu)</h3>
+              <p className="text-xs text-slate-400">Challenger/Duelist</p>
+            </div>
+            {isSelfReady ? (
+              <span className="px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-black flex items-center gap-1.5 shadow-md">
+                <CheckCircle2 size={15} className="text-emerald-400" /> SIAP ✅
+              </span>
+            ) : (
+              <span className="px-4 py-1.5 rounded-full bg-amber-950/80 border border-amber-500/50 text-amber-300 text-xs font-bold flex items-center gap-1.5">
+                <Clock size={15} className="animate-spin text-amber-400" /> Belum Siap ⏳
+              </span>
+            )}
+          </div>
+
+          {/* Opponent Player Card */}
+          <div className="p-6 rounded-3xl bg-slate-900/80 border border-rose-500/40 backdrop-blur-xl flex flex-col items-center gap-4 text-center shadow-xl">
+            <div className="w-16 h-16 rounded-full bg-rose-950 border-2 border-rose-400 flex items-center justify-center text-xl font-black text-rose-300 shadow-lg">
+              {oppName.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <h3 className="font-extrabold text-slate-100 text-lg">{oppName}</h3>
+              <p className="text-xs text-slate-400">Lawan Duel</p>
+            </div>
+            {isOpponentReady ? (
+              <span className="px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 text-xs font-black flex items-center gap-1.5 shadow-md">
+                <CheckCircle2 size={15} className="text-emerald-400" /> SIAP ✅
+              </span>
+            ) : (
+              <span className="px-4 py-1.5 rounded-full bg-amber-950/80 border border-amber-500/50 text-amber-300 text-xs font-bold flex items-center gap-1.5">
+                <Clock size={15} className="animate-spin text-amber-400" /> Belum Siap ⏳
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Ready Button Trigger */}
+        <div className="flex flex-col items-center gap-3 w-full max-w-sm">
+          {!isSelfReady ? (
+            <button
+              type="button"
+              id="boss-fight-ready-btn"
+              onClick={async () => {
+                if (user && matchId) {
+                  await setPlayerReadyInMatch(matchId, user.uid);
+                }
+              }}
+              className="skeuo-btn w-full py-4 px-8 rounded-2xl text-base font-black text-white flex items-center justify-center gap-2 cursor-pointer shadow-2xl transition-all active:scale-95"
+              style={{
+                background: "linear-gradient(135deg, #06b6d4 0%, #2563eb 100%)",
+                border: "1px solid rgba(56,189,248,0.5)",
+              }}
+            >
+              <Swords size={20} /> SIAP / READY ⚔️
+            </button>
+          ) : (
+            <div className="p-4 rounded-2xl bg-cyan-950/60 border border-cyan-500/30 text-cyan-200 text-xs font-bold text-center animate-pulse">
+              Kamu sudah siap! Menunggu lawan menekan SIAP / READY ⚔️ untuk memulai pertandingan...
+            </div>
+          )}
         </div>
       </section>
     );

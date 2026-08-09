@@ -1,22 +1,21 @@
 # Community 11
 
-> 13 nodes · cohesion 0.15
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- [useAuth()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116) (4 connections)
-- [AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L1) (4 connections)
-- [DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L1) (3 connections)
-- [ChallengeNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L15) (2 connections)
-- [DashboardSidebar()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L67) (2 connections)
-- [MeetInviteNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L14) (2 connections)
-- [AuthContext](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L47) (1 connections)
-- [AuthProvider()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L57) (1 connections)
-- [googleProvider](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L52) (1 connections)
-- [ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L1) (1 connections)
-- [MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L1) (1 connections)
-- [active](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L106) (1 connections)
-- [navItems](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L25) (1 connections)
+- [liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L1) (11 connections)
+- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L50) (1 connections)
+- [handleClick()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L109) (1 connections)
+- [[isHovered, setIsHovered]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L53) (1 connections)
+- [isIcon](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L120) (1 connections)
+- [mount](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L63) (1 connections)
+- [parent](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L60) (1 connections)
+- [rippleIdRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L54) (1 connections)
+- [[ripples, setRipples]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L52) (1 connections)
+- [SHADER_COLOR_BACK](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L35) (1 connections)
+- [SHADER_COLOR_TINT](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L36) (1 connections)
+- [shaderMountRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L51) (1 connections)
 
 ## Relationships
 
@@ -24,15 +23,12 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\ui\liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 18 (75%)
-- INFERRED: 6 (25%)
+- EXTRACTED: 22 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

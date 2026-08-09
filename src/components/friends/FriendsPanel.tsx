@@ -18,6 +18,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
+import { cn } from "@/lib/cn";
 import { getStudyPlans } from "@/lib/firebase/db";
 import {
   sendFriendRequest,
@@ -131,21 +132,26 @@ function TopicPickerModal({
     setError(null);
 
     try {
-      const id = await sendMatchChallenge(
+      await sendMatchChallenge(
         currentUserId,
         currentUserName,
         targetFriendId,
         targetFriendName,
         finalTopic
       );
-      setChallengeId(id);
-      setWaitingForFriend(true);
+      onClose();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("show-toast", {
+            detail: { message: "Tantangan telah dikirim!", type: "success" },
+          })
+        );
+      }
     } catch (err) {
       console.error("Failed to send challenge:", err);
       setError(
         err instanceof Error ? err.message : "Failed to send match challenge."
       );
-    } finally {
       setLoading(false);
     }
   }
@@ -335,7 +341,11 @@ function TopicPickerModal({
 /* ---------------------------------------------------------------
    Main FriendsPanel Drawer / Component
    --------------------------------------------------------------- */
-export default function FriendsPanel() {
+export interface FriendsPanelProps {
+  isCollapsed?: boolean;
+}
+
+export default function FriendsPanel({ isCollapsed }: FriendsPanelProps) {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"friends" | "pending" | "add">(
@@ -356,6 +366,20 @@ export default function FriendsPanel() {
 
   const [challengeFriend, setChallengeFriend] =
     useState<FriendRelationship | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Listen for custom toast notifications
+  useEffect(() => {
+    const handleToast = (e: Event) => {
+      const customEv = e as CustomEvent<{ message: string }>;
+      if (customEv.detail?.message) {
+        setToastMessage(customEv.detail.message);
+        setTimeout(() => setToastMessage(null), 4000);
+      }
+    };
+    window.addEventListener("show-toast", handleToast);
+    return () => window.removeEventListener("show-toast", handleToast);
+  }, []);
 
   // Subscribe to friends & pending requests
   useEffect(() => {
@@ -427,19 +451,43 @@ export default function FriendsPanel() {
 
   return (
     <>
+      {/* Success Toast */}
+      <AnimatePresence>
+        {toastMessage && (
+          <m.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-20 right-6 z-50 px-4 py-3 rounded-2xl bg-cyan-950/90 border border-cyan-400/50 text-cyan-200 text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2"
+          >
+            <Sparkles size={16} className="text-cyan-300 animate-pulse" />
+            <span>{toastMessage}</span>
+          </m.div>
+        )}
+      </AnimatePresence>
+
       {/* Trigger Button in Sidebar/Header */}
       <button
         type="button"
         id="friends-panel-trigger"
         onClick={() => setIsOpen(true)}
-        className="relative flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all shadow-sm group cursor-pointer"
+        title={isCollapsed ? "Friends" : undefined}
+        className={cn(
+          "relative flex items-center gap-2.5 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all shadow-sm group cursor-pointer",
+          isCollapsed ? "w-10 h-10 p-0 justify-center mx-auto" : "w-full px-3 py-2"
+        )}
       >
-        <Users size={15} className="text-cyan-400 group-hover:scale-110 transition-transform" />
-        <span>Friends</span>
+        <Users size={15} className="text-cyan-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+        {!isCollapsed && <span>Friends</span>}
 
         {/* Badge counter for pending requests */}
         {pendingRequests.length > 0 && (
-          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-pulse">
+          <span
+            className={cn(
+              "rounded-full font-black bg-rose-500 text-white animate-pulse flex items-center justify-center",
+              isCollapsed ? "absolute -top-1 -right-1 w-4 h-4 text-[9px]" : "px-1.5 py-0.5 text-[10px]"
+            )}
+          >
             {pendingRequests.length}
           </span>
         )}

@@ -235,7 +235,7 @@ function HeroSection() {
               style={{ color: "var(--color-gold-300)" }}
               aria-hidden="true"
             />
-            AI Innovation Challenge — Phase 1 Demo
+            BITSMIKRO INNOVATIVE VIBECODE — Phase 1 Demo
           </span>
         </m.div>
 

@@ -14,7 +14,21 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase/clientApp";
-import { RTC_ICE_SERVERS } from "@/lib/firebase/meet";
+
+const ICE_SERVERS: RTCConfiguration = {
+  iceServers: [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
+    {
+      urls: [
+        "turn:openrelay.metered.ca:80",
+        "turn:openrelay.metered.ca:443",
+        "turn:openrelay.metered.ca:443?transport=tcp"
+      ],
+      username: "openrelay",
+      credential: "openrelay"
+    }
+  ]
+};
 
 export interface VoiceParticipantInfo {
   userId: string;
@@ -29,6 +43,7 @@ export interface UseWebRTCVoiceChatResult {
   voiceParticipants: VoiceParticipantInfo[];
   isMuted: boolean;
   isAudioBlocked: boolean;
+  firestoreError: string | null;
   toggleMute: () => void;
   resumeAudio: () => Promise<void>;
   attachAudioElement: (
@@ -60,6 +75,7 @@ export function useWebRTCVoiceChat(
   >([]);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isAudioBlocked, setIsAudioBlocked] = useState<boolean>(false);
+  const [firestoreError, setFirestoreError] = useState<string | null>(null);
 
   // References to keep persistent state across React re-renders
   const localStreamRef = useRef<MediaStream | null>(null);
@@ -71,6 +87,12 @@ export function useWebRTCVoiceChat(
 
   // Keep isMutedRef in sync
   isMutedRef.current = isMuted;
+
+  const handleFirestoreError = useCallback((actionName: string, err: unknown) => {
+    console.error(`Readable error toast: Gagal melakukan ${actionName} di Firestore (Permission/Rules error):`, err);
+    const errMsg = err && typeof err === "object" && "message" in err ? (err as { message: string }).message : String(err);
+    setFirestoreError(`Izin Firestore Ditolak saat ${actionName}: ${errMsg}`);
+  }, []);
 
   /* ------------------------------------------------------------------
      1. Local Audio Stream Acquisition
@@ -157,16 +179,14 @@ export function useWebRTCVoiceChat(
       userName: currentUserName,
       isMuted: isMutedRef.current,
       joinedAt: serverTimestamp(),
-    }).catch((err) =>
-      console.error("Failed to register voice participant:", err)
-    );
+    }).catch((err) => handleFirestoreError("setDoc voiceParticipants", err));
 
     /* Helper: Create or retrieve RTCPeerConnection for remote user */
     function getOrCreatePeerConnection(remoteUserId: string): RTCPeerConnection {
       let pc = pcsRef.current.get(remoteUserId);
       if (pc) return pc;
 
-      pc = new RTCPeerConnection(RTC_ICE_SERVERS);
+      pc = new RTCPeerConnection(ICE_SERVERS);
       pcsRef.current.set(remoteUserId, pc);
 
       // Add local audio tracks BEFORE creating offer/answer
@@ -205,14 +225,35 @@ export function useWebRTCVoiceChat(
             receiverId: remoteUserId,
             candidate: event.candidate.toJSON(),
             createdAt: serverTimestamp(),
-          }).catch((err) =>
-            console.error("Error sending ICE candidate signal:", err)
+          }).catch((err) => handleFirestoreError("addDoc voiceSignals (candidate)", err));
+        }
+      };
+
+      // Verbose ICE connection state logging
+      pc.oniceconnectionstatechange = () => {
+        console.log(
+          `[WebRTC ICE State] Peer ${remoteUserId}: ${pc!.iceConnectionState}`
+        );
+        if (
+          pc!.iceConnectionState === "failed" ||
+          pc!.iceConnectionState === "disconnected"
+        ) {
+          console.error(
+            `[WebRTC ICE Error] Peer ${remoteUserId} ICE connection state: ${pc!.iceConnectionState}`
           );
         }
       };
 
-      // Track connection state updates
+      // Verbose Peer Connection state logging
       pc.onconnectionstatechange = () => {
+        console.log(
+          `[WebRTC Connection State] Peer ${remoteUserId}: ${pc!.connectionState}`
+        );
+        if (pc!.connectionState === "failed") {
+          console.error(
+            `[WebRTC Connection Error] Peer ${remoteUserId} connection state: ${pc!.connectionState}`
+          );
+        }
         setConnectionStates((prev) =>
           new Map(prev).set(remoteUserId, pc!.connectionState)
         );
@@ -278,6 +319,7 @@ export function useWebRTCVoiceChat(
                 });
               } catch (err) {
                 console.error("Error creating WebRTC offer:", err);
+                handleFirestoreError("addDoc voiceSignals (offer)", err);
               }
             }
           }
@@ -305,7 +347,8 @@ export function useWebRTCVoiceChat(
             });
           }
         });
-      }
+      },
+      (err) => handleFirestoreError("onSnapshot voiceParticipants", err)
     );
 
     /* B. Listen to Signals Targetting Current User */
@@ -351,6 +394,7 @@ export function useWebRTCVoiceChat(
               });
             } catch (err) {
               console.error("Error handling SDP offer signal:", err);
+              handleFirestoreError("addDoc voiceSignals (answer)", err);
             }
           } else if (signalType === "answer") {
             try {
@@ -378,7 +422,8 @@ export function useWebRTCVoiceChat(
             }
           }
         }
-      }
+      },
+      (err) => handleFirestoreError("onSnapshot voiceSignals", err)
     );
 
     // Teardown presence & listeners on unmount
@@ -398,7 +443,7 @@ export function useWebRTCVoiceChat(
       setConnectionStates(new Map());
       setVoiceParticipants([]);
     };
-  }, [roomId, userId, userName]);
+  }, [roomId, userId, userName, handleFirestoreError]);
 
   /* ------------------------------------------------------------------
      3. Helper Methods (Mute, Attach Audio, Resume Autoplay)
@@ -418,12 +463,12 @@ export function useWebRTCVoiceChat(
           doc(db, "rooms", roomId, "voiceParticipants", userId),
           { isMuted: nextMuted },
           { merge: true }
-        ).catch(() => {});
+        ).catch((err) => handleFirestoreError("setDoc voiceParticipants (mute toggle)", err));
       }
 
       return nextMuted;
     });
-  }, [roomId, userId]);
+  }, [roomId, userId, handleFirestoreError]);
 
   const attachAudioElement = useCallback(
     (remoteUserId: string, element: HTMLAudioElement | null) => {
@@ -446,10 +491,12 @@ export function useWebRTCVoiceChat(
 
   const resumeAudio = useCallback(async () => {
     setIsAudioBlocked(false);
-    const audioElements = Array.from(audioElementsRef.current.values());
+    const registeredElements = Array.from(audioElementsRef.current.values());
+    const domElements = Array.from(document.querySelectorAll("audio"));
+    const allElements = Array.from(new Set([...registeredElements, ...domElements]));
 
     await Promise.all(
-      audioElements.map(async (el) => {
+      allElements.map(async (el) => {
         try {
           await el.play();
         } catch (err) {
@@ -467,8 +514,10 @@ export function useWebRTCVoiceChat(
     voiceParticipants,
     isMuted,
     isAudioBlocked,
+    firestoreError,
     toggleMute,
     resumeAudio,
     attachAudioElement,
   };
 }
+

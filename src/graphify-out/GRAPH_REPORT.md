@@ -1,11 +1,11 @@
-# Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-08)
+# Graph Report - C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src  (2026-08-09)
 
 ## Corpus Check
-- 41 files · ~92,233 words
+- 44 files · ~95,027 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 433 nodes · 475 edges · 25 communities detected
+- 434 nodes · 473 edges · 27 communities detected
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 34 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -35,6 +35,8 @@
 - [[_COMMUNITY_Community 22|Community 22]]
 - [[_COMMUNITY_Community 23|Community 23]]
 - [[_COMMUNITY_Community 24|Community 24]]
+- [[_COMMUNITY_Community 25|Community 25]]
+- [[_COMMUNITY_Community 26|Community 26]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `POST()` - 14 edges
@@ -64,13 +66,13 @@
 
 ### Community 0 - "Community 0"
 
-Cohesion: 0.04
-Nodes (51): [activeTaunt, setActiveTaunt], [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, setBattleLog], BOSS_MAX_HP, [bossHp, setBossHp], [combo, setCombo], [currentQuestion, setCurrentQuestion] (+43 more)
+Cohesion: 0.03
+Nodes (66): appendAiExplanationToRoom(), clearSharedBoard(), createStudyMeetRoom(), deleteStudyMeetRoom(), importStudyPlanToRoom(), joinStudyMeetRoom(), leaveStudyMeetRoom(), parseRoomDoc() (+58 more)
 
 ### Community 1 - "Community 1"
 
 Cohesion: 0.04
-Nodes (52): [aiTopicPrompt, setAiTopicPrompt], analyserRef, audioContextRef, audioRef, [chatInputText, setChatInputText], [chatMessages, setChatMessages], chatScrollEndRef, [copiedCode, setCopiedCode] (+44 more)
+Nodes (51): [activeTaunt, setActiveTaunt], [animPhase, setAnimPhase], [attackText, setAttackText], [battleLog, setBattleLog], BOSS_MAX_HP, [bossHp, setBossHp], [combo, setCombo], [currentQuestion, setCurrentQuestion] (+43 more)
 
 ### Community 2 - "Community 2"
 
@@ -84,13 +86,13 @@ Nodes (29): removeFriendRelationship(), sendMatchChallenge(), [activeTab, setAct
 
 ### Community 4 - "Community 4"
 
-Cohesion: 0.08
-Nodes (23): appendAiExplanationToRoom(), clearSharedBoard(), createStudyMeetRoom(), deleteStudyMeetRoom(), importStudyPlanToRoom(), joinStudyMeetRoom(), leaveStudyMeetRoom(), parseRoomDoc() (+15 more)
+Cohesion: 0.11
+Nodes (20): extractPrintableStrings(), extractTextFromDocx(), extractTextFromPdf(), parseFileBuffer(), sanitizeText(), BASE_SYSTEM_INSTRUCTION, buildFallback(), buildFallbackExplanation() (+12 more)
 
 ### Community 5 - "Community 5"
 
-Cohesion: 0.11
-Nodes (20): extractPrintableStrings(), extractTextFromDocx(), extractTextFromPdf(), parseFileBuffer(), sanitizeText(), BASE_SYSTEM_INSTRUCTION, buildFallback(), buildFallbackExplanation() (+12 more)
+Cohesion: 0.08
+Nodes (23): [days, setDays], [dragActive, setDragActive], EASE, [error, setError], [explainResult, setExplainResult], fileInputRef, handleDrag, handleDrop (+15 more)
 
 ### Community 6 - "Community 6"
 
@@ -99,48 +101,58 @@ Nodes (19): accent, [actionLoading, setActionLoading], cardVariants, circ, [coll
 
 ### Community 7 - "Community 7"
 
-Cohesion: 0.08
-Nodes (23): [days, setDays], [dragActive, setDragActive], EASE, [error, setError], [explainResult, setExplainResult], fileInputRef, handleDrag, handleDrop (+15 more)
-
-### Community 8 - "Community 8"
-
 Cohesion: 0.09
 Nodes (12): async(), handleAttack(), handleKeyDown(), acceptFriendRequest(), commitDuelEvaluation(), findUserByEmail(), saveUserProfile(), sendDuelTaunt() (+4 more)
 
-### Community 9 - "Community 9"
+### Community 8 - "Community 8"
 
 Cohesion: 0.12
 Nodes (16): fetchPlans(), getStudyPlans(), saveStudyPlan(), toggleTaskCompletion(), updateStudyPlanTasks(), userPlansCollection(), loadTopics(), handleSaveToFirestore() (+8 more)
 
-### Community 10 - "Community 10"
+### Community 9 - "Community 9"
 
 Cohesion: 0.12
 Nodes (15): containerRef, coreFeatures, EASE_SMOOTH, fadeUp, heroOpacity, parallaxY, prefersReduced, processSteps (+7 more)
 
-### Community 11 - "Community 11"
+### Community 10 - "Community 10"
 
 Cohesion: 0.15
 Nodes (8): AuthContext, googleProvider, useAuth(), ChallengeNotificationToast(), active, DashboardSidebar(), navItems, MeetInviteNotificationToast()
 
-### Community 12 - "Community 12"
-_Unable to determine domain due to missing code entities._
+### Community 11 - "Community 11"
+
 Cohesion: 0.17
 Nodes (10): containerRef, [isHovered, setIsHovered], isIcon, mount, parent, rippleIdRef, [ripples, setRipples], SHADER_COLOR_BACK (+2 more)
 
-### Community 13 - "Community 13"
+### Community 12 - "Community 12"
 _Unable to determine domain due to missing code entities._
 Cohesion: 0.25
 Nodes (4): inter, metadata, outfit, viewport
 
-### Community 14 - "Community 14"
+### Community 13 - "Community 13"
 _Unable to determine domain due to missing code entities._
 Cohesion: 0.29
 Nodes (5): isActive, navLinks, pathname, [signingIn, setSigningIn], { user, loading, signInWithGoogle }
 
-### Community 15 - "Community 15"
+### Community 14 - "Community 14"
 _Unable to determine domain due to missing code entities._
 Cohesion: 0.33
 Nodes (5): containerVariants, isMountedRef, router, spinnerVariants, { user, loading }
+
+### Community 15 - "Community 15"
+_Unable to determine domain due to missing code entities._
+Cohesion: 0.4
+Nodes (4): connectedPeerCount, remoteCount, {
+    remoteStreams,
+    connectionStates,
+    voiceParticipants,
+    isMuted,
+    isAudioBlocked,
+    firestoreError,
+    toggleMute,
+    resumeAudio,
+    attachAudioElement,
+  }, { user }
 
 ### Community 16 - "Community 16"
 _Unable to determine domain due to missing code entities._
@@ -154,13 +166,13 @@ Nodes (1): metadata
 
 ### Community 18 - "Community 18"
 _Unable to determine domain due to missing code entities._
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (1): ICE_SERVERS
 
 ### Community 19 - "Community 19"
 _Unable to determine domain due to missing code entities._
 Cohesion: 1.0
-Nodes (1): orbs
+Nodes (0): 
 
 ### Community 20 - "Community 20"
 _Unable to determine domain due to missing code entities._
@@ -170,7 +182,7 @@ Nodes (0):
 ### Community 21 - "Community 21"
 _Unable to determine domain due to missing code entities._
 Cohesion: 1.0
-Nodes (0): 
+Nodes (1): orbs
 
 ### Community 22 - "Community 22"
 _Unable to determine domain due to missing code entities._
@@ -187,20 +199,32 @@ _Unable to determine domain due to missing code entities._
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 25 - "Community 25"
+_Unable to determine domain due to missing code entities._
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 26 - "Community 26"
+_Unable to determine domain due to missing code entities._
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **256 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+251 more)
+- **252 isolated node(s):** `inter`, `outfit`, `viewport`, `EASE_SMOOTH`, `fadeUp` (+247 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **Thin community `Community 18`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
+- **Thin community `Community 19`** (2 nodes): `page.tsx`, `StudyMeetRoomPage()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 19`** (2 nodes): `orbs`, `BackgroundCanvas.tsx`
+- **Thin community `Community 20`** (2 nodes): `loading.tsx`, `SkeletonPulse()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 20`** (2 nodes): `useStudyTimer.ts`, `useStudyTimer()`
+- **Thin community `Community 21`** (2 nodes): `orbs`, `BackgroundCanvas.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 21`** (2 nodes): `cn.ts`, `cn()`
+- **Thin community `Community 22`** (2 nodes): `useStudyTimer.ts`, `useStudyTimer()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 22`** (1 nodes): `loading.tsx`
+- **Thin community `Community 23`** (2 nodes): `cn.ts`, `cn()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 23`** (1 nodes): `Providers.tsx`
+- **Thin community `Community 24`** (1 nodes): `loading.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 24`** (1 nodes): `types.ts`
+- **Thin community `Community 25`** (1 nodes): `Providers.tsx`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 26`** (1 nodes): `types.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.

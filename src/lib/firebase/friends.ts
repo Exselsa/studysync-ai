@@ -76,13 +76,17 @@ export interface MultiplayerMatch {
   topic: string;
   challengerHp: number;
   opponentHp: number;
+  challengerReady?: boolean;
+  opponentReady?: boolean;
+  player1Ready?: boolean;
+  player2Ready?: boolean;
   challengerAnswer?: string | null;
   opponentAnswer?: string | null;
   challengerLastActive?: string | null;
   opponentLastActive?: string | null;
   lastActive?: string | null;
   currentTurn: string;
-  status: "in_progress" | "finished" | "abandoned" | "expired";
+  status: "waiting_ready" | "in_progress" | "finished" | "abandoned" | "expired";
   winnerId: string | null;
   refereeCommentary?: string;
   lastRoundWinner?: "playerA" | "playerB" | "draw" | null;
@@ -497,8 +501,12 @@ export async function createOrGetMultiplayerMatch(
       topic: data.topic,
       challengerHp: data.challengerHp ?? 100,
       opponentHp: data.opponentHp ?? 100,
+      challengerReady: Boolean(data.challengerReady || data.player1Ready),
+      opponentReady: Boolean(data.opponentReady || data.player2Ready),
+      player1Ready: Boolean(data.player1Ready || data.challengerReady),
+      player2Ready: Boolean(data.player2Ready || data.opponentReady),
       currentTurn: data.currentTurn ?? data.challengerId,
-      status: data.status ?? "in_progress",
+      status: data.status ?? "waiting_ready",
       winnerId: data.winnerId ?? null,
       createdAt:
         data.createdAt instanceof Timestamp
@@ -527,9 +535,7 @@ export async function createOrGetMultiplayerMatch(
     topic = cData.topic || fallbackTopic;
   }
 
-  const initialMatch: Omit<MultiplayerMatch, "createdAt"> & {
-    createdAt: ReturnType<typeof serverTimestamp>;
-  } = {
+  const initialMatch = {
     matchId,
     challengerId,
     challengerName,
@@ -538,8 +544,12 @@ export async function createOrGetMultiplayerMatch(
     topic,
     challengerHp: 100,
     opponentHp: 100,
+    challengerReady: false,
+    opponentReady: false,
+    player1Ready: false,
+    player2Ready: false,
     currentTurn: challengerId,
-    status: "in_progress",
+    status: "waiting_ready",
     winnerId: null,
     createdAt: serverTimestamp(),
   };
@@ -555,11 +565,46 @@ export async function createOrGetMultiplayerMatch(
     topic,
     challengerHp: 100,
     opponentHp: 100,
+    challengerReady: false,
+    opponentReady: false,
+    player1Ready: false,
+    player2Ready: false,
     currentTurn: challengerId,
-    status: "in_progress",
+    status: "waiting_ready",
     winnerId: null,
     createdAt: new Date().toISOString(),
   };
+}
+
+/**
+ * Set a player's ready state in a 1v1 duel match.
+ */
+export async function setPlayerReadyInMatch(
+  matchId: string,
+  userId: string
+): Promise<void> {
+  const matchRef = doc(db, "multiplayer_matches", matchId);
+  const snap = await getDoc(matchRef);
+  if (!snap.exists()) return;
+
+  const data = snap.data();
+  const isChallenger = userId === data.challengerId;
+
+  const challengerReady = isChallenger
+    ? true
+    : Boolean(data.challengerReady || data.player1Ready);
+  const opponentReady = !isChallenger
+    ? true
+    : Boolean(data.opponentReady || data.player2Ready);
+
+  const bothReady = challengerReady && opponentReady;
+
+  await updateDoc(matchRef, {
+    [isChallenger ? "challengerReady" : "opponentReady"]: true,
+    [isChallenger ? "player1Ready" : "player2Ready"]: true,
+    status: bothReady ? "in_progress" : (data.status ?? "waiting_ready"),
+    lastActive: new Date().toISOString(),
+  });
 }
 
 /**
@@ -587,13 +632,17 @@ export function subscribeToMultiplayerMatch(
       topic: data.topic,
       challengerHp: typeof data.challengerHp === "number" ? data.challengerHp : 100,
       opponentHp: typeof data.opponentHp === "number" ? data.opponentHp : 100,
+      challengerReady: Boolean(data.challengerReady || data.player1Ready),
+      opponentReady: Boolean(data.opponentReady || data.player2Ready),
+      player1Ready: Boolean(data.player1Ready || data.challengerReady),
+      player2Ready: Boolean(data.player2Ready || data.opponentReady),
       challengerAnswer: data.challengerAnswer || null,
       opponentAnswer: data.opponentAnswer || null,
       challengerLastActive: data.challengerLastActive || null,
       opponentLastActive: data.opponentLastActive || null,
       lastActive: data.lastActive || null,
       currentTurn: data.currentTurn ?? data.challengerId,
-      status: data.status ?? "in_progress",
+      status: data.status ?? "waiting_ready",
       winnerId: data.winnerId ?? null,
       refereeCommentary: data.refereeCommentary || undefined,
       lastRoundWinner: data.lastRoundWinner || undefined,

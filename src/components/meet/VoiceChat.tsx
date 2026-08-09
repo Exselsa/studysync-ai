@@ -24,6 +24,7 @@ export default function VoiceChat({ roomId }: VoiceChatProps) {
     voiceParticipants,
     isMuted,
     isAudioBlocked,
+    firestoreError,
     toggleMute,
     resumeAudio,
     attachAudioElement,
@@ -95,8 +96,8 @@ export default function VoiceChat({ roomId }: VoiceChatProps) {
         )}
       </button>
 
-      {/* Explicit Enable Audio / Resume Autoplay Button */}
-      {(isAudioBlocked || remoteCount > 0) && (
+      {/* Explicit Enable Audio / Resume Autoplay Button next to Mikrofon Aktif */}
+      {(isAudioBlocked || remoteCount > 0 || voiceParticipants.length > 1) && (
         <m.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
@@ -109,11 +110,21 @@ export default function VoiceChat({ roomId }: VoiceChatProps) {
               : "bg-cyan-950/60 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-900/60"
           }`}
           title="Klik jika suara peserta lain belum terdengar (Autoplay browser)"
-          aria-label="Aktifkan Suara Peserta"
+          aria-label="Aktifkan Suara Audio"
         >
           <Volume2 size={14} className={isAudioBlocked ? "text-amber-300" : "text-cyan-400"} />
-          <span>{isAudioBlocked ? "🔊 Aktifkan Suara (Di-block)" : "🔊 Enable Audio"}</span>
+          <span>🔊 Aktifkan Suara Audio</span>
         </m.button>
+      )}
+
+      {/* Readable Error Toast if Firestore Security Rules Reject Writes */}
+      {firestoreError && (
+        <div
+          className="w-full p-2.5 rounded-xl bg-rose-950/90 border border-rose-500/50 text-rose-200 text-xs font-bold flex items-center justify-between gap-2 shadow-lg animate-fadeIn mt-1"
+          role="alert"
+        >
+          <span>⚠️ Toast Akses Firestore: {firestoreError}</span>
+        </div>
       )}
     </div>
   );
