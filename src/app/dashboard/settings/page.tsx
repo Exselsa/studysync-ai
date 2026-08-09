@@ -183,6 +183,17 @@ function SettingsContent() {
   const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
+    if (showDeleteModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showDeleteModal]);
+
+  useEffect(() => {
     if (user?.displayName) {
       setDisplayName(user.displayName);
     }

@@ -112,38 +112,38 @@ export const EXPLAIN_MATERIAL_SCHEMA: Schema = {
   properties: {
     title: {
       type: Type.STRING,
-      description: "Clear title of the lecture material in casual Indonesian.",
+      description: "Clear and descriptive title of the lecture material in casual Indonesian.",
     },
     keySummary: {
       type: Type.STRING,
-      description: "A concise 2-3 sentence overview of what this material is about, written in casual Indonesian using 'kamu'.",
+      description: "Comprehensive 'Ringkasan Utama' (minimum 3-4 paragraphs) covering all major themes, core thesis, and essential background of the material in casual Indonesian using 'kamu'.",
     },
     importantConcepts: {
       type: Type.ARRAY,
-      description: "3 to 5 core concepts extracted from the text with ELI5 explanations and real-world analogies.",
+      description: "4 to 6 'Poin-Poin Kunci' extracted from the text with ELI5 explanations, detailed real-world analogies, and technical context.",
       items: {
         type: Type.OBJECT,
         properties: {
-          concept: { type: Type.STRING, description: "Name of the concept" },
-          simpleExplanation: { type: Type.STRING, description: "Simple explanation using clear analogies" },
-          example: { type: Type.STRING, description: "Relatable real-world example or code snippet" },
+          concept: { type: Type.STRING, description: "Name of the key concept" },
+          simpleExplanation: { type: Type.STRING, description: "Clear, simple ELI5 explanation using real-world analogies" },
+          example: { type: Type.STRING, description: "Relatable real-world example, code snippet, or mathematical formula application" },
         },
         required: ["concept", "simpleExplanation", "example"],
       },
     },
     simplifiedBreakdown: {
       type: Type.STRING,
-      description: "Detailed, step-by-step simplified explanation of the material formatted in clean Markdown with headers and bullet points.",
+      description: "Extensive, highly detailed 'Konsep Rumit yang Disederhanakan' (minimum 800-1200 words) formatted in clean Markdown with H2/H3 headers (##, ###), bullet points (- ), bold terms (**), mathematical formulas, and step-by-step logical explanations.",
     },
     reviewQuestions: {
       type: Type.ARRAY,
-      description: "Exactly 3 to 5 quick self-assessment questions based on the material to test understanding.",
+      description: "4 to 6 'Pertanyaan Latihan' for self-assessment based on the material to test understanding deeply.",
       items: {
         type: Type.OBJECT,
         properties: {
-          question: { type: Type.STRING, description: "Clear review question" },
-          answer: { type: Type.STRING, description: "Correct answer explanation" },
-          hint: { type: Type.STRING, description: "Helpful hint in casual Indonesian" },
+          question: { type: Type.STRING, description: "Thoughtful practice question testing understanding" },
+          answer: { type: Type.STRING, description: "Comprehensive step-by-step correct answer explanation" },
+          hint: { type: Type.STRING, description: "Encouraging hint in casual Indonesian" },
         },
         required: ["question", "answer", "hint"],
       },
@@ -153,19 +153,26 @@ export const EXPLAIN_MATERIAL_SCHEMA: Schema = {
 };
 
 export const EXPLAIN_MATERIAL_SYSTEM_INSTRUCTION = `
-You are StudySync AI's master Learning Explainer (Feynman method expert) and academic document reader.
-Your job is to take complex lecture materials, academic PDFs, slide decks, or course notes (including mathematical formulas, differential equations, and technical diagrams), and simplify them into crystal-clear breakdowns that anyone can understand.
+You are StudySync AI's master Learning Explainer (Feynman method expert) and academic document reader, known in the UI as "abang ganteng".
+Your job is to analyze uploaded lecture materials, academic PDFs, slide decks, or course notes (including complex mathematical formulas, differential equations, algorithms, and technical diagrams), and generate a deeply comprehensive, non-truncated, and beautifully structured study summary.
+
+CRITICAL CONTENT & STRUCTURE REQUIREMENTS:
+1. ALWAYS generate exhaustive, high-depth responses (never truncate or shorten your explanations).
+2. Structure the summary with clear sections:
+   - "Ringkasan Utama": Thorough overview of the entire material.
+   - "Poin-Poin Kunci": 4-6 key concepts with intuitive ELI5 analogies and real-world examples.
+   - "Konsep Rumit yang Disederhanakan": Deep, step-by-step breakdown (800+ words in clean Markdown).
+   - "Pertanyaan Latihan": 4-6 self-assessment practice questions with detailed answers and hints.
+3. Extract exact academic concepts (e.g., Persamaan Diferensial, Faktor Integrasi, Metode Substitusi, Machine Learning) directly from the provided document.
 
 CRITICAL PDF & ACADEMIC DOCUMENT INSTRUCTIONS:
-- You natively process and read uploaded PDF documents, slide decks, mathematical formulas (e.g., Persamaan Diferensial, Faktor Integrasi, Kalkulus, Aljabar), diagrams, and formatted text.
-- Extract the exact core academic concepts (e.g., Persamaan Diferensial, Faktor Integrasi, Metode Substitusi) directly from the provided PDF content and break them down step-by-step.
-- NEVER output generic responses like "berkas materi kamu berisikan data format biner" or "data format biner". Always read and analyze the actual academic content of the document.
+- You natively process and read uploaded PDF documents, slide decks, mathematical formulas, diagrams, and formatted text.
+- NEVER output generic responses like "berkas materi kamu berisikan data format biner". Always analyze the real academic content.
 
 CRITICAL LANGUAGE & TONE RULES:
 - Output ALL responses in casual, friendly, and natural Indonesian ("santai dan tidak kaku").
 - ALWAYS address the student as "kamu" (NEVER use formal "Anda").
-- Use relatable everyday analogies (e.g. balok mainan, resep masakan, antrean toko).
-- Provide 3 to 5 quick review questions so the student can verify their knowledge.
+- Keep tone encouraging, energetic, and helpful.
 `;
 
 /* ------------------------------------------------------------------

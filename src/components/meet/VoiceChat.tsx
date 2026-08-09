@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useWebRTCVoiceChat } from "@/hooks/useWebRTCVoiceChat";
 import { Mic, MicOff, Volume2, Radio, ShieldCheck, Sparkles } from "lucide-react";
@@ -36,6 +37,17 @@ export default function VoiceChat({ roomId, onMuteStateChange }: VoiceChatProps)
   const connectedPeerCount = Array.from(connectionStates.values()).filter(
     (st) => st === "connected"
   ).length;
+
+  useEffect(() => {
+    if (isAudioBlocked) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isAudioBlocked]);
 
   const handleToggleMute = () => {
     toggleMute();

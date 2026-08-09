@@ -199,6 +199,17 @@ function PlanCard({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [actionLoading, setActionLoading] = useState<"complete" | "reset" | "delete" | null>(null);
 
+  useEffect(() => {
+    if (showDeleteModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showDeleteModal]);
+
   const sortedTasks = (plan.tasks || []).slice().sort((a, b) => a.day - b.day);
   const accent = subjectAccent(plan.subject);
   const progress = computeProgress(sortedTasks);
@@ -649,7 +660,7 @@ function PlanContent() {
 
   if (loading) {
     return (
-      <div className="flex flex-col flex-1 animate-pulse overflow-y-auto gap-6 p-6 sm:p-8 max-w-5xl w-full mx-auto">
+      <div className="flex flex-col flex-1 animate-pulse gap-6 p-6 sm:p-8 max-w-5xl w-full mx-auto">
         <div className="flex items-end justify-between gap-4">
           <div className="flex flex-col gap-2">
             <div className="h-8 w-56 rounded-xl bg-white/10" />

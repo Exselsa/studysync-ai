@@ -35,6 +35,126 @@ interface MaterialUploaderProps {
 
 const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
+function renderFormattedText(text: string): React.ReactNode {
+  const parts = text.split(/(\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
+  return parts.map((part, idx) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={idx} className="font-bold text-cyan-300">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    if (part.startsWith("*") && part.endsWith("*")) {
+      return (
+        <em key={idx} className="italic text-slate-300">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code key={idx} className="font-mono text-[11px] px-1.5 py-0.5 rounded bg-slate-950 text-cyan-300 border border-white/10">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+}
+
+function StructuredMarkdown({ content }: { content: string }) {
+  if (!content) return null;
+
+  const lines = content.split("\n");
+  const elements: React.ReactNode[] = [];
+  let inCodeBlock = false;
+  let codeBuffer: string[] = [];
+
+  lines.forEach((line, i) => {
+    if (line.trim().startsWith("```")) {
+      if (inCodeBlock) {
+        elements.push(
+          <pre
+            key={`code-${i}`}
+            className="p-3.5 rounded-xl bg-slate-950/90 border border-white/10 font-mono text-[11px] text-cyan-300 overflow-x-auto my-2 shadow-inner"
+          >
+            <code>{codeBuffer.join("\n")}</code>
+          </pre>
+        );
+        codeBuffer = [];
+        inCodeBlock = false;
+      } else {
+        inCodeBlock = true;
+      }
+      return;
+    }
+
+    if (inCodeBlock) {
+      codeBuffer.push(line);
+      return;
+    }
+
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("### ")) {
+      elements.push(
+        <h4 key={i} className="font-display text-xs font-bold text-cyan-300 mt-4 mb-1.5 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+          {trimmed.replace("### ", "")}
+        </h4>
+      );
+    } else if (trimmed.startsWith("## ")) {
+      elements.push(
+        <h3 key={i} className="font-display text-sm font-extrabold text-white mt-5 mb-2 border-b border-white/10 pb-1 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-violet-400 shrink-0" />
+          {trimmed.replace("## ", "")}
+        </h3>
+      );
+    } else if (trimmed.startsWith("# ")) {
+      elements.push(
+        <h2 key={i} className="font-display text-base font-black text-white mt-6 mb-2">
+          {trimmed.replace("# ", "")}
+        </h2>
+      );
+    } else if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      const textContent = trimmed.substring(2);
+      elements.push(
+        <li key={i} className="flex items-start gap-2.5 text-xs text-slate-200 my-1 pl-2 leading-relaxed">
+          <span className="text-cyan-400 font-extrabold shrink-0 mt-0.5">•</span>
+          <span>{renderFormattedText(textContent)}</span>
+        </li>
+      );
+    } else if (/^\d+\.\s/.test(trimmed)) {
+      const match = trimmed.match(/^(\d+)\.\s+(.*)/);
+      elements.push(
+        <li key={i} className="flex items-start gap-2.5 text-xs text-slate-200 my-1 pl-2 leading-relaxed">
+          <span className="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-extrabold text-[10px] shrink-0 mt-0.5">
+            {match ? match[1] : i}
+          </span>
+          <span>{renderFormattedText(match ? match[2] : trimmed)}</span>
+        </li>
+      );
+    } else if (trimmed.startsWith("> ")) {
+      elements.push(
+        <blockquote key={i} className="border-l-2 border-cyan-400 pl-3 text-xs italic text-cyan-200 bg-cyan-950/20 p-2.5 rounded-r-xl my-2 leading-relaxed">
+          {renderFormattedText(trimmed.replace("> ", ""))}
+        </blockquote>
+      );
+    } else if (trimmed === "") {
+      elements.push(<div key={i} className="h-1.5" />);
+    } else {
+      elements.push(
+        <p key={i} className="text-xs text-slate-200 leading-relaxed my-1">
+          {renderFormattedText(line)}
+        </p>
+      );
+    }
+  });
+
+  return <div className="space-y-1">{elements}</div>;
+}
+
 export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps) {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -551,11 +671,11 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
           </div>
 
           {/* Key Summary Callout */}
-          <div className="p-4.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs leading-relaxed flex items-start gap-3 shadow-md">
-            <BookOpen size={18} className="text-cyan-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-extrabold block text-cyan-300 mb-0.5">Ringkasan Utama:</span>
-              {explainResult.keySummary}
+          <div className="p-5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs leading-relaxed flex items-start gap-3.5 shadow-md">
+            <BookOpen size={20} className="text-cyan-400 shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <span className="font-extrabold block text-cyan-300 mb-1 text-xs">Ringkasan Utama:</span>
+              <StructuredMarkdown content={explainResult.keySummary} />
             </div>
           </div>
 
@@ -584,10 +704,10 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
           {/* Simplified Breakdown */}
           <div className="flex flex-col gap-2">
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
-              Penjelasan Lengkap
+              Penjelasan Lengkap & Konsep Rumit yang Disederhanakan
             </h4>
-            <div className="p-5 rounded-2xl bg-[#030712]/80 border border-white/10 text-xs leading-relaxed text-slate-200 space-y-2 whitespace-pre-line font-sans">
-              {explainResult.simplifiedBreakdown}
+            <div className="p-6 rounded-2xl bg-[#030712]/90 border border-white/10 text-xs leading-relaxed text-slate-200 space-y-3 font-sans h-auto max-h-[650px] overflow-y-auto custom-scrollbar shadow-inner">
+              <StructuredMarkdown content={explainResult.simplifiedBreakdown} />
             </div>
           </div>
 

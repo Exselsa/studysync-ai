@@ -104,18 +104,18 @@ Berikut adalah berkas materi pelajaran/kuliah dari siswa:
 
 Judul Materi (opsional): ${materialTitle || "Materi Pembelajaran"}
 ---
-${(materialText || "Dokumen PDF terlampir").slice(0, 30000)}
+${(materialText || "Dokumen PDF terlampir").slice(0, 40000)}
 ---
 
-Jelaskan materi ini secara sederhana (Feynman style).
-Pastikan kamu membaca seluruh berkas PDF (termasuk rumus matematika seperti Persamaan Diferensial, slide, dan grafik) secara lengkap dan mengekstrak konsep akademik utama secara spesifik.
+Buatkan rangkuman dan penjelasan materi ini secara mendalam, lengkap, dan terstruktur (Feynman style).
+Pastikan kamu membaca seluruh berkas PDF (termasuk rumus matematika, Persamaan Diferensial, slide, dan grafik) secara lengkap dan mengekstrak konsep akademik utama secara spesifik.
 NEVER output generic statements like 'berkas materi kamu berisikan data format biner'.
 
-Sertakan:
-1. Ringkasan Kunci (2-3 kalimat)
-2. 3-5 Konsep Penting dengan analogi sehari-hari dan contoh nyata
-3. Penjelasan Lengkap yang Disederhanakan (format Markdown)
-4. 3-5 Pertanyaan Review Singkat beserta jawaban dan petunjuk (hint)
+Sertakan secara lengkap dan mendalam:
+1. Ringkasan Utama: Penjelasan menyeluruh mengenai tema & latar belakang materi.
+2. Poin-Poin Kunci: 4-6 konsep utama dengan penjelasan ELI5 dan analogi real-world.
+3. Konsep Rumit yang Disederhanakan: Penjelasan mendalam step-by-step (minimum 800+ kata) dalam format Markdown terstruktur.
+4. Pertanyaan Latihan: 4-6 pertanyaan review mendalam beserta jawaban dan petunjuk (hint).
 
 Gunakan Bahasa Indonesia yang santai, ramah, dan tidak kaku (selalu pakai 'kamu').
 `;

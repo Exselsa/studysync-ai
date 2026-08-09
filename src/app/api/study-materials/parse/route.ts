@@ -89,6 +89,8 @@ export async function POST(req: NextRequest) {
       fileName: parsed.fileName,
       fileType: parsed.fileType,
       charCount: parsed.charCount,
+      fileBase64: parsed.fileBase64,
+      isPdf: parsed.isPdf,
     });
   } catch (err: unknown) {
     console.error("[/api/study-materials/parse] Error:", err);
