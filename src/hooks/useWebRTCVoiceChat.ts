@@ -17,16 +17,11 @@ import { db } from "@/lib/firebase/clientApp";
 
 const ICE_SERVERS: RTCConfiguration = {
   iceServers: [
-    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] },
-    {
-      urls: [
-        "turn:openrelay.metered.ca:80",
-        "turn:openrelay.metered.ca:443",
-        "turn:openrelay.metered.ca:443?transport=tcp"
-      ],
-      username: "openrelay",
-      credential: "openrelay"
-    }
+    { urls: "stun:stun.l.google.com:19302" },
+    { urls: "stun:stun1.l.google.com:19302" },
+    { urls: "stun:stun2.l.google.com:19302" },
+    { urls: "stun:stun3.l.google.com:19302" },
+    { urls: "stun:stun4.l.google.com:19302" }
   ]
 };
 
@@ -129,7 +124,11 @@ export function useWebRTCVoiceChat(
         // Add local tracks to existing peer connections if any
         pcsRef.current.forEach((pc) => {
           stream.getTracks().forEach((track) => {
-            pc.addTrack(track, stream);
+            const senders = pc.getSenders();
+            const trackExists = senders.some((s) => s.track?.id === track.id);
+            if (!trackExists) {
+              pc.addTrack(track, stream);
+            }
           });
         });
       } catch (err) {
@@ -192,7 +191,11 @@ export function useWebRTCVoiceChat(
       // Add local audio tracks BEFORE creating offer/answer
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach((track) => {
-          pc!.addTrack(track, localStreamRef.current!);
+          const senders = pc!.getSenders();
+          const trackExists = senders.some((s) => s.track?.id === track.id);
+          if (!trackExists) {
+            pc!.addTrack(track, localStreamRef.current!);
+          }
         });
       }
 
@@ -219,11 +222,17 @@ export function useWebRTCVoiceChat(
       // Send local ICE candidates to signaling collection
       pc.onicecandidate = (event) => {
         if (event.candidate) {
+          const candidatePayload = {
+            candidate: event.candidate.candidate,
+            sdpMid: event.candidate.sdpMid,
+            sdpMLineIndex: event.candidate.sdpMLineIndex,
+          };
+          console.log("[WebRTC] Local ICE Candidate generated & sent:", candidatePayload);
           addDoc(signalsColRef, {
             type: "candidate",
             senderId: currentUserId,
             receiverId: remoteUserId,
-            candidate: event.candidate.toJSON(),
+            candidate: candidatePayload,
             createdAt: serverTimestamp(),
           }).catch((err) => handleFirestoreError("addDoc voiceSignals (candidate)", err));
         }
@@ -269,7 +278,9 @@ export function useWebRTCVoiceChat(
         const cand = queue.shift();
         if (cand) {
           try {
-            await pc.addIceCandidate(new RTCIceCandidate(cand));
+            const candidateObj = new RTCIceCandidate(cand);
+            await pc.addIceCandidate(candidateObj);
+            console.log("[WebRTC] Added queued remote ICE Candidate successfully!");
           } catch (e) {
             console.error("Error adding queued ICE candidate:", e);
           }
@@ -307,6 +318,17 @@ export function useWebRTCVoiceChat(
 
             if (isInitiator) {
               try {
+                // Ensure local audio tracks are attached strictly BEFORE creating offer
+                if (localStreamRef.current) {
+                  localStreamRef.current.getTracks().forEach((track) => {
+                    const senders = pc!.getSenders();
+                    const trackExists = senders.some((s) => s.track?.id === track.id);
+                    if (!trackExists) {
+                      pc!.addTrack(track, localStreamRef.current!);
+                    }
+                  });
+                }
+
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
 
@@ -377,6 +399,17 @@ export function useWebRTCVoiceChat(
 
           if (signalType === "offer") {
             try {
+              // Ensure local audio tracks are attached strictly BEFORE creating answer
+              if (localStreamRef.current) {
+                localStreamRef.current.getTracks().forEach((track) => {
+                  const senders = pc.getSenders();
+                  const trackExists = senders.some((s) => s.track?.id === track.id);
+                  if (!trackExists) {
+                    pc.addTrack(track, localStreamRef.current!);
+                  }
+                });
+              }
+
               await pc.setRemoteDescription(
                 new RTCSessionDescription({ type: "offer", sdp: data.sdp })
               );
@@ -409,8 +442,10 @@ export function useWebRTCVoiceChat(
             }
           } else if (signalType === "candidate" && data.candidate) {
             try {
+              const candidateObj = new RTCIceCandidate(data.candidate);
               if (pc.remoteDescription && pc.remoteDescription.type) {
-                await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+                await pc.addIceCandidate(candidateObj);
+                console.log("[WebRTC] Added remote ICE Candidate successfully!");
               } else {
                 // Buffer in queue until setRemoteDescription resolves
                 const queue = iceQueuesRef.current.get(senderId) || [];
