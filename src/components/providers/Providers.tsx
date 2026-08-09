@@ -3,6 +3,7 @@
 import { LazyMotion, domAnimation, MotionConfig } from "framer-motion";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/lib/contexts/AuthContext";
+import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -16,7 +17,9 @@ export default function Providers({ children }: ProvidersProps) {
           reducedMotion="user"
           transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
         >
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <SmoothScrollProvider>{children}</SmoothScrollProvider>
+          </AuthProvider>
         </MotionConfig>
       </LazyMotion>
     </ThemeProvider>

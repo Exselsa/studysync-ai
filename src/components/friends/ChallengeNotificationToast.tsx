@@ -115,7 +115,7 @@ export default function ChallengeNotificationToast() {
         transition={{ type: "spring", stiffness: 350, damping: 25 }}
       >
         {/* Top Glow Accent Bar */}
-        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 via-amber-400 to-cyan-400" />
+        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 via-violet-400 to-cyan-400" />
 
         <div className="flex flex-col gap-3">
           {/* Header */}

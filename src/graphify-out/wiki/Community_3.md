@@ -1,11 +1,13 @@
 # Community 3
 
-> 31 nodes · cohesion 0.06
+> 33 nodes · cohesion 0.06
 
 ## Key Concepts
 
 - [FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L1) (33 connections)
+- [acceptFriendRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L217) (2 connections)
 - [sendMatchChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/friends.ts#L347) (2 connections)
+- [handleAcceptRequest()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L434) (2 connections)
 - [handleSendChallenge()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L127) (2 connections)
 - [[activeTab, setActiveTab]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L351) (1 connections)
 - [[addEmail, setAddEmail]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L360) (1 connections)
@@ -27,9 +29,7 @@
 - [router](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L64) (1 connections)
 - [[selectedTopic, setSelectedTopic]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L66) (1 connections)
 - [[studyPlanTopics, setStudyPlanTopics]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L65) (1 connections)
-- [targetFriendId](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L73) (1 connections)
-- [targetFriendName](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L75) (1 connections)
-- *... and 6 more nodes in this community*
+- *... and 8 more nodes in this community*
 
 ## Relationships
 
@@ -42,8 +42,8 @@
 
 ## Audit Trail
 
-- EXTRACTED: 63 (97%)
-- INFERRED: 2 (3%)
+- EXTRACTED: 65 (94%)
+- INFERRED: 4 (6%)
 - AMBIGUOUS: 0 (0%)
 
 ---

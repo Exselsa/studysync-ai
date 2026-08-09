@@ -152,9 +152,9 @@ function DashboardSidebar({ isCollapsed, toggleCollapse }: DashboardSidebarProps
                       className="absolute inset-0 rounded-xl"
                       style={{
                         background:
-                          "linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.05) 100%)",
-                        border: "1px solid rgba(245, 158, 11, 0.18)",
-                        boxShadow: "var(--shadow-skeuo-pressed)",
+                          "linear-gradient(135deg, rgba(6,182,212,0.15) 0%, rgba(139,92,246,0.10) 100%)",
+                        border: "1px solid rgba(6, 182, 212, 0.25)",
+                        boxShadow: "0 0 16px rgba(6,182,212,0.2) inset",
                       }}
                       transition={{
                         type: "spring",
@@ -183,7 +183,7 @@ function DashboardSidebar({ isCollapsed, toggleCollapse }: DashboardSidebarProps
                     className="relative z-10 flex-shrink-0"
                     style={{
                       color: active
-                        ? "var(--color-gold-400)"
+                        ? "#38bdf8"
                         : "var(--color-silver-400)",
                       transition: "color 150ms",
                     }}
@@ -198,7 +198,7 @@ function DashboardSidebar({ isCollapsed, toggleCollapse }: DashboardSidebarProps
                     <ChevronRight
                       size={12}
                       className="relative z-10 ml-auto"
-                      style={{ color: "var(--color-gold-400)" }}
+                      style={{ color: "#38bdf8" }}
                       aria-hidden="true"
                     />
                   )}

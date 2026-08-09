@@ -11,9 +11,9 @@
 5. `parseFileBuffer()` (5 edges)
 6. `router` (4 edges)
 7. `RESPONSE_SCHEMA` (4 edges)
-8. `EASE` (4 edges)
-9. `handleAttack()` (4 edges)
-10. `saveStudyPlan()` (4 edges)
+8. `EMIL_EASE_ARR` (4 edges)
+9. `containerVariants` (4 edges)
+10. `handleAttack` (4 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 

@@ -218,7 +218,7 @@ function TopicPickerModal({
               <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center">
                 <Swords size={28} className="text-cyan-400 animate-pulse" />
               </div>
-              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-[10px] text-slate-950 font-bold">
+              <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-cyan-400 flex items-center justify-center text-[10px] text-slate-950 font-bold">
                 <Clock size={12} className="animate-spin" />
               </div>
             </div>
@@ -266,7 +266,7 @@ function TopicPickerModal({
 
             {/* Core CS Topics */}
             <div className="flex flex-col gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1.5">
                 <Sparkles size={13} /> Topik Teknologi Standar
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-36 overflow-y-auto pr-1">
@@ -280,7 +280,7 @@ function TopicPickerModal({
                     }}
                     className={`px-3 py-2 rounded-xl text-xs font-semibold text-left transition-all border ${
                       selectedTopic === topic && !customTopic
-                        ? "bg-amber-500/20 border-amber-400 text-amber-200 shadow-md"
+                        ? "bg-cyan-500/20 border-cyan-400 text-cyan-200 shadow-md"
                         : "bg-slate-900/50 border-slate-800 text-slate-300 hover:border-slate-700"
                     }`}
                   >
@@ -667,7 +667,7 @@ export default function FriendsPanel({ isCollapsed }: FriendsPanelProps) {
                         className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-amber-950 border border-amber-500/40 flex items-center justify-center text-xs font-bold text-amber-300">
+                          <div className="w-9 h-9 rounded-full bg-cyan-950 border border-cyan-500/40 flex items-center justify-center text-xs font-bold text-cyan-300">
                             {req.senderName.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex flex-col min-w-0">

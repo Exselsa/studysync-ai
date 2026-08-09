@@ -1,6 +1,6 @@
 # getStudyPlans()
 
-> God node · 4 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L260)
+> God node · 4 connections · [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L76)
 
 ## Call Trace Diagram
 
@@ -9,7 +9,7 @@ sequenceDiagram
     participant P0 as getStudyPlans()
     participant P1 as userPlansCollection()
     participant P2 as saveStudyPlan()
-    participant P3 as sanitizeStudyPlan()
+    participant P3 as normalizeStudyPlanData()
     participant P4 as handleSaveToFirestore()
     participant P5 as fetchPlans()
     participant P6 as loadTopics()

@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { m, AnimatePresence } from "framer-motion";
 import {
   Video,
+  VideoOff,
   Users,
   Plus,
   UserPlus,
@@ -19,6 +20,7 @@ import {
   Eye,
   Edit3,
   Shield,
+  ShieldCheck,
   Crown,
   Trash2,
   Eraser,
@@ -29,6 +31,8 @@ import {
   X,
   DoorOpen,
   LogOut,
+  Monitor,
+  MonitorOff,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { useStudyTimer } from "@/hooks/useStudyTimer";
@@ -52,17 +56,14 @@ import {
   appendAiExplanationToRoom,
   setRoomAiGenerating,
   sendMeetInvite,
-  updateParticipantMicState,
   sendMeetChatMessage,
   subscribeToMeetChatMessages,
-  RTC_ICE_SERVERS,
   type StudyMeetRoom,
-  type RoomParticipant,
   type MeetChatMessage,
 } from "@/lib/firebase/meet";
 
 /* ----------------------------------------------------------------
-   Study Meet Page
+   Study Meet Page — Obsidian Glass Overhaul
 ---------------------------------------------------------------- */
 
 export default function StudyMeetPage() {
@@ -80,6 +81,11 @@ export default function StudyMeetPage() {
   const [userActiveRooms, setUserActiveRooms] = useState<StudyMeetRoom[]>([]);
   const [roomLoading, setRoomLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Local Media Control States
+  const [isCameraOn, setIsCameraOn] = useState(false);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [isLocalMuted, setIsLocalMuted] = useState(false);
 
   // Lobby Card Action Target State
   const [targetLobbyRoom, setTargetLobbyRoom] = useState<{
@@ -100,8 +106,6 @@ export default function StudyMeetPage() {
   const [showAiModal, setShowAiModal] = useState(false);
   const [showDeleteRoomModal, setShowDeleteRoomModal] = useState(false);
   const [showClearBoardModal, setShowClearBoardModal] = useState(false);
-
-
 
   // In-Room Text Chat State
   const [showChatPanel, setShowChatPanel] = useState(false);
@@ -207,8 +211,6 @@ export default function StudyMeetPage() {
     return () => unsubFriends();
   }, [user]);
 
-
-
   /* ----------------------------------------------------------------
      Handlers
   ---------------------------------------------------------------- */
@@ -266,7 +268,6 @@ export default function StudyMeetPage() {
         await leaveStudyMeetRoom(room.roomId, user.uid);
       }
 
-      // Dynamically filter local state
       setUserActiveRooms((prev) => prev.filter((r) => r.roomId !== room.roomId));
       setTargetLobbyRoom(null);
     } catch (err) {
@@ -416,11 +417,11 @@ export default function StudyMeetPage() {
   /* ----------------------------------------------------------------
      Render Loading / Pre-checks
   ---------------------------------------------------------------- */
-  if (authLoading) {
+  if (authLoading || roomLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3 text-cyan-400">
-        <Loader2 size={32} className="animate-spin" />
-        <p className="text-xs font-bold text-slate-300">Menyiapkan Study Meet...</p>
+        <Loader2 size={36} className="animate-spin text-cyan-400" />
+        <p className="text-xs font-bold text-slate-300 font-display">Menyiapkan Ruang Study Meet...</p>
       </div>
     );
   }
@@ -430,65 +431,64 @@ export default function StudyMeetPage() {
   ---------------------------------------------------------------- */
   if (!urlRoomId || !currentRoom) {
     return (
-      <section className="flex flex-col gap-8 w-full max-w-5xl mx-auto px-4 py-8">
-
-        {/* Header Hero Banner */}
+      <section className="flex flex-col gap-8 w-full max-w-6xl mx-auto px-4 py-8">
+        {/* Header Hero Banner — Pitch Obsidian & Electric Cyan/Violet */}
         <m.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl p-6 sm:p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(6,182,212,0.14) 0%, rgba(3,11,34,0.92) 100%)",
-            borderColor: "rgba(56,189,248,0.3)",
-            boxShadow: "0 20px 60px rgba(6,182,212,0.15)",
-          }}
+          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          className="rounded-3xl p-6 sm:p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border bg-[#080C14]/90 border-white/10 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
         >
-          <div className="flex flex-col gap-2 max-w-xl">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/30 text-cyan-300">
-                KOLABORASI REAL-TIME & OPEN MIC
+          <div className="absolute top-0 right-1/4 size-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/3 size-64 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="flex flex-col gap-3 max-w-xl z-10">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full bg-cyan-950/90 border border-cyan-500/40 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.3)] flex items-center gap-1.5">
+                <Volume2 size={12} className="text-cyan-400 animate-pulse" /> KOLABORASI REAL-TIME & OPEN MIC 🎙️
               </span>
-              <span className="text-[10px] font-extrabold text-amber-300 px-2.5 py-0.5 rounded-full bg-amber-950/60 border border-amber-500/30">
-                ✨ abang ganteng AI Supported
+              <span className="text-[10px] font-extrabold text-violet-300 px-2.5 py-0.5 rounded-full bg-violet-950/80 border border-violet-500/40 shadow-[0_0_12px_rgba(139,92,246,0.25)] flex items-center gap-1">
+                <Sparkles size={11} className="fill-violet-300" /> abang ganteng AI Supported
               </span>
             </div>
 
-            <h1
-              className="text-2xl sm:text-3xl font-black text-slate-50 leading-tight"
-              style={{ fontFamily: "var(--font-outfit)" }}
-            >
+            <h1 className="text-2xl sm:text-4xl font-black font-display bg-gradient-to-r from-white via-slate-100 to-cyan-400 bg-clip-text text-transparent leading-tight tracking-tight mt-1">
               Study Meet — Belajar & Diskusikan Materi Bersama
             </h1>
 
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              Buat ruang belajar live, obrolan suara (Voice Open Mic), chat room real-time, impor Study Plan, dan minta penjelasan langsung dari **abang ganteng**!
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+              Buat ruang belajar live, obrolan suara WebRTC, chat room real-time, impor Study Plan, dan panggil penjelasan materi langsung dari <strong className="text-cyan-300 font-extrabold">abang ganteng</strong>!
             </p>
           </div>
 
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-xl shrink-0">
-            <Video size={40} className="animate-pulse" />
-          </div>
+          <m.div
+            whileHover={{ scale: 1.05, rotate: 2 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="size-20 sm:size-24 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shadow-[0_0_35px_rgba(6,182,212,0.3)] shrink-0 z-10 backdrop-blur-md"
+          >
+            <Video size={42} className="animate-pulse text-cyan-300" />
+          </m.div>
         </m.div>
 
         {errorMsg && (
-          <div className="p-4 rounded-2xl bg-rose-950/80 border border-rose-500/40 text-rose-300 text-xs font-bold text-center animate-fadeIn">
+          <m.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-4 rounded-2xl bg-rose-950/90 border border-rose-500/40 text-rose-300 text-xs font-bold text-center shadow-lg"
+          >
             ⚠️ {errorMsg}
-          </div>
+          </m.div>
         )}
 
-        {/* SECTION: Ruang Belajar Saya (Active Room Persistence, Re-entry & Card Deletion) */}
+        {/* SECTION: Ruang Belajar Saya */}
         {userActiveRooms.length > 0 && (
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <DoorOpen size={18} className="text-cyan-400" />
-              <h2
-                className="text-lg font-black text-slate-100"
-                style={{ fontFamily: "var(--font-outfit)" }}
-              >
+              <DoorOpen size={20} className="text-cyan-400" />
+              <h2 className="text-xl font-black text-slate-100 font-display">
                 Ruang Belajar Saya 🚪
               </h2>
-              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
+              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300 shadow-sm">
                 {userActiveRooms.length} Ruang Aktif
               </span>
             </div>
@@ -502,7 +502,9 @@ export default function StudyMeetPage() {
                     key={room.roomId}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-5 rounded-2xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-xl shadow-lg flex flex-col justify-between gap-4 hover:border-cyan-400/60 transition-all"
+                    whileHover={{ y: -3, borderColor: "rgba(6,182,212,0.5)" }}
+                    transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                    className="p-5 rounded-2xl bg-[#080C14]/90 border border-white/10 backdrop-blur-xl shadow-xl flex flex-col justify-between gap-4 transition-all"
                   >
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
@@ -513,47 +515,50 @@ export default function StudyMeetPage() {
                           {room.participants.length} Anggota
                         </span>
                       </div>
-                      <h3
-                        className="text-base font-extrabold text-slate-50 line-clamp-1"
-                        style={{ fontFamily: "var(--font-outfit)" }}
-                      >
+                      <h3 className="text-base font-extrabold text-slate-50 line-clamp-1 font-display">
                         {room.title}
                       </h3>
-                      <p className="text-xs text-slate-400">
-                        Host: <strong className="text-cyan-300">{room.hostName}</strong>
+                      <p className="text-xs text-slate-400 font-sans">
+                        Host: <strong className="text-cyan-300 font-bold">{room.hostName}</strong>
                       </p>
                     </div>
 
                     {/* Lobby Room Card Action Buttons */}
                     <div className="flex items-center gap-2">
-                      <button
+                      <m.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.95 }}
                         type="button"
                         onClick={() => router.push(`/dashboard/meet?roomId=${room.roomId}`)}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold text-xs flex items-center justify-center gap-1 shadow-md transition-all active:scale-95 cursor-pointer"
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all cursor-pointer"
                       >
                         <DoorOpen size={14} /> Masuk Kembali 🚪
-                      </button>
+                      </m.button>
 
                       {isUserHost ? (
-                        <button
+                        <m.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.95 }}
                           type="button"
                           id={`meet-card-delete-${room.roomId}`}
                           onClick={() => setTargetLobbyRoom({ room, action: "delete" })}
-                          className="py-2.5 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+                          className="py-2.5 px-3 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md"
                           title="Hapus room ini"
                         >
                           <Trash2 size={14} className="text-rose-400" /> Hapus 🗑️
-                        </button>
+                        </m.button>
                       ) : (
-                        <button
+                        <m.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.95 }}
                           type="button"
                           id={`meet-card-leave-${room.roomId}`}
                           onClick={() => setTargetLobbyRoom({ room, action: "leave" })}
-                          className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+                          className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md"
                           title="Keluar dari room ini"
                         >
                           <LogOut size={14} className="text-slate-400" /> Keluar 🚪
-                        </button>
+                        </m.button>
                       )}
                     </div>
                   </m.div>
@@ -569,20 +574,17 @@ export default function StudyMeetPage() {
           <m.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-6 border bg-slate-900/70 border-cyan-500/30 backdrop-blur-xl shadow-xl hover:border-cyan-500/60 transition-all"
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-6 border bg-[#080C14]/90 border-white/10 backdrop-blur-xl shadow-xl hover:border-cyan-500/50 transition-all"
           >
             <div className="flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300">
+              <div className="size-12 rounded-2xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300 shadow-md">
                 <Plus size={24} />
               </div>
-              <h2
-                className="text-xl font-black text-slate-100"
-                style={{ fontFamily: "var(--font-outfit)" }}
-              >
+              <h2 className="text-xl font-black text-slate-100 font-display">
                 Buat Ruang Meet Baru
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed font-sans">
                 Jadilah Host, undang teman-teman kamu, kontrol papan catatan, dan panggil penjelasan dari abang ganteng.
               </p>
             </div>
@@ -593,19 +595,15 @@ export default function StudyMeetPage() {
                 value={newRoomTitle}
                 onChange={(e) => setNewRoomTitle(e.target.value)}
                 placeholder="Judul Ruang Meet (misal: Review Kalkulus BAB 3)"
-                className="w-full text-xs px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-slate-100 outline-none focus:border-cyan-400 transition-colors"
+                className="w-full text-xs px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-slate-100 outline-none focus:border-cyan-400 transition-colors font-sans"
                 required
               />
-              <button
+              <m.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
                 disabled={isCreatingRoom}
-                className="skeuo-btn py-3 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(6,182,212,0.25) 0%, rgba(6,182,212,0.08) 100%)",
-                  border: "1px solid rgba(56,189,248,0.4)",
-                  color: "#38bdf8",
-                }}
+                className="py-3 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.3)]"
               >
                 {isCreatingRoom ? (
                   <>
@@ -616,7 +614,7 @@ export default function StudyMeetPage() {
                     <Video size={15} /> Buat Ruang Meet 🚀
                   </>
                 )}
-              </button>
+              </m.button>
             </form>
           </m.div>
 
@@ -624,20 +622,17 @@ export default function StudyMeetPage() {
           <m.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-6 border bg-slate-900/70 border-slate-800 backdrop-blur-xl shadow-xl hover:border-slate-700 transition-all"
+            transition={{ delay: 0.15, duration: 0.4 }}
+            className="rounded-3xl p-6 sm:p-7 flex flex-col justify-between gap-6 border bg-[#080C14]/90 border-white/10 backdrop-blur-xl shadow-xl hover:border-violet-500/50 transition-all"
           >
             <div className="flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300">
+              <div className="size-12 rounded-2xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center text-violet-300 shadow-md">
                 <Users size={24} />
               </div>
-              <h2
-                className="text-xl font-black text-slate-100"
-                style={{ fontFamily: "var(--font-outfit)" }}
-              >
+              <h2 className="text-xl font-black text-slate-100 font-display">
                 Gabung dengan Kode Room
               </h2>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-slate-300 leading-relaxed font-sans">
                 Punya kode/ID ruang dari teman? Masukkan kode di bawah untuk gabung dan belajar bersama secara real-time.
               </p>
             </div>
@@ -648,13 +643,15 @@ export default function StudyMeetPage() {
                 value={joinRoomIdInput}
                 onChange={(e) => setJoinRoomIdInput(e.target.value)}
                 placeholder="Masukkan Kode Room ID"
-                className="w-full text-xs px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-slate-100 outline-none focus:border-indigo-400 transition-colors font-mono"
+                className="w-full text-xs px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700/80 text-slate-100 outline-none focus:border-violet-400 transition-colors font-mono"
                 required
               />
-              <button
+              <m.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
                 disabled={isJoiningRoom || !joinRoomIdInput.trim()}
-                className="skeuo-btn py-3 px-4 rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50 bg-slate-900 border border-slate-700 text-slate-200 hover:text-white"
+                className="py-3 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50 bg-slate-900 border border-slate-700 text-slate-200 hover:text-white shadow-md"
               >
                 {isJoiningRoom ? (
                   <>
@@ -665,12 +662,12 @@ export default function StudyMeetPage() {
                     <Users size={15} /> Gabung Ruang Meet
                   </>
                 )}
-              </button>
+              </m.button>
             </form>
           </m.div>
         </div>
 
-        {/* LOBBY CARD ACTION CONFIRMATION MODAL (Delete / Leave) */}
+        {/* LOBBY CARD ACTION CONFIRMATION MODAL */}
         <AnimatePresence>
           {targetLobbyRoom && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
@@ -678,9 +675,10 @@ export default function StudyMeetPage() {
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-[#080C14]/95 border-rose-500/40 shadow-2xl text-center backdrop-blur-2xl"
               >
-                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+                <div className="size-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto shadow-md">
                   {targetLobbyRoom.action === "delete" ? (
                     <Trash2 size={24} />
                   ) : (
@@ -689,15 +687,12 @@ export default function StudyMeetPage() {
                 </div>
 
                 <div>
-                  <h3
-                    className="text-lg font-black text-slate-100"
-                    style={{ fontFamily: "var(--font-outfit)" }}
-                  >
+                  <h3 className="text-lg font-black text-slate-100 font-display">
                     {targetLobbyRoom.action === "delete"
                       ? "Hapus Room?"
                       : "Keluar dari Room?"}
                   </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                  <p className="text-xs text-slate-300 leading-relaxed mt-2 font-sans">
                     {targetLobbyRoom.action === "delete"
                       ? `Yakin ingin menghapus room "${targetLobbyRoom.room.title}"? Semua data obrolan dan catatan di room ini akan dihapus permanen.`
                       : `Yakin ingin keluar dari room "${targetLobbyRoom.room.title}"?`}
@@ -713,11 +708,13 @@ export default function StudyMeetPage() {
                   >
                     Batal
                   </button>
-                  <button
+                  <m.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
                     onClick={handleConfirmLobbyAction}
                     disabled={isProcessingLobbyAction}
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-1.5"
                   >
                     {isProcessingLobbyAction ? (
                       <>
@@ -728,7 +725,7 @@ export default function StudyMeetPage() {
                     ) : (
                       "Ya, Keluar"
                     )}
-                  </button>
+                  </m.button>
                 </div>
               </m.div>
             </div>
@@ -742,194 +739,262 @@ export default function StudyMeetPage() {
      LIVE STUDY MEET WORKSPACE VIEW (Active Room)
   ---------------------------------------------------------------- */
   return (
-    <section className="flex flex-col gap-5 w-full max-w-6xl mx-auto px-4 py-6">
-
-      {/* Room Header Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-xl shadow-xl">
+    <section className="flex flex-col gap-6 w-full max-w-7xl mx-auto px-4 py-6 relative pb-28">
+      {/* Task 1: Header & Room Status Badge */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-5 rounded-3xl bg-[#080C14]/90 border border-white/10 backdrop-blur-2xl shadow-xl">
         <div className="flex items-center gap-3">
-          <button
+          <m.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => router.push("/dashboard/meet")}
-            className="p-2 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+            className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
             title="Kembali ke Menu Meet"
           >
-            <ArrowLeft size={16} />
-          </button>
+            <ArrowLeft size={18} />
+          </m.button>
 
-          <div>
-            <div className="flex items-center gap-2">
-              <h1
-                className="text-lg font-black text-slate-50 leading-tight"
-                style={{ fontFamily: "var(--font-outfit)" }}
-              >
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-black font-display bg-gradient-to-r from-white via-slate-100 to-cyan-400 bg-clip-text text-transparent leading-tight">
                 {currentRoom.title}
               </h1>
               {isHost && (
-                <span className="px-2 py-0.5 rounded-full bg-amber-950/80 border border-amber-500/40 text-[10px] font-black text-amber-300 flex items-center gap-1">
-                  <Crown size={11} /> HOST
+                <span className="px-2.5 py-0.5 rounded-full bg-violet-950/90 border border-violet-500/40 text-[10px] font-black text-violet-300 flex items-center gap-1 shadow-sm">
+                  <Crown size={11} className="text-violet-400 fill-violet-400" /> HOST
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
-              <span>Host: <strong className="text-cyan-300">{currentRoom.hostName}</strong></span>
-              <span>•</span>
-              <button
-                type="button"
-                onClick={copyRoomCode}
-                className="hover:text-cyan-300 flex items-center gap-1 font-mono text-[10px] cursor-pointer transition-colors"
-                title="Klik untuk menyalin kode room"
-              >
-                ID: {currentRoom.roomId.slice(0, 10)}... {copiedCode ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
-              </button>
-            </p>
+
+            {/* Room Code & WebRTC Encryption Status Badge */}
+            <div className="flex items-center gap-2 flex-wrap mt-0.5">
+              <span className="text-[11px] text-slate-400 font-sans">
+                Host: <strong className="text-cyan-300 font-extrabold">{currentRoom.hostName}</strong>
+              </span>
+              <span className="text-slate-600">•</span>
+              <div className="bg-[#080C14]/90 border border-white/10 backdrop-blur-xl shadow-xl px-3 py-1 rounded-full flex items-center gap-2 text-[11px]">
+                <ShieldCheck size={13} className="text-cyan-400" />
+                <span className="font-mono text-slate-300">
+                  ID: {currentRoom.roomId.slice(0, 10)}...
+                </span>
+                <button
+                  type="button"
+                  onClick={copyRoomCode}
+                  className="hover:text-cyan-300 text-slate-400 flex items-center gap-1 font-mono text-[10px] cursor-pointer transition-colors"
+                  title="Salin Kode Room"
+                >
+                  {copiedCode ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Header Right Actions: Open Mic Toggle, Text Chat Toggle & Host Delete */}
-        <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end flex-wrap">
-          {/* Full Mesh WebRTC Voice Chat Controls */}
-          <VoiceChat roomId={currentRoom.roomId} />
+        {/* Header Right Actions: VoiceChat Component & Text Chat Toggle */}
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end flex-wrap">
+          {/* WebRTC Voice Chat Controls & Audio Overlay Trigger */}
+          <VoiceChat
+            roomId={currentRoom.roomId}
+            onMuteStateChange={(muted) => setIsLocalMuted(muted)}
+          />
 
           {/* In-Room Text Chat Panel Toggle */}
-          <button
+          <m.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.95 }}
             type="button"
             id="meet-chat-toggle-btn"
             onClick={() => setShowChatPanel((prev) => !prev)}
-            className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border ${
+            className={`px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 transition-all cursor-pointer border ${
               showChatPanel
-                ? "bg-cyan-950 border-cyan-400 text-cyan-200 shadow-md"
+                ? "bg-cyan-950 border-cyan-400 text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
                 : "bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-700"
             }`}
           >
-            <MessageSquare size={13} className="text-cyan-400" />
+            <MessageSquare size={14} className="text-cyan-400" />
             <span>Chat ({chatMessages.length})</span>
-          </button>
+          </m.button>
 
           {/* Host Delete Room Button */}
           {isHost && (
-            <button
+            <m.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               type="button"
               id="meet-delete-room-btn"
               onClick={() => setShowDeleteRoomModal(true)}
-              className="px-3 py-1.5 rounded-full bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-md active:scale-95"
+              className="px-3.5 py-1.5 rounded-full bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-md"
               title="Tutup & Hapus Ruang Meet"
             >
               <Trash2 size={13} className="text-rose-400" /> Hapus Room
-            </button>
+            </m.button>
           )}
         </div>
       </div>
 
-      {/* Participants Avatars with Real-Time Glowing Speaking Indicator */}
-      <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-sm">
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-extrabold tracking-wider uppercase text-cyan-300 flex items-center gap-1.5">
-            <Volume2 size={13} className="text-emerald-400 animate-pulse" /> Peserta Room ({currentRoom.participants.length}):
+      {/* Task 2: Video/Voice Participant HUD Grid */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-xs font-black tracking-wider uppercase text-cyan-300 flex items-center gap-2 font-display">
+            <Volume2 size={14} className="text-emerald-400 animate-pulse" /> Peserta Room ({currentRoom.participants.length}):
           </span>
+          {isScreenSharing && (
+            <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-violet-950 border border-violet-500/40 text-violet-300 animate-pulse flex items-center gap-1">
+              <Monitor size={12} /> Screen Share Aktif
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-3 overflow-x-auto py-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {currentRoom.participants.map((p) => {
             const isUserSpeaking = p.isSpeaking;
             const isUserMuted = p.isMuted;
+            const isSelf = user && p.uid === user.uid;
 
             return (
-              <div
+              <m.div
                 key={p.uid}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900 border border-slate-800 relative transition-all"
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ ease: [0.23, 1, 0.32, 1], duration: 0.35 }}
+                className={`rounded-2xl p-4 flex flex-col justify-between gap-4 transition-all relative overflow-hidden backdrop-blur-xl shadow-xl ${
+                  isUserSpeaking
+                    ? "bg-[#080C14]/90 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)] ring-2 ring-cyan-400/50"
+                    : "bg-[#080C14]/90 border-white/10"
+                }`}
               >
-                <div
-                  className={`w-7 h-7 rounded-full text-[11px] font-black flex items-center justify-center relative transition-all ${
-                    isUserSpeaking
-                      ? "bg-emerald-950 text-emerald-300 border-2 border-emerald-400 shadow-[0_0_16px_rgba(34,197,94,0.8)] animate-pulse"
-                      : "bg-cyan-950 text-cyan-300 border border-cyan-500/40"
-                  }`}
-                  title={`${p.displayName} (${p.role})`}
-                >
-                  {p.displayName.charAt(0).toUpperCase()}
-                  {p.role === "host" && (
-                    <Crown size={9} className="absolute -top-1 -right-1 text-amber-400 fill-amber-400" />
+                {/* Header info in card */}
+                <div className="flex items-center justify-between gap-2 z-10">
+                  <div className="flex items-center gap-1.5">
+                    {p.role === "host" && (
+                      <span className="px-2 py-0.5 rounded-full bg-violet-950/80 border border-violet-500/40 text-[9px] font-black text-violet-300 flex items-center gap-1">
+                        <Crown size={10} className="fill-violet-300" /> Host
+                      </span>
+                    )}
+                    {isSelf && (
+                      <span className="px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-[9px] font-black text-cyan-300">
+                        Kamu
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Mic Mute / Active Badge */}
+                  {isUserMuted ? (
+                    <span className="px-2 py-0.5 rounded-full bg-rose-950/90 text-rose-300 border border-rose-500/40 text-[10px] font-bold flex items-center gap-1">
+                      <MicOff size={11} className="text-rose-400" /> Muted
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold flex items-center gap-1 animate-pulse">
+                      <Mic size={11} className="text-emerald-400" /> Mic On
+                    </span>
                   )}
                 </div>
 
-                <span className="text-xs font-bold text-slate-200 max-w-[100px] truncate">
-                  {p.displayName}
-                </span>
+                {/* Cybernetic Avatar Fallback / Video HUD Viewport */}
+                <div className="flex flex-col items-center justify-center my-2 relative z-10">
+                  {isSelf && isCameraOn ? (
+                    <div className="w-full h-28 rounded-xl bg-slate-950 border border-cyan-500/40 flex items-center justify-center relative overflow-hidden shadow-inner">
+                      <Video size={24} className="text-cyan-400 animate-pulse" />
+                      <span className="absolute bottom-2 left-2 text-[9px] font-mono font-bold text-cyan-300 bg-black/60 px-1.5 py-0.5 rounded">
+                        Kamera Aktif
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="size-16 rounded-full bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-cyan-400/40 text-cyan-300 font-display font-black text-xl flex items-center justify-center relative shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                      {p.displayName.charAt(0).toUpperCase()}
+                      {isUserSpeaking && (
+                        <span className="absolute inset-0 rounded-full border-2 border-cyan-400 animate-ping opacity-60" />
+                      )}
+                    </div>
+                  )}
+                </div>
 
-                {isUserMuted ? (
-                  <MicOff size={11} className="text-rose-400 shrink-0" />
-                ) : (
-                  <Mic size={11} className="text-emerald-400 shrink-0 animate-pulse" />
-                )}
-              </div>
+                {/* Footer info in card */}
+                <div className="flex items-center justify-between border-t border-white/5 pt-2 z-10">
+                  <span className="text-xs font-black text-slate-100 truncate max-w-[120px] font-sans">
+                    {p.displayName}
+                  </span>
+                  <span className="text-[9px] text-slate-400 font-mono">
+                    {isUserSpeaking ? "🗣️ Berbicara" : "Hadir"}
+                  </span>
+                </div>
+              </m.div>
             );
           })}
         </div>
       </div>
 
       {/* Host Action Toolbar & AI Status */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-slate-950/80 border border-slate-800 shadow-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-[#080C14]/90 border border-white/10 shadow-md backdrop-blur-xl">
         <div className="flex flex-wrap items-center gap-2">
           {/* Host Action 1: Invite Friends */}
           {isHost && (
-            <button
+            <m.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               type="button"
               id="meet-invite-friends-btn"
               onClick={() => setShowInviteModal(true)}
-              className="px-3.5 py-2 rounded-xl bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-cyan-950/80 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
             >
               <UserPlus size={14} className="text-cyan-400" /> Undang Teman ➕
-            </button>
+            </m.button>
           )}
 
           {/* Host Action 2: Import Study Plan */}
           {isHost && (
-            <button
+            <m.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               type="button"
               id="meet-import-plan-btn"
               onClick={() => setShowImportPlanModal(true)}
-              className="px-3.5 py-2 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
             >
               <BookOpen size={14} className="text-indigo-400" /> Impor dari Study Plan 📚
-            </button>
+            </m.button>
           )}
 
-          {/* Host Action 3: Exclusive "Minta Penjelasan Abang Ganteng 💡" */}
+          {/* Host Action 3: "Minta Penjelasan Abang Ganteng 💡" */}
           {isHost && (
-            <button
+            <m.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               type="button"
               id="meet-ask-ai-btn"
               onClick={() => setShowAiModal(true)}
               disabled={currentRoom.isAiGenerating}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-lg transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-black flex items-center gap-1.5 shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all disabled:opacity-50 cursor-pointer font-display"
             >
               {currentRoom.isAiGenerating ? (
                 <>
-                  <Loader2 size={14} className="animate-spin text-slate-950" /> abang ganteng Menjelaskan...
+                  <Loader2 size={14} className="animate-spin text-white" /> abang ganteng Menjelaskan...
                 </>
               ) : (
                 <>
-                  <Sparkles size={14} className="fill-slate-950" /> Minta Penjelasan Abang Ganteng 💡
+                  <Sparkles size={14} className="fill-white" /> Minta Penjelasan Abang Ganteng 💡
                 </>
               )}
-            </button>
+            </m.button>
           )}
 
           {/* Host Action 4: Clear Shared Board 🧹 */}
           {isHost && (
-            <button
+            <m.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               type="button"
               id="meet-clear-board-btn"
               onClick={() => setShowClearBoardModal(true)}
-              className="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
             >
               <Eraser size={14} className="text-rose-400" /> Bersihkan Papan 🧹
-            </button>
+            </m.button>
           )}
 
           {!isHost && (
             <div className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-bold text-slate-400 flex items-center gap-1.5">
-              <Shield size={12} className="text-amber-400" /> Mode Participant (Realtime Sync View)
+              <Shield size={12} className="text-cyan-400" /> Mode Participant (Realtime Sync View)
             </div>
           )}
         </div>
@@ -968,50 +1033,50 @@ export default function StudyMeetPage() {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="p-3.5 rounded-2xl bg-amber-950/80 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center justify-center gap-2 shadow-lg backdrop-blur-md animate-pulse"
+            className="p-3.5 rounded-2xl bg-cyan-950/90 border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center justify-center gap-2 shadow-lg backdrop-blur-md animate-pulse"
           >
-            <Loader2 size={16} className="animate-spin text-amber-400" />
+            <Loader2 size={16} className="animate-spin text-cyan-400" />
             <span>abang ganteng sedang meracik penjelasan terbaik untuk room ini... Papan akan terupdate otomatis!</span>
           </m.div>
         )}
       </AnimatePresence>
 
-      {/* Grid Layout: Main Shared Workspace Board + In-Room Text Chat Panel */}
+      {/* Main Shared Workspace Board & In-Room Text Chat Panel */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-        {/* Main Shared Workspace Editor Board */}
         <div
           className={`rounded-3xl p-5 sm:p-6 flex flex-col gap-4 border relative min-h-[420px] ${
             showChatPanel ? "lg:col-span-2" : "lg:col-span-3"
           }`}
           style={{
             background:
-              "linear-gradient(135deg, rgba(3,11,34,0.92) 0%, rgba(6,182,212,0.04) 100%)",
-            borderColor: "rgba(255,255,255,0.08)",
+              "linear-gradient(135deg, rgba(8,12,20,0.95) 0%, rgba(6,182,212,0.04) 100%)",
+            borderColor: "rgba(255,255,255,0.1)",
             boxShadow: "0 15px 45px rgba(0,0,0,0.5)",
             backdropFilter: "blur(16px)",
           }}
         >
-          {/* Shared Board Header with Prominent Host-Only "Bersihkan Papan 🧹" Button */}
+          {/* Board Header */}
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
-              <FileText size={15} className="text-cyan-400" />
-              <span className="text-xs font-extrabold tracking-wider uppercase text-cyan-300">
+              <FileText size={16} className="text-cyan-400" />
+              <span className="text-xs font-extrabold tracking-wider uppercase text-cyan-300 font-display">
                 Papan Catatan Real-Time Room
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              {/* Host-Exclusive "Bersihkan Papan 🧹" Button */}
               {isHost && (
-                <button
+                <m.button
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.95 }}
                   type="button"
                   id="meet-clear-board-header-btn"
                   onClick={() => setShowClearBoardModal(true)}
-                  className="px-3 py-1 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer shadow-md active:scale-95"
+                  className="px-3 py-1 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-300 text-xs font-extrabold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
                   title="Kosongkan seluruh papan catatan secara real-time"
                 >
                   <Eraser size={13} className="text-rose-400" /> Bersihkan Papan 🧹
-                </button>
+                </m.button>
               )}
 
               <span className="text-[10px] text-slate-400 font-mono">
@@ -1033,7 +1098,6 @@ export default function StudyMeetPage() {
                   : "Host sedang menyiapkan catatan untuk room..."
               }
               className="w-full resize-none outline-none text-xs sm:text-sm leading-relaxed p-4 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-100 placeholder:italic font-mono disabled:opacity-80 disabled:cursor-not-allowed focus:border-cyan-500/60 transition-colors"
-              style={{ fontFamily: "var(--font-inter)" }}
               aria-label="Papan Catatan Bersama Study Meet"
             />
           ) : (
@@ -1056,17 +1120,18 @@ export default function StudyMeetPage() {
               initial={{ opacity: 0, x: 20, scale: 0.96 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 20, scale: 0.96 }}
-              className="lg:col-span-1 rounded-3xl p-4 flex flex-col gap-3 border bg-slate-900/90 border-cyan-500/30 backdrop-blur-xl shadow-2xl h-[520px]"
+              transition={{ ease: [0.23, 1, 0.32, 1], duration: 0.35 }}
+              className="lg:col-span-1 rounded-3xl p-4 flex flex-col gap-3 border bg-[#080C14]/95 border-cyan-500/30 backdrop-blur-xl shadow-2xl h-[520px]"
             >
               <div className="flex items-center justify-between pb-2 border-b border-cyan-500/20">
-                <div className="flex items-center gap-2 text-cyan-300 font-extrabold text-xs">
+                <div className="flex items-center gap-2 text-cyan-300 font-extrabold text-xs font-display">
                   <MessageSquare size={14} className="text-cyan-400" />
                   <span>Obrolan Teks Room</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowChatPanel(false)}
-                  className="text-slate-400 hover:text-slate-200 text-xs font-bold cursor-pointer"
+                  className="text-slate-400 hover:text-slate-200 text-xs font-bold"
                 >
                   <X size={14} />
                 </button>
@@ -1098,7 +1163,7 @@ export default function StudyMeetPage() {
                         <div
                           className={`px-3 py-2 rounded-2xl text-xs leading-relaxed ${
                             isSelf
-                              ? "bg-cyan-950/90 border border-cyan-500/40 text-cyan-100 rounded-tr-none"
+                              ? "bg-cyan-950/90 border border-cyan-500/40 text-cyan-100 rounded-tr-none shadow-[0_0_10px_rgba(6,182,212,0.2)]"
                               : "bg-slate-950/90 border border-slate-800 text-slate-200 rounded-tl-none"
                           }`}
                         >
@@ -1118,19 +1183,99 @@ export default function StudyMeetPage() {
                   value={chatInputText}
                   onChange={(e) => setChatInputText(e.target.value)}
                   placeholder="Ketik pesan..."
-                  className="flex-1 text-xs px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 outline-none focus:border-cyan-400"
+                  className="flex-1 text-xs px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 outline-none focus:border-cyan-400 font-sans"
                 />
-                <button
+                <m.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="submit"
                   disabled={!chatInputText.trim()}
-                  className="p-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-40 transition-all cursor-pointer shrink-0"
+                  className="p-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white disabled:opacity-40 transition-all cursor-pointer shrink-0 shadow-md"
                 >
                   <Send size={14} />
-                </button>
+                </m.button>
               </form>
             </m.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Task 3: Floating Media Control Dock */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 px-5 py-3 rounded-full bg-[#080C14]/90 border border-white/15 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex items-center gap-3">
+        {/* Camera Toggle Button */}
+        <m.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+          type="button"
+          onClick={() => setIsCameraOn((prev) => !prev)}
+          className={`size-11 rounded-full flex items-center justify-center border transition-all cursor-pointer backdrop-blur-md ${
+            isCameraOn
+              ? "bg-cyan-950/90 text-cyan-300 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+              : "bg-slate-900/90 text-slate-400 border-slate-700 hover:text-slate-200"
+          }`}
+          title={isCameraOn ? "Matikan Kamera" : "Nyalakan Kamera"}
+        >
+          {isCameraOn ? <Video size={18} /> : <VideoOff size={18} />}
+        </m.button>
+
+        {/* Screen Share Toggle Button */}
+        <m.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+          type="button"
+          onClick={() => setIsScreenSharing((prev) => !prev)}
+          className={`size-11 rounded-full flex items-center justify-center border transition-all cursor-pointer backdrop-blur-md ${
+            isScreenSharing
+              ? "bg-violet-950/90 text-violet-300 border-violet-400 shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+              : "bg-slate-900/90 text-slate-400 border-slate-700 hover:text-slate-200"
+          }`}
+          title={isScreenSharing ? "Hentikan Share Screen" : "Bagikan Layar"}
+        >
+          {isScreenSharing ? <Monitor size={18} /> : <MonitorOff size={18} />}
+        </m.button>
+
+        {/* In-Room Text Chat Quick Button */}
+        <m.button
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.95 }}
+          type="button"
+          onClick={() => setShowChatPanel((prev) => !prev)}
+          className={`size-11 rounded-full flex items-center justify-center border transition-all cursor-pointer backdrop-blur-md ${
+            showChatPanel
+              ? "bg-cyan-950/90 text-cyan-300 border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+              : "bg-slate-900/90 text-slate-400 border-slate-700 hover:text-slate-200"
+          }`}
+          title="Buka Chat Room"
+        >
+          <MessageSquare size={18} />
+        </m.button>
+
+        {/* Ask AI ("abang ganteng") Button (Host Only) */}
+        {isHost && (
+          <m.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            onClick={() => setShowAiModal(true)}
+            className="size-11 rounded-full bg-gradient-to-r from-cyan-500 to-violet-600 text-white flex items-center justify-center border border-cyan-400/50 shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all cursor-pointer"
+            title="Minta Penjelasan Abang Ganteng"
+          >
+            <Sparkles size={18} className="fill-white" />
+          </m.button>
+        )}
+
+        <div className="w-px h-6 bg-white/10 mx-1" />
+
+        {/* Leave Room Button */}
+        <m.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          type="button"
+          onClick={() => router.push("/dashboard/meet")}
+          className="px-4 py-2 rounded-full bg-rose-950/90 hover:bg-rose-900 border border-rose-500/40 text-rose-300 font-extrabold text-xs flex items-center gap-1.5 shadow-lg transition-all cursor-pointer"
+        >
+          <LogOut size={14} /> Keluar
+        </m.button>
       </div>
 
       {/* MODAL 1: Host Invite Friends Modal */}
@@ -1141,10 +1286,11 @@ export default function StudyMeetPage() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-cyan-500/40 shadow-2xl"
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-[#080C14]/95 border-cyan-500/40 shadow-2xl backdrop-blur-2xl"
             >
               <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
-                <div className="flex items-center gap-2 text-cyan-300 font-black text-sm">
+                <div className="flex items-center gap-2 text-cyan-300 font-black text-sm font-display">
                   <UserPlus size={18} />
                   <span>Undang Teman ke Room</span>
                 </div>
@@ -1182,14 +1328,16 @@ export default function StudyMeetPage() {
                         <span className="text-xs font-bold text-slate-200">
                           {friendName}
                         </span>
-                        <button
+                        <m.button
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.95 }}
                           type="button"
                           disabled={isInvited}
                           onClick={() => handleSendInviteToFriend(friend)}
-                          className="px-3 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[11px] font-bold disabled:opacity-50 transition-all cursor-pointer"
+                          className="px-3 py-1.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[11px] font-bold disabled:opacity-50 transition-all cursor-pointer shadow-sm"
                         >
                           {isInvited ? "Terkirim ✉️" : "Undang 📩"}
-                        </button>
+                        </m.button>
                       </div>
                     );
                   })
@@ -1208,10 +1356,11 @@ export default function StudyMeetPage() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-indigo-500/40 shadow-2xl"
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-[#080C14]/95 border-indigo-500/40 shadow-2xl backdrop-blur-2xl"
             >
               <div className="flex items-center justify-between border-b border-indigo-500/20 pb-3">
-                <div className="flex items-center gap-2 text-indigo-300 font-black text-sm">
+                <div className="flex items-center gap-2 text-indigo-300 font-black text-sm font-display">
                   <BookOpen size={18} />
                   <span>Impor Topik dari Study Plan</span>
                 </div>
@@ -1249,14 +1398,16 @@ export default function StudyMeetPage() {
                   >
                     Batal
                   </button>
-                  <button
+                  <m.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
                     disabled={!selectedPlanId}
                     onClick={handleImportSelectedPlan}
                     className="flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer shadow-lg disabled:opacity-50"
                   >
                     Impor ke Papan 📚
-                  </button>
+                  </m.button>
                 </div>
               </div>
             </m.div>
@@ -1272,10 +1423,11 @@ export default function StudyMeetPage() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-amber-500/40 shadow-2xl"
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-[#080C14]/95 border-cyan-500/40 shadow-2xl backdrop-blur-2xl"
             >
-              <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
-                <div className="flex items-center gap-2 text-amber-300 font-black text-sm">
+              <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+                <div className="flex items-center gap-2 text-cyan-300 font-black text-sm font-display">
                   <Sparkles size={18} />
                   <span>Minta Penjelasan Abang Ganteng 💡</span>
                 </div>
@@ -1289,16 +1441,16 @@ export default function StudyMeetPage() {
               </div>
 
               <form onSubmit={handleRequestAiExplanation} className="flex flex-col gap-3">
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  Tulis topik atau pertanyaan materi yang ingin dijelaskan oleh <strong>abang ganteng</strong>. Penjelasan akan langsung tampil di papan catatan room untuk semua peserta!
+                <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                  Tulis topik atau pertanyaan materi yang ingin dijelaskan oleh <strong className="text-cyan-300">abang ganteng</strong>. Penjelasan akan langsung tampil di papan catatan room untuk semua peserta!
                 </p>
 
                 <textarea
                   value={aiTopicPrompt}
                   onChange={(e) => setAiTopicPrompt(e.target.value)}
-                  placeholder="Contoh: Jelaskan konsep Backpropagation pada Neural Network dan analogi lapangannya!"
+                  placeholder="Contoh: Jelaskan konsep Backpropagation pada Neural Network dan analogi sederhananya!"
                   rows={3}
-                  className="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 outline-none focus:border-amber-400 transition-colors resize-none"
+                  className="w-full text-xs p-3 rounded-xl bg-slate-950 border border-slate-700 text-slate-100 outline-none focus:border-cyan-400 transition-colors resize-none font-sans"
                   required
                 />
 
@@ -1310,13 +1462,15 @@ export default function StudyMeetPage() {
                   >
                     Batal
                   </button>
-                  <button
+                  <m.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
                     type="submit"
                     disabled={!aiTopicPrompt.trim()}
-                    className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs cursor-pointer shadow-lg disabled:opacity-50 flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black text-xs cursor-pointer shadow-lg disabled:opacity-50 flex items-center justify-center gap-1.5 font-display"
                   >
                     <Send size={13} /> Buat Penjelasan ✨
-                  </button>
+                  </m.button>
                 </div>
               </form>
             </m.div>
@@ -1332,19 +1486,17 @@ export default function StudyMeetPage() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-[#080C14]/95 border-rose-500/40 shadow-2xl text-center backdrop-blur-2xl"
             >
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+              <div className="size-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
                 <Eraser size={24} />
               </div>
               <div>
-                <h3
-                  className="text-lg font-black text-slate-100"
-                  style={{ fontFamily: "var(--font-outfit)" }}
-                >
+                <h3 className="text-lg font-black text-slate-100 font-display">
                   Bersihkan Papan Catatan? 🧹
                 </h3>
-                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                <p className="text-xs text-slate-300 leading-relaxed mt-2 font-sans">
                   Seluruh teks pada papan catatan ruang meet ini akan dihapus bersih secara real-time untuk seluruh anggota room.
                 </p>
               </div>
@@ -1357,13 +1509,15 @@ export default function StudyMeetPage() {
                 >
                   Batal
                 </button>
-                <button
+                <m.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.95 }}
                   type="button"
                   onClick={handleConfirmClearBoard}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all"
                 >
                   Ya, Bersihkan Papan
-                </button>
+                </m.button>
               </div>
             </m.div>
           </div>
@@ -1378,19 +1532,17 @@ export default function StudyMeetPage() {
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-slate-900/95 border-rose-500/40 shadow-2xl text-center"
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              className="max-w-md w-full rounded-3xl p-6 flex flex-col gap-4 border bg-[#080C14]/95 border-rose-500/40 shadow-2xl text-center backdrop-blur-2xl"
             >
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
+              <div className="size-12 rounded-2xl bg-rose-500/20 border border-rose-400/40 flex items-center justify-center text-rose-400 mx-auto">
                 <Trash2 size={24} />
               </div>
               <div>
-                <h3
-                  className="text-lg font-black text-slate-100"
-                  style={{ fontFamily: "var(--font-outfit)" }}
-                >
+                <h3 className="text-lg font-black text-slate-100 font-display">
                   Hapus Ruang Study Meet? 🗑️
                 </h3>
-                <p className="text-xs text-slate-300 leading-relaxed mt-2">
+                <p className="text-xs text-slate-300 leading-relaxed mt-2 font-sans">
                   Ruang meet akan ditutup dan seluruh anggota yang sedang bergabung akan otomatis dikembalikan ke menu lobby Study Meet.
                 </p>
               </div>
@@ -1403,13 +1555,15 @@ export default function StudyMeetPage() {
                 >
                   Batal
                 </button>
-                <button
+                <m.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.95 }}
                   type="button"
                   onClick={handleConfirmDeleteRoom}
-                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all active:scale-95"
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs cursor-pointer shadow-lg transition-all"
                 >
                   Ya, Hapus Room
-                </button>
+                </m.button>
               </div>
             </m.div>
           </div>

@@ -9,7 +9,6 @@ import {
   Sparkles,
   BookOpen,
   Calendar,
-  CheckCircle2,
   Clock,
   HelpCircle,
   ChevronDown,
@@ -18,7 +17,6 @@ import {
   Save,
   Check,
   BrainCircuit,
-  ArrowRight,
 } from "lucide-react";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { saveStudyPlan } from "@/lib/firebase/db";
@@ -26,6 +24,8 @@ import type {
   GeneratedStudyPlanResponse,
   MaterialExplanationResponse,
 } from "@/lib/ai/study-materials";
+import { FieldGroup, Field, FieldLabel, FieldDescription, FieldError } from "@/components/ui/field";
+import { cn } from "@/lib/cn";
 
 type Mode = "generate-plan" | "explain";
 
@@ -33,7 +33,7 @@ interface MaterialUploaderProps {
   onPlanSaved?: () => void;
 }
 
-const EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
+const EASE: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps) {
   const { user } = useAuth();
@@ -236,93 +236,118 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
       {/* ================================================================
           Card Header & Mode Switcher
       ================================================================ */}
-      <div className="glass-panel p-6 rounded-3xl flex flex-col gap-5 border border-white/10 shadow-xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shadow-md">
-            <Sparkles size={20} />
+      <div className="bg-[#080C14]/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl flex flex-col gap-6 border border-white/10 shadow-2xl relative overflow-hidden">
+        {/* Subtle Ambient Backlight Gradient */}
+        <div className="absolute -top-24 -right-24 size-72 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 size-72 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
+
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="size-12 rounded-2xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)] shrink-0">
+            <Sparkles size={22} className="animate-pulse" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-50" style={{ fontFamily: "var(--font-outfit)" }}>
+            <h2 className="font-display text-xl sm:text-2xl font-black text-white tracking-tight">
               Unggah Materi & Asisten AI
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Unggah PDF, DOCX, atau catat materi kuliah untuk langsung dibuatkan Study Plan & Rangkuman Sederhana.
             </p>
           </div>
         </div>
 
-        {/* Mode Selector Tabs */}
-        <div className="grid grid-cols-2 p-1 rounded-2xl bg-slate-950/80 border border-white/10 gap-1 text-xs">
-          <button
+        {/* Action Switcher Tabs ("Buat Study Plan" vs "Jelaskan Materi Ini") */}
+        <div className="grid grid-cols-2 p-1.5 rounded-2xl bg-[#030712]/90 border border-white/10 gap-1.5 text-xs relative z-10">
+          <m.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.97 }}
             type="button"
             onClick={() => setMode("generate-plan")}
-            className={`py-2.5 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={cn(
+              "py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
               mode === "generate-plan"
-                ? "bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
+                ? "bg-gradient-to-r from-cyan-500/20 via-cyan-500/15 to-blue-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_20px_rgba(6,182,212,0.25)] font-black"
+                : "text-muted-foreground hover:text-white"
+            )}
           >
-            <Calendar size={15} /> Buat Study Plan
-          </button>
-          <button
+            <Calendar size={16} className={mode === "generate-plan" ? "text-cyan-400" : ""} />
+            <span>Buat Study Plan</span>
+          </m.button>
+          <m.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.97 }}
             type="button"
             onClick={() => setMode("explain")}
-            className={`py-2.5 px-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+            className={cn(
+              "py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all cursor-pointer",
               mode === "explain"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm"
-                : "text-slate-400 hover:text-slate-200"
-            }`}
+                ? "bg-gradient-to-r from-violet-500/20 via-violet-500/15 to-cyan-500/20 text-violet-300 border border-violet-400/50 shadow-[0_0_20px_rgba(139,92,246,0.25)] font-black"
+                : "text-muted-foreground hover:text-white"
+            )}
           >
-            <BrainCircuit size={15} /> Jelaskan Materi Ini
-          </button>
+            <BrainCircuit size={16} className={mode === "explain" ? "text-violet-400" : ""} />
+            <span>Jelaskan Materi Ini</span>
+          </m.button>
         </div>
 
-        {/* Target Duration Selector (For Study Plan Mode) */}
+        {/* Target Duration Selector Pills */}
         <AnimatePresence>
           {mode === "generate-plan" && (
             <m.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex flex-col gap-2 pt-1 overflow-hidden"
+              transition={{ duration: 0.28, ease: EASE }}
+              className="overflow-hidden relative z-10"
             >
-              <label className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
-                <Clock size={13} /> Durasi Target Belajar: <span className="text-slate-100 font-extrabold">{days} Hari</span>
-              </label>
-              <div className="flex items-center gap-2">
-                {[3, 7, 14, 30].map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    onClick={() => setDays(d)}
-                    className={`flex-1 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
-                      days === d
-                        ? "bg-amber-500/25 border-amber-400 text-amber-200 shadow-sm"
-                        : "bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700"
-                    }`}
-                  >
-                    {d === 7 ? "7 Hari (Standard)" : d === 30 ? "1 Bulan" : `${d} Hari`}
-                  </button>
-                ))}
-              </div>
+              <FieldGroup className="gap-2.5 pt-1">
+                <FieldLabel>
+                  <Clock size={14} className="text-cyan-400" /> Durasi Target Belajar:{" "}
+                  <span className="text-white font-black">{days === 30 ? "1 Bulan" : `${days} Hari`}</span>
+                </FieldLabel>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {[3, 7, 14, 30].map((d) => {
+                    const isActive = days === d;
+                    return (
+                      <m.button
+                        key={d}
+                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileTap={{ scale: 0.97 }}
+                        type="button"
+                        onClick={() => setDays(d)}
+                        className={cn(
+                          "py-3 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5",
+                          isActive
+                            ? "bg-cyan-500/10 border-cyan-400/60 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.25)] scale-[1.02] font-black"
+                            : "bg-white/5 border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-200"
+                        )}
+                      >
+                        <span>{d === 7 ? "7 Hari (Standard)" : d === 30 ? "1 Bulan" : `${d} Hari`}</span>
+                      </m.button>
+                    );
+                  })}
+                </div>
+              </FieldGroup>
             </m.div>
           )}
         </AnimatePresence>
 
-        {/* Drag & Drop Upload Zone */}
-        <div
+        {/* Drag & Drop Cybernetic Upload Zone */}
+        <m.div
+          whileHover={{ scale: 1.005 }}
+          whileTap={{ scale: 0.995 }}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`relative rounded-2xl border-2 border-dashed p-6 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+          className={cn(
+            "relative rounded-3xl border-2 border-dashed p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 backdrop-blur-xl relative z-10 overflow-hidden",
             dragActive
-              ? "border-amber-400 bg-amber-500/10 shadow-lg shadow-amber-500/10"
+              ? "border-cyan-400 bg-cyan-500/15 shadow-[0_0_35px_rgba(6,182,212,0.35)] scale-[1.01]"
               : selectedFile
-              ? "border-emerald-500/40 bg-emerald-950/20"
-              : "border-white/15 bg-slate-900/40 hover:border-white/30 hover:bg-slate-900/60"
-          }`}
+              ? "border-emerald-500/40 bg-emerald-950/20 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+              : "border-white/15 bg-[#030712]/60 hover:border-cyan-400/60 hover:bg-[#080C14]/90 shadow-2xl hover:shadow-[0_0_30px_rgba(6,182,212,0.15)]"
+          )}
         >
           <input
             ref={fileInputRef}
@@ -333,14 +358,14 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
           />
 
           {selectedFile ? (
-            <div className="flex items-center gap-3 bg-slate-950/80 p-3 rounded-xl border border-emerald-500/30 w-full max-w-md justify-between">
-              <div className="flex items-center gap-2.5 overflow-hidden">
-                <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
-                  <FileText size={18} />
+            <div className="flex items-center gap-3.5 bg-slate-950/90 p-3.5 rounded-2xl border border-emerald-500/40 w-full max-w-md justify-between shadow-xl">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="size-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                  <FileText size={20} />
                 </div>
                 <div className="text-left truncate">
-                  <p className="text-xs font-bold text-slate-100 truncate">{selectedFile.name}</p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-xs font-bold text-white truncate">{selectedFile.name}</p>
+                  <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
                     {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                   </p>
                 </div>
@@ -351,63 +376,69 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
                   e.stopPropagation();
                   removeFile();
                 }}
-                className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition-colors"
+                className="size-8 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-rose-400 transition-colors flex items-center justify-center cursor-pointer"
                 aria-label="Hapus file"
               >
                 <X size={16} />
               </button>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center text-amber-400">
-                <UploadCloud size={24} />
+            <div className="flex flex-col items-center gap-3">
+              <div className="size-14 rounded-2xl bg-cyan-500/15 border border-cyan-400/40 flex items-center justify-center text-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.35)]">
+                <UploadCloud size={28} className="animate-bounce text-cyan-400 drop-shadow-[0_0_15px_rgba(6,182,212,0.6)]" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-200">
-                  Tarik & lepas file di sini, atau <span className="text-amber-400 underline">cari file</span>
+                <p className="text-xs sm:text-sm font-bold text-white">
+                  Tarik & lepas file di sini, atau <span className="text-cyan-300 font-extrabold hover:underline">pilih file dari perangkat</span>
                 </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
-                  Mendukung file PDF, DOCX, TXT, atau Markdown (Maks 15MB)
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Mendukung file PDF, DOCX, TXT, atau Markdown (Maksimal 15MB)
                 </p>
               </div>
             </div>
           )}
-        </div>
+        </m.div>
 
-        {/* Textarea Fallback Option */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            Atau Tempel Teks Catatan Kuliah Kamu Directly
-          </label>
-          <textarea
-            value={pastedText}
-            onChange={(e) => setPastedText(e.target.value)}
-            placeholder="Ketik atau tempel rangkuman materi dosen di sini..."
-            rows={3}
-            className="w-full rounded-2xl bg-slate-950/80 border border-white/10 px-4 py-3 text-xs text-slate-100 placeholder:text-slate-500 outline-none focus:border-amber-400/60 transition-colors resize-none"
-          />
-        </div>
+        {/* Direct Text Input Area with Field & FieldGroup */}
+        <FieldGroup className="relative z-10">
+          <Field>
+            <FieldLabel htmlFor="pasted-text-input">
+              Atau Tempel Teks Catatan Kuliah Kamu Directly
+            </FieldLabel>
+            <textarea
+              id="pasted-text-input"
+              value={pastedText}
+              onChange={(e) => setPastedText(e.target.value)}
+              placeholder="Ketik atau tempel rangkuman materi dosen di sini..."
+              rows={3}
+              className="w-full rounded-2xl bg-[#030712]/60 border border-white/10 px-4 py-3 text-xs text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(6,182,212,0.25)] transition-all resize-none font-sans"
+            />
+            <FieldDescription>
+              Teks catatan ini akan dianalisis oleh abang ganteng untuk menyusun jadwal belajar atau penjelasan ringkas.
+            </FieldDescription>
+          </Field>
+        </FieldGroup>
 
         {/* Error Alert */}
         {error && (
-          <div className="p-3.5 rounded-2xl bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs font-medium">
-            ⚠️ {error}
-          </div>
+          <FieldError className="relative z-10">
+            <span>⚠️ {error}</span>
+          </FieldError>
         )}
 
         {/* Submit Action Button */}
-        <button
+        <m.button
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.97 }}
           type="button"
           onClick={handleSubmit}
           disabled={loading || (!selectedFile && !pastedText.trim())}
-          className="skeuo-btn py-3.5 rounded-2xl text-xs font-extrabold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
-          style={{
-            background:
-              mode === "generate-plan"
-                ? "linear-gradient(135deg, var(--color-gold-500), var(--color-gold-600))"
-                : "linear-gradient(135deg, #0891b2, #0e7490)",
-            color: "#030b22",
-          }}
+          className={cn(
+            "py-3.5 rounded-2xl text-xs font-black flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_25px_rgba(6,182,212,0.35)] transition-all relative z-10 active:scale-95",
+            mode === "generate-plan"
+              ? "bg-gradient-to-r from-cyan-500 via-cyan-400 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white"
+              : "bg-gradient-to-r from-violet-600 via-violet-500 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white"
+          )}
         >
           {loading ? (
             <>
@@ -419,7 +450,7 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
               {mode === "generate-plan" ? "Proses & Buat Study Plan 🚀" : "Proses & Jelaskan Materi 💡"}
             </>
           )}
-        </button>
+        </m.button>
       </div>
 
       {/* ================================================================
@@ -427,25 +458,22 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
       ================================================================ */}
       {planResult && (
         <m.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 15, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.4, ease: EASE }}
-          className="glass-panel p-6 rounded-3xl flex flex-col gap-6 border border-amber-500/30 shadow-2xl"
+          className="bg-[#080C14]/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl flex flex-col gap-6 border border-cyan-500/30 shadow-2xl"
         >
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300">
+              <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.2)]">
                 Study Plan AI Hasil Generasi
               </span>
-              <h3
-                className="text-xl font-bold text-slate-50 mt-2"
-                style={{ fontFamily: "var(--font-outfit)" }}
-              >
+              <h3 className="font-display text-xl sm:text-2xl font-black text-white mt-2">
                 {planResult.title}
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Mata Kuliah: <span className="text-amber-300 font-semibold">{planResult.subject}</span> · Durasi: {planResult.durationDays || 7} Hari
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Mata Kuliah: <span className="text-cyan-300 font-bold">{planResult.subject}</span> · Durasi: {planResult.durationDays || 7} Hari
               </p>
             </div>
 
@@ -456,11 +484,12 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
               disabled={saving || savedSuccess}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 cursor-pointer shadow-md transition-all ${
+              className={cn(
+                "px-5 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 cursor-pointer shadow-md transition-all active:scale-95",
                 savedSuccess
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                  : "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:from-amber-400 hover:to-amber-500"
-              }`}
+                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_15px_rgba(34,197,94,0.3)]"
+                  : "bg-gradient-to-r from-cyan-400 to-blue-600 text-white hover:from-cyan-300 hover:to-blue-500 shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+              )}
             >
               {saving ? (
                 <>
@@ -480,7 +509,7 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
 
           {/* Tasks List */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
               Daftar Tugas Harian ({planResult.tasks?.length || 0} Tugas)
             </h4>
 
@@ -488,12 +517,12 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
               {(planResult.tasks || []).map((tk, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-3 p-3 rounded-2xl bg-slate-900/60 border border-white/10 text-xs"
+                  className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#030712]/60 border border-white/10 text-xs hover:border-cyan-500/30 transition-colors"
                 >
-                  <span className="px-2.5 py-1 rounded-lg bg-amber-500/20 border border-amber-400/30 text-amber-300 font-extrabold text-[11px] shrink-0">
+                  <span className="px-2.5 py-1 rounded-lg bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 font-extrabold text-[11px] shrink-0">
                     Hari ke-{tk.day}
                   </span>
-                  <span className="font-semibold text-slate-200 flex-1">{tk.title}</span>
+                  <span className="font-bold text-slate-200 flex-1">{tk.title}</span>
                 </div>
               ))}
             </div>
@@ -506,26 +535,23 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
       ================================================================ */}
       {explainResult && (
         <m.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 15, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.4, ease: EASE }}
-          className="glass-panel p-6 rounded-3xl flex flex-col gap-6 border border-cyan-500/30 shadow-2xl"
+          className="bg-[#080C14]/80 backdrop-blur-xl p-6 sm:p-8 rounded-3xl flex flex-col gap-6 border border-violet-500/30 shadow-2xl"
         >
           {/* Header */}
           <div className="pb-4 border-b border-white/10">
-            <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-400/30 text-cyan-300">
+            <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-violet-500/15 border border-violet-400/30 text-violet-300 shadow-[0_0_12px_rgba(139,92,246,0.2)]">
               Penjelasan Sederhana (Feynman Style)
             </span>
-            <h3
-              className="text-xl font-bold text-slate-50 mt-2"
-              style={{ fontFamily: "var(--font-outfit)" }}
-            >
+            <h3 className="font-display text-xl sm:text-2xl font-black text-white mt-2">
               {explainResult.title}
             </h3>
           </div>
 
           {/* Key Summary Callout */}
-          <div className="p-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs leading-relaxed flex items-start gap-3">
+          <div className="p-4.5 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-xs leading-relaxed flex items-start gap-3 shadow-md">
             <BookOpen size={18} className="text-cyan-400 shrink-0 mt-0.5" />
             <div>
               <span className="font-extrabold block text-cyan-300 mb-0.5">Ringkasan Utama:</span>
@@ -535,7 +561,7 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
 
           {/* Important Concepts Grid */}
           <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
               Konsep Penting & Analogi Sehari-hari
             </h4>
 
@@ -543,31 +569,31 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
               {explainResult.importantConcepts.map((item, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl bg-slate-900/60 border border-white/10 p-4 flex flex-col gap-2"
+                  className="rounded-2xl bg-[#030712]/60 border border-white/10 p-4.5 flex flex-col gap-2 hover:border-cyan-500/30 transition-colors"
                 >
                   <span className="text-xs font-black text-cyan-300">{item.concept}</span>
                   <p className="text-xs text-slate-300 leading-relaxed">{item.simpleExplanation}</p>
                   <div className="mt-1 p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400">
-                    💡 <strong className="text-slate-300">Contoh:</strong> {item.example}
+                    💡 <strong className="text-slate-200 font-bold">Contoh:</strong> {item.example}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Simplified Breakdown (Markdown formatted) */}
+          {/* Simplified Breakdown */}
           <div className="flex flex-col gap-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
               Penjelasan Lengkap
             </h4>
-            <div className="p-5 rounded-2xl bg-slate-950/70 border border-white/10 text-xs leading-relaxed text-slate-200 space-y-2 whitespace-pre-line font-sans">
+            <div className="p-5 rounded-2xl bg-[#030712]/80 border border-white/10 text-xs leading-relaxed text-slate-200 space-y-2 whitespace-pre-line font-sans">
               {explainResult.simplifiedBreakdown}
             </div>
           </div>
 
           {/* Interactive Review Questions Accordion */}
           <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
               <HelpCircle size={14} className="text-cyan-400" /> Pertanyaan Review Diri (3-5 Soal)
             </h4>
 
@@ -579,15 +605,15 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
                 return (
                   <div
                     key={idx}
-                    className="rounded-2xl bg-slate-900/80 border border-white/10 overflow-hidden"
+                    className="rounded-2xl bg-[#030712]/70 border border-white/10 overflow-hidden"
                   >
                     <button
                       type="button"
                       onClick={() => setOpenQuestionIdx(isOpen ? null : idx)}
                       className="w-full p-4 flex items-center justify-between gap-3 text-left hover:bg-slate-800/40 transition-colors cursor-pointer"
                     >
-                      <span className="text-xs font-semibold text-slate-100 flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 font-extrabold text-[10px] flex items-center justify-center shrink-0">
+                      <span className="text-xs font-bold text-slate-100 flex items-center gap-2">
+                        <span className="size-5 rounded-full bg-cyan-500/20 text-cyan-300 font-extrabold text-[10px] flex items-center justify-center shrink-0">
                           {idx + 1}
                         </span>
                         {rq.question}
@@ -600,7 +626,7 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
                         <m.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
+                          exit={{ opacity: 0, height: 0 }}
                           className="px-4 pb-4 pt-1 border-t border-white/5 flex flex-col gap-3 text-xs"
                         >
                           {/* Answer */}
@@ -615,13 +641,13 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
                             onClick={() =>
                               setShowHints((prev) => ({ ...prev, [idx]: !prev[idx] }))
                             }
-                            className="text-[11px] text-amber-400 hover:underline text-left self-start flex items-center gap-1 cursor-pointer"
+                            className="text-[11px] text-cyan-300 hover:underline text-left self-start flex items-center gap-1 cursor-pointer font-bold"
                           >
                             💡 {showHint ? "Sembunyikan Petunjuk" : "Lihat Petunjuk (Hint)"}
                           </button>
 
                           {showHint && (
-                            <div className="p-2.5 rounded-xl bg-amber-950/30 border border-amber-500/25 text-amber-200 text-[11px]">
+                            <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-cyan-200 text-[11px]">
                               {rq.hint}
                             </div>
                           )}

@@ -7,22 +7,22 @@
     },
     {
       "label": "normalizeStudyPlanData()",
-      "risk": 0.419,
+      "risk": 0.372,
       "type": "FUNCTION"
     },
     {
       "label": "ChallengeNotificationToast()",
-      "risk": 0.274,
+      "risk": 0.244,
       "type": "FUNCTION"
     },
     {
-      "label": "handleAttack()",
-      "risk": 0.253,
+      "label": "handleAttack",
+      "risk": 0.226,
       "type": "FUNCTION"
     },
     {
       "label": "BossFightArena.tsx",
-      "risk": 0.206,
+      "risk": 0.205,
       "type": "FUNCTION"
     }
   ],

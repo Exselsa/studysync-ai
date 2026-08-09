@@ -18,10 +18,18 @@ import {
   School,
   ArrowLeft,
   ArrowRight,
+  Send,
+  Mic,
+  MicOff,
+  Cpu,
+  Layers,
+  Zap,
+  Sliders,
+  RefreshCw,
+  MessageSquarePlus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
-import LiquidMetalButton from "@/components/ui/liquid-metal-button";
 import { useAuth } from "@/lib/contexts/AuthContext";
 import { saveStudyPlan } from "@/lib/firebase/db";
 import { useStudyTimer } from "@/hooks/useStudyTimer";
@@ -46,44 +54,83 @@ interface Toast {
   variant: ToastVariant;
   title: string;
   body: string;
-  planId?: string; // Firestore doc ID for "View Plan" link
+  planId?: string;
+}
+
+interface StudyProfileData {
+  level: "SMA" | "Kuliah";
+  major: string;
+  yearOrSemester: string;
+  subject: string;
 }
 
 /* ------------------------------------------------------------------
-   Prompt Suggestions
+   High-Density Bento Quick Starter Prompts
 ------------------------------------------------------------------ */
 const SUGGESTIONS = [
-  { Icon: Calculator, text: "Bantu aku persiapan ujian Kalkulus",       color: "rgba(56, 189, 248, 0.8)"  },
-  { Icon: BrainCircuit, text: "Buatkan study plan Machine Learning",    color: "rgba(245, 158, 11, 0.8)"  },
-  { Icon: Code2,  text: "Review Algoritma & Struktur Data",             color: "rgba(34, 197, 94, 0.8)"   },
-  { Icon: FlaskConical, text: "Bantu aku belajar Kimia Organik",        color: "rgba(168, 85, 247, 0.8)"  },
-  { Icon: BookOpen, text: "Buatkan plan 7 hari persiapan ujian",        color: "rgba(239, 68, 68, 0.8)"   },
+  {
+    title: "Kalkulus & MatDas",
+    desc: "Bantu aku persiapan ujian Kalkulus Lanjut dan Pemahaman Konsep",
+    text: "Bantu aku persiapan ujian Kalkulus",
+    category: "Math & Analytics",
+    Icon: Calculator,
+    gradient: "from-cyan-500/20 via-sky-500/10 to-transparent",
+    accentColor: "#06b6d4",
+  },
+  {
+    title: "AI & Machine Learning",
+    desc: "Buatkan study plan 14 hari kuasai Supervised & Unsupervised Learning",
+    text: "Buatkan study plan Machine Learning",
+    category: "Computer Science",
+    Icon: BrainCircuit,
+    gradient: "from-violet-500/20 via-purple-500/10 to-transparent",
+    accentColor: "#8b5cf6",
+  },
+  {
+    title: "Code Review & Algo",
+    desc: "Review Algoritma Dynamic Programming & Data Structures",
+    text: "Review Algoritma & Struktur Data",
+    category: "Engineering",
+    Icon: Code2,
+    gradient: "from-emerald-500/20 via-teal-500/10 to-transparent",
+    accentColor: "#10b981",
+  },
+  {
+    title: "Kimia Organik & Sains",
+    desc: "Bedah struktur molekul dan mekanisme reaksi kimia organik",
+    text: "Bantu aku belajar Kimia Organik",
+    category: "Natural Science",
+    Icon: FlaskConical,
+    gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
+    accentColor: "#38bdf8",
+  },
 ] as const;
 
 /* ------------------------------------------------------------------
-   Animation Variants
+   Animation Constants & Motion Curves (Apple & Emil Kowalski Style)
 ------------------------------------------------------------------ */
-const EASE: [number, number, number, number] = [0.4, 0, 0.2, 1];
+const EMIL_EASE_ARR: [number, number, number, number] = [0.23, 1, 0.32, 1];
+const EMIL_SPRING = { type: "spring" as const, stiffness: 380, damping: 28 };
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.04 } },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 16, filter: "blur(4px)" },
-  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.4, ease: EASE } },
+  hidden: { opacity: 0, y: 16, scale: 0.96, filter: "blur(6px)" },
+  visible: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transition: { duration: 0.45, ease: EMIL_EASE_ARR } },
 };
 
 const messageVariants: Variants = {
-  hidden: { opacity: 0, y: 12, scale: 0.97 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: EASE } },
+  hidden: { opacity: 0, y: 14, scale: 0.96 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.35, ease: EMIL_EASE_ARR } },
 };
 
 const toastVariants: Variants = {
-  hidden:  { opacity: 0, y: 24, scale: 0.94 },
-  visible: { opacity: 1, y: 0,  scale: 1,    transition: { duration: 0.3, ease: EASE } },
-  exit:    { opacity: 0, y: 12, scale: 0.94, transition: { duration: 0.2, ease: EASE } },
+  hidden: { opacity: 0, y: 24, scale: 0.94 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.3, ease: EMIL_EASE_ARR } },
+  exit: { opacity: 0, y: 12, scale: 0.94, transition: { duration: 0.2, ease: EMIL_EASE_ARR } },
 };
 
 /* ------------------------------------------------------------------
@@ -108,129 +155,57 @@ function ToastNotification({
       exit="exit"
       role="alert"
       aria-live="assertive"
-      style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "0.75rem",
-        padding: "0.875rem 1rem",
-        borderRadius: "14px",
-        background: isSuccess
-          ? "linear-gradient(135deg, rgba(6,16,46,0.92) 0%, rgba(16,36,80,0.88) 100%)"
-          : "rgba(30, 8, 8, 0.92)",
-        border: isSuccess
-          ? "1px solid rgba(34, 197, 94, 0.28)"
-          : "1px solid rgba(239, 68, 68, 0.28)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        boxShadow: isSuccess
-          ? "0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(34,197,94,0.08) inset"
-          : "0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(239,68,68,0.08) inset",
-        minWidth: "280px",
-        maxWidth: "340px",
-        pointerEvents: "all",
-      }}
+      className={`flex items-start gap-3 p-4 rounded-2xl border backdrop-blur-2xl shadow-2xl min-w-[280px] max-w-[360px] pointer-events-auto ${
+        isSuccess
+          ? "bg-[#080C14]/95 border-emerald-500/40 text-emerald-300 shadow-[0_10px_30px_rgba(16,185,129,0.15)]"
+          : "bg-[#080C14]/95 border-rose-500/40 text-rose-300 shadow-[0_10px_30px_rgba(244,63,94,0.15)]"
+      }`}
     >
-      {/* Icon */}
       <div
-        style={{
-          width: "1.75rem",
-          height: "1.75rem",
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: isSuccess ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
-          border: isSuccess ? "1px solid rgba(34,197,94,0.25)" : "1px solid rgba(239,68,68,0.25)",
-          flexShrink: 0,
-          marginTop: "2px",
-        }}
+        className={`size-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${
+          isSuccess
+            ? "bg-emerald-500/20 border border-emerald-400/30 text-emerald-400"
+            : "bg-rose-500/20 border border-rose-400/30 text-rose-400"
+        }`}
         aria-hidden="true"
       >
-        {isSuccess ? (
-          <CheckCircle2 size={14} style={{ color: "rgba(34,197,94,0.9)" }} />
-        ) : (
-          <AlertCircle size={14} style={{ color: "rgba(239,68,68,0.9)" }} />
-        )}
+        {isSuccess ? <CheckCircle2 size={15} /> : <AlertCircle size={15} />}
       </div>
 
-      {/* Text */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <p
-          style={{
-            fontFamily: "var(--font-outfit)",
-            fontWeight: 600,
-            fontSize: "0.8125rem",
-            color: "var(--color-silver-50)",
-            lineHeight: 1.3,
-          }}
-        >
+      <div className="flex-1 min-w-0">
+        <p className="font-display font-bold text-xs text-white leading-snug">
           {toast.title}
         </p>
-        <p
-          style={{
-            fontSize: "0.75rem",
-            color: "var(--color-silver-400)",
-            marginTop: "0.2rem",
-            lineHeight: 1.4,
-          }}
-        >
+        <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
           {toast.body}
         </p>
 
-        {/* "View Plan" CTA */}
         {isSuccess && toast.planId && (
           <button
             type="button"
             onClick={() => router.push("/dashboard/plan")}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.3rem",
-              marginTop: "0.5rem",
-              fontSize: "0.6875rem",
-              fontWeight: 600,
-              color: "rgba(34,197,94,0.9)",
-              letterSpacing: "0.04em",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-            }}
+            className="inline-flex items-center gap-1 mt-2 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 cursor-pointer active:scale-95 transition-transform"
           >
-            Lihat di Papan Plan
-            <ExternalLink size={10} aria-hidden="true" />
+            <span>Lihat di Papan Plan</span>
+            <ExternalLink size={11} aria-hidden="true" />
           </button>
         )}
       </div>
 
-      {/* Dismiss */}
       <button
         type="button"
         onClick={() => onDismiss(toast.id)}
         aria-label="Dismiss notification"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "1.25rem",
-          height: "1.25rem",
-          border: "none",
-          background: "none",
-          cursor: "pointer",
-          color: "var(--color-silver-400)",
-          borderRadius: "4px",
-          flexShrink: 0,
-          marginTop: "2px",
-        }}
+        className="text-slate-400 hover:text-white transition-colors p-1 cursor-pointer shrink-0"
       >
-        <X size={12} />
+        <X size={14} />
       </button>
     </m.div>
   );
 }
 
 /* ------------------------------------------------------------------
-   Typing Indicator
+   Typing Indicator Component (Sleek Obsidian & Cyan Pulse)
 ------------------------------------------------------------------ */
 function TypingIndicator() {
   return (
@@ -239,45 +214,36 @@ function TypingIndicator() {
       initial="hidden"
       animate="visible"
       exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-      style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem", maxWidth: "80%" }}
+      className="flex items-start gap-3 max-w-[80%] self-start"
     >
       <div
-        style={{
-          width: "2rem", height: "2rem", borderRadius: "50%",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.25)",
-          flexShrink: 0,
-        }}
+        className="size-9 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-950 to-violet-950 border border-cyan-500/40 text-cyan-300 shrink-0 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
         aria-hidden="true"
       >
-        <BrainCircuit size={14} style={{ color: "var(--color-gold-400)" }} />
+        <BrainCircuit size={18} />
       </div>
       <div
-        style={{
-          background: "rgba(6,16,46,0.8)", border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "0 14px 14px 14px", padding: "0.75rem 1rem",
-          backdropFilter: "blur(8px)", display: "flex", alignItems: "center", gap: "4px",
-        }}
-        aria-label="AI is typing"
+        className="px-4 py-3.5 rounded-2xl rounded-tl-none flex items-center gap-3 border border-white/10 bg-[#080C14]/90 backdrop-blur-xl shadow-xl"
+        aria-label="abang ganteng sedang meramu jawaban"
         role="status"
       >
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            style={{
-              width: 6, height: 6, borderRadius: "50%",
-              background: "var(--color-gold-400)", display: "inline-block",
-              animation: `typing-dot 1.2s ease-in-out ${i * 0.2}s infinite`,
-            }}
-          />
-        ))}
+        <span className="text-xs text-cyan-300 font-medium font-sans">abang ganteng sedang meramu jawaban</span>
+        <div className="flex items-center gap-1">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="size-1.5 rounded-full bg-cyan-400 inline-block animate-pulse"
+              style={{ animationDelay: `${i * 0.2}s` }}
+            />
+          ))}
+        </div>
       </div>
     </m.div>
   );
 }
 
 /* ------------------------------------------------------------------
-   Message Bubble
+   Message Bubble Component
 ------------------------------------------------------------------ */
 function MessageBubble({ msg }: { msg: Message }) {
   const isUser = msg.role === "user";
@@ -285,19 +251,19 @@ function MessageBubble({ msg }: { msg: Message }) {
   function renderContent(text: string) {
     return text.split("\n").map((line, i) => {
       if (line.startsWith("## "))
-        return <p key={i} style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1rem", color: "var(--color-silver-50)", marginBottom: "0.5rem" }}>{line.replace("## ", "")}</p>;
+        return <h3 key={i} className="font-display font-bold text-sm sm:text-base text-white mb-2 mt-1">{line.replace("## ", "")}</h3>;
       if (line.startsWith("**") && line.endsWith("**"))
-        return <p key={i} style={{ fontWeight: 700, color: "var(--color-gold-300)", marginTop: "0.5rem", marginBottom: "0.15rem" }}>{line.replace(/\*\*/g, "")}</p>;
+        return <p key={i} className="font-bold text-cyan-300 mt-2.5 mb-1 text-xs">{line.replace(/\*\*/g, "")}</p>;
       if (line.startsWith("- "))
-        return <p key={i} style={{ display: "flex", gap: "0.5rem", color: "var(--color-silver-200)", fontSize: "0.8125rem", paddingLeft: "0.25rem" }}><span style={{ color: "var(--color-gold-400)", marginTop: "2px" }}>·</span>{line.replace("- ", "")}</p>;
+        return <p key={i} className="flex gap-2 text-slate-200 text-xs pl-2 my-0.5"><span className="text-cyan-400 shrink-0 mt-0.5">•</span><span>{line.replace("- ", "")}</span></p>;
       if (/^\d+\.\s/.test(line))
-        return <p key={i} style={{ color: "var(--color-silver-200)", fontSize: "0.8125rem", paddingLeft: "0.5rem" }}>{line}</p>;
+        return <p key={i} className="text-slate-200 text-xs pl-3 my-0.5">{line}</p>;
       if (line.startsWith("|"))
-        return <p key={i} style={{ fontFamily: "monospace", fontSize: "0.75rem", color: "var(--color-silver-300)" }}>{line}</p>;
+        return <p key={i} className="font-mono text-[11px] text-slate-300 bg-slate-950/60 p-1.5 rounded border border-white/10 overflow-x-auto my-1">{line}</p>;
       if (line.startsWith("> "))
-        return <p key={i} style={{ borderLeft: "3px solid var(--color-gold-400)", paddingLeft: "0.75rem", color: "var(--color-silver-300)", fontSize: "0.8125rem", fontStyle: "italic", marginTop: "0.5rem" }}>{line.replace("> ", "")}</p>;
+        return <p key={i} className="border-l-2 border-cyan-400 pl-3 text-slate-300 text-xs italic my-2 py-0.5 bg-cyan-950/20 rounded-r">{line.replace("> ", "")}</p>;
       if (line.trim() === "") return <br key={i} />;
-      return <p key={i} style={{ color: "var(--color-silver-200)", fontSize: "0.8125rem", lineHeight: 1.6 }}>{line}</p>;
+      return <p key={i} className="text-slate-200 text-xs sm:text-xs leading-relaxed">{line}</p>;
     });
   }
 
@@ -306,49 +272,33 @@ function MessageBubble({ msg }: { msg: Message }) {
       variants={messageVariants}
       initial="hidden"
       animate="visible"
-      style={{
-        display: "flex",
-        flexDirection: isUser ? "row-reverse" : "row",
-        alignItems: "flex-start",
-        gap: "0.75rem",
-        maxWidth: "85%",
-        alignSelf: isUser ? "flex-end" : "flex-start",
-      }}
+      className={`flex items-start gap-3 max-w-[88%] sm:max-w-[82%] ${
+        isUser ? "ml-auto flex-row-reverse self-end" : "self-start"
+      }`}
     >
       {!isUser && (
         <div
-          style={{
-            width: "2rem", height: "2rem", borderRadius: "50%",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.25)",
-            flexShrink: 0,
-          }}
+          className="size-9 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-950 via-slate-900 to-violet-950 border border-cyan-500/40 text-cyan-300 shrink-0 shadow-[0_0_20px_rgba(6,182,212,0.25)]"
           aria-hidden="true"
         >
-          <BrainCircuit size={14} style={{ color: "var(--color-gold-400)" }} />
+          <BrainCircuit size={18} />
         </div>
       )}
       <div
-        style={{
-          background: isUser
-            ? "linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(245,158,11,0.12) 100%)"
-            : "rgba(6,16,46,0.8)",
-          border: isUser ? "1px solid rgba(245,158,11,0.3)" : "1px solid rgba(255,255,255,0.08)",
-          borderRadius: isUser ? "14px 0 14px 14px" : "0 14px 14px 14px",
-          padding: "0.875rem 1.125rem",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-          display: "flex", flexDirection: "column", gap: "0.25rem",
-        }}
+        className={`px-5 py-4 rounded-2xl border backdrop-blur-xl shadow-xl flex flex-col gap-1.5 ${
+          isUser
+            ? "bg-gradient-to-r from-cyan-950/80 via-sky-950/80 to-violet-950/80 border-cyan-500/30 rounded-tr-none text-white shadow-[0_4px_25px_rgba(6,182,212,0.15)]"
+            : "bg-[#080C14]/90 border-white/10 rounded-tl-none text-slate-100 shadow-[0_4px_25px_rgba(0,0,0,0.5)]"
+        }`}
       >
         {isUser ? (
-          <p style={{ color: "var(--color-silver-50)", fontSize: "0.875rem", lineHeight: 1.6 }}>{msg.content}</p>
+          <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-medium">{msg.content}</p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+          <div className="flex flex-col gap-1">
             {renderContent(msg.content)}
           </div>
         )}
-        <p style={{ fontSize: "0.6875rem", color: "var(--color-silver-400)", textAlign: isUser ? "right" : "left", marginTop: "0.25rem" }}>
+        <p className={`text-[10px] text-slate-400/80 mt-1 font-mono ${isUser ? "text-right" : "text-left"}`}>
           {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
         </p>
       </div>
@@ -357,15 +307,8 @@ function MessageBubble({ msg }: { msg: Message }) {
 }
 
 /* ------------------------------------------------------------------
-   Guided Setup & Profile Wizard Types & Component
+   Guided Setup & Profile Wizard Component
 ------------------------------------------------------------------ */
-interface StudyProfileData {
-  level: "SMA" | "Kuliah";
-  major: string;
-  yearOrSemester: string;
-  subject: string;
-}
-
 const KULIAH_MAJORS = [
   "Teknik Informatika",
   "Sistem Informasi",
@@ -377,12 +320,7 @@ const KULIAH_MAJORS = [
   "Kedokteran",
 ];
 
-const SMA_MAJORS = [
-  "IPA / MIPA",
-  "IPS",
-  "Bahasa",
-  "SMK / Kejuruan",
-];
+const SMA_MAJORS = ["IPA / MIPA", "IPS", "Bahasa", "SMK / Kejuruan"];
 
 const KULIAH_SEMESTERS = [
   "Semester 1",
@@ -395,11 +333,7 @@ const KULIAH_SEMESTERS = [
   "Semester 8+",
 ];
 
-const SMA_CLASSES = [
-  "Kelas 10 (X)",
-  "Kelas 11 (XI)",
-  "Kelas 12 (XII)",
-];
+const SMA_CLASSES = ["Kelas 10 (X)", "Kelas 11 (XI)", "Kelas 12 (XII)"];
 
 function GuidedSetupModal({
   onClose,
@@ -417,7 +351,6 @@ function GuidedSetupModal({
   const [subjectText, setSubjectText] = useState<string>("");
 
   const finalMajor = isCustomMajor ? customMajor.trim() : selectedMajor;
-
   const canProceedStep2 = Boolean(finalMajor);
   const canProceedStep3 = Boolean(selectedYearOrSemester);
   const canProceedStep4 = Boolean(subjectText.trim());
@@ -442,29 +375,23 @@ function GuidedSetupModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#030712]/80 backdrop-blur-md animate-fadeIn">
       <m.div
         initial={{ opacity: 0, scale: 0.95, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
-        className="max-w-lg w-full rounded-3xl p-6 sm:p-7 flex flex-col gap-5 border shadow-2xl relative overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, rgba(6,16,46,0.96) 0%, rgba(3,11,34,0.98) 100%)",
-          borderColor: "rgba(245,158,11,0.3)",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.8), 0 0 30px rgba(245,158,11,0.1)",
-        }}
+        className="max-w-lg w-full rounded-3xl p-7 flex flex-col gap-6 border border-cyan-500/30 bg-[#080C14]/95 shadow-[0_0_50px_rgba(6,182,212,0.15)] relative overflow-hidden backdrop-blur-2xl"
       >
-        {/* Header & Step Dots */}
         <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-400">
-              <Sparkles size={16} />
+          <div className="flex items-center gap-3">
+            <div className="size-9 rounded-2xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+              <Sparkles size={18} />
             </div>
             <div>
-              <h3 className="text-sm font-extrabold text-slate-100" style={{ fontFamily: "var(--font-outfit)" }}>
+              <h3 className="font-display text-base font-bold text-white">
                 Atur Profil Belajar ✨
               </h3>
-              <p className="text-[11px] text-slate-400">Langkah {step} dari 4</p>
+              <p className="text-xs text-slate-400">Langkah {step} dari 4</p>
             </div>
           </div>
 
@@ -472,30 +399,29 @@ function GuidedSetupModal({
             {[1, 2, 3, 4].map((s) => (
               <div
                 key={s}
-                className={`w-2.5 h-2.5 rounded-full transition-all ${
+                className={`h-2.5 rounded-full transition-all ${
                   s === step
-                    ? "bg-amber-400 w-5 shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                    ? "bg-cyan-400 w-5 shadow-[0_0_10px_rgba(6,182,212,0.6)]"
                     : s < step
-                    ? "bg-amber-500/40"
-                    : "bg-slate-700/50"
+                    ? "bg-cyan-500/40 w-2.5"
+                    : "bg-slate-800 w-2.5"
                 }`}
               />
             ))}
             <button
               type="button"
               onClick={onClose}
-              className="ml-2 text-slate-400 hover:text-slate-200 transition-colors p-1 cursor-pointer"
+              className="ml-3 text-slate-400 hover:text-white transition-colors p-1 cursor-pointer active:scale-95"
             >
               <X size={16} />
             </button>
           </div>
         </div>
 
-        {/* Step 1: Jenjang Pendidikan */}
         {step === 1 && (
           <div className="flex flex-col gap-4 py-1">
             <div>
-              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+              <h4 className="font-display text-base font-bold text-white mb-1">
                 Pilih Jenjang Pendidikan Kamu
               </h4>
               <p className="text-xs text-slate-300">
@@ -503,51 +429,56 @@ function GuidedSetupModal({
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-2">
-              <button
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+              <m.button
                 type="button"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={EMIL_SPRING}
                 onClick={() => handleSelectLevel("Kuliah")}
-                className="flex flex-col gap-2.5 p-4 rounded-2xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/50 text-left transition-all cursor-pointer group active:scale-95"
+                className="flex flex-col gap-3 p-5 rounded-2xl bg-[#080C14] hover:bg-slate-900/90 border border-white/10 hover:border-cyan-400/50 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-300 group-hover:scale-110 transition-transform">
+                <div className="size-10 rounded-2xl bg-cyan-500/15 border border-cyan-400/30 flex items-center justify-center text-cyan-300 group-hover:scale-110 transition-transform">
                   <GraduationCap size={22} />
                 </div>
                 <div>
-                  <h5 className="text-sm font-bold text-slate-100 group-hover:text-amber-300 transition-colors">
+                  <h5 className="font-display text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
                     Kuliah / Perguruan Tinggi
                   </h5>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[11px] text-slate-400 mt-1">
                     Mahasiswa (S1, D3, D4) dengan materi perkuliahan spesifik.
                   </p>
                 </div>
-              </button>
+              </m.button>
 
-              <button
+              <m.button
                 type="button"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={EMIL_SPRING}
                 onClick={() => handleSelectLevel("SMA")}
-                className="flex flex-col gap-2.5 p-4 rounded-2xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700/80 hover:border-amber-400/50 text-left transition-all cursor-pointer group active:scale-95"
+                className="flex flex-col gap-3 p-5 rounded-2xl bg-[#080C14] hover:bg-slate-900/90 border border-white/10 hover:border-violet-400/50 text-left transition-all cursor-pointer group shadow-md"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-400/30 flex items-center justify-center text-purple-300 group-hover:scale-110 transition-transform">
+                <div className="size-10 rounded-2xl bg-violet-500/15 border border-violet-400/30 flex items-center justify-center text-violet-300 group-hover:scale-110 transition-transform">
                   <School size={22} />
                 </div>
                 <div>
-                  <h5 className="text-sm font-bold text-slate-100 group-hover:text-amber-300 transition-colors">
+                  <h5 className="font-display text-sm font-bold text-white group-hover:text-violet-300 transition-colors">
                     SMA / Sederajat
                   </h5>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
+                  <p className="text-[11px] text-slate-400 mt-1">
                     Siswa SMA, SMK, MA, atau sederajat.
                   </p>
                 </div>
-              </button>
+              </m.button>
             </div>
           </div>
         )}
 
-        {/* Step 2: Jurusan */}
         {step === 2 && (
           <div className="flex flex-col gap-4 py-1">
             <div>
-              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+              <h4 className="font-display text-base font-bold text-white mb-1">
                 {level === "Kuliah" ? "Pilih Jurusan Perkulihan Kamu" : "Pilih Peminatan / Jurusan Sekolah"}
               </h4>
               <p className="text-xs text-slate-300">
@@ -566,10 +497,10 @@ function GuidedSetupModal({
                       setIsCustomMajor(false);
                       setSelectedMajor(mName);
                     }}
-                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                       active
-                        ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20"
-                        : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/70"
+                        ? "bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-400/20"
+                        : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-white/10"
                     }`}
                   >
                     {mName}
@@ -582,10 +513,10 @@ function GuidedSetupModal({
                   setIsCustomMajor(true);
                   setSelectedMajor("");
                 }}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                   isCustomMajor
-                    ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20"
-                    : "bg-slate-900/80 hover:bg-slate-800 text-amber-300 border border-amber-500/40"
+                    ? "bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-400/20"
+                    : "bg-slate-900/80 hover:bg-slate-800 text-cyan-300 border border-cyan-500/40"
                 }`}
               >
                 ✏️ Input Manual...
@@ -599,7 +530,7 @@ function GuidedSetupModal({
                   placeholder="Masukkan nama jurusan kamu..."
                   value={customMajor}
                   onChange={(e) => setCustomMajor(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-amber-400/40 text-slate-100 text-xs outline-none focus:ring-1 focus:ring-amber-400"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-cyan-400/40 text-white text-xs outline-none focus:ring-1 focus:ring-cyan-400"
                   autoFocus
                 />
               </div>
@@ -609,27 +540,28 @@ function GuidedSetupModal({
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-bold cursor-pointer"
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-bold cursor-pointer active:scale-95"
               >
                 <ArrowLeft size={14} /> Kembali
               </button>
-              <button
+              <m.button
                 type="button"
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setStep(3)}
                 disabled={!canProceedStep2}
-                className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer transition-all"
+                className="bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-xs px-6 py-2.5 font-bold rounded-xl flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(6,182,212,0.3)]"
               >
-                Lanjut <ArrowRight size={14} />
-              </button>
+                <span>Lanjut</span>
+                <ArrowRight size={14} />
+              </m.button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Semester / Kelas */}
         {step === 3 && (
           <div className="flex flex-col gap-4 py-1">
             <div>
-              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+              <h4 className="font-display text-base font-bold text-white mb-1">
                 {level === "Kuliah" ? "Saat Ini Kamu Semester Berapa?" : "Saat Ini Kamu Kelas Berapa?"}
               </h4>
               <p className="text-xs text-slate-300">
@@ -637,7 +569,7 @@ function GuidedSetupModal({
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 py-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-1">
               {(level === "Kuliah" ? KULIAH_SEMESTERS : SMA_CLASSES).map((item) => {
                 const active = selectedYearOrSemester === item;
                 return (
@@ -645,10 +577,10 @@ function GuidedSetupModal({
                     key={item}
                     type="button"
                     onClick={() => setSelectedYearOrSemester(item)}
-                    className={`py-3 px-3 rounded-xl text-xs font-bold text-center transition-all cursor-pointer ${
+                    className={`py-3 px-3 rounded-xl text-xs font-bold text-center transition-all cursor-pointer active:scale-95 ${
                       active
-                        ? "bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20 ring-2 ring-amber-400/50"
-                        : "bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-slate-700/70"
+                        ? "bg-cyan-400 text-slate-950 shadow-lg shadow-cyan-400/20 border border-cyan-300"
+                        : "bg-slate-900/80 hover:bg-slate-800 text-slate-200 border border-white/10"
                     }`}
                   >
                     {item}
@@ -661,27 +593,28 @@ function GuidedSetupModal({
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-bold cursor-pointer"
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-bold cursor-pointer active:scale-95"
               >
                 <ArrowLeft size={14} /> Kembali
               </button>
-              <button
+              <m.button
                 type="button"
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setStep(4)}
                 disabled={!canProceedStep3}
-                className="px-5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer transition-all"
+                className="bg-gradient-to-r from-cyan-500 to-violet-600 text-white text-xs px-6 py-2.5 font-bold rounded-xl flex items-center gap-1 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(6,182,212,0.3)]"
               >
-                Lanjut <ArrowRight size={14} />
-              </button>
+                <span>Lanjut</span>
+                <ArrowRight size={14} />
+              </m.button>
             </div>
           </div>
         )}
 
-        {/* Step 4: Mata Kuliah / Mata Pelajaran */}
         {step === 4 && (
           <div className="flex flex-col gap-4 py-1">
             <div>
-              <h4 className="text-base font-bold text-slate-100 mb-1" style={{ fontFamily: "var(--font-outfit)" }}>
+              <h4 className="font-display text-base font-bold text-white mb-1">
                 {level === "Kuliah" ? "Mata Kuliah / Topik Utama" : "Mata Pelajaran / Topik Utama"}
               </h4>
               <p className="text-xs text-slate-300">
@@ -699,7 +632,7 @@ function GuidedSetupModal({
                 }
                 value={subjectText}
                 onChange={(e) => setSubjectText(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 focus:border-amber-400 text-slate-100 text-xs outline-none focus:ring-1 focus:ring-amber-400 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-white/15 focus:border-cyan-400 text-white text-xs outline-none focus:ring-1 focus:ring-cyan-400 transition-all"
                 autoFocus
               />
               <p className="text-[11px] text-slate-400 italic">
@@ -711,18 +644,20 @@ function GuidedSetupModal({
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-bold cursor-pointer"
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-bold cursor-pointer active:scale-95"
               >
                 <ArrowLeft size={14} /> Kembali
               </button>
-              <button
+              <m.button
                 type="button"
+                whileTap={{ scale: 0.95 }}
                 onClick={handleFinish}
                 disabled={!canProceedStep4}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-lg disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                className="bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white text-xs px-6 py-3 font-bold rounded-xl flex items-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(6,182,212,0.4)]"
               >
-                <Sparkles size={14} /> Mulai Sesi Tutor ✨
-              </button>
+                <Sparkles size={15} />
+                <span>Mulai Sesi Tutor ✨</span>
+              </m.button>
             </div>
           </div>
         )}
@@ -732,7 +667,7 @@ function GuidedSetupModal({
 }
 
 /* ------------------------------------------------------------------
-   Tutor Page Content
+   Tutor Content Main View
 ------------------------------------------------------------------ */
 function TutorContent() {
   const { user } = useAuth();
@@ -744,21 +679,18 @@ function TutorContent() {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [showWizard, setShowWizard] = useState<boolean>(false);
   const [activeProfile, setActiveProfile] = useState<StudyProfileData | null>(null);
+  const [isVoiceActive, setIsVoiceActive] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-scroll on new messages / typing indicator
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
 
-  /* ----------------------------------------------------------------
-     Toast helpers
-  ---------------------------------------------------------------- */
   const pushToast = useCallback((t: Omit<Toast, "id">) => {
     const id = crypto.randomUUID();
     setToasts((prev) => [...prev, { ...t, id }]);
-    // Auto-dismiss after 6 s
     setTimeout(() => setToasts((prev) => prev.filter((x) => x.id !== id)), 6000);
   }, []);
 
@@ -766,9 +698,18 @@ function TutorContent() {
     setToasts((prev) => prev.filter((x) => x.id !== id));
   }, []);
 
-  /* ----------------------------------------------------------------
-     Send message → /api/chat → Firestore
-  ---------------------------------------------------------------- */
+  const toggleVoiceMode = () => {
+    const nextState = !isVoiceActive;
+    setIsVoiceActive(nextState);
+    if (nextState) {
+      pushToast({
+        variant: "success",
+        title: "Voice Assistant Mode",
+        body: "Mode audio aktif. Ketik pesan atau gunakan mikrofon untuk mulai berdiskusi.",
+      });
+    }
+  };
+
   async function sendMessage(text: string, profileOverride?: StudyProfileData) {
     const trimmed = text.trim();
     if (!trimmed || isTyping) return;
@@ -782,7 +723,6 @@ function TutorContent() {
 
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
-    // Reset textarea height
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
     }
@@ -791,7 +731,6 @@ function TutorContent() {
     const currentProfile = profileOverride || activeProfile;
 
     try {
-      /* ── 1. Call API route ── */
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -805,7 +744,6 @@ function TutorContent() {
 
       const data = (await res.json()) as { reply: string; studyPlan: StudyPlanPayload | null };
 
-      /* ── 2. Display AI message ── */
       const aiMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -814,7 +752,6 @@ function TutorContent() {
       };
       setMessages((prev) => [...prev, aiMsg]);
 
-      /* ── 3. Save study plan to Firestore if present ── */
       if (data.studyPlan && user?.uid) {
         try {
           const docId = await saveStudyPlan(user.uid, data.studyPlan);
@@ -836,7 +773,7 @@ function TutorContent() {
       const errMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: "## ⚠️ Something went wrong\n\nI couldn't reach the AI service. Please check your connection and try again.",
+        content: "## ⚠️ Gagal Mengakses AI Service\n\nMaaf, koneksi ke server AI Tutor terganggu. Silakan periksa jaringan kamu dan coba lagi.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errMsg]);
@@ -852,27 +789,24 @@ function TutorContent() {
     }
   }
 
+  const handleResetChat = () => {
+    setMessages([]);
+    pushToast({
+      variant: "success",
+      title: "Sesi Diset Ulang",
+      body: "Riwayat chat telah dibersihkan. Siap memulai topik baru!",
+    });
+  };
+
   const displayName = user?.displayName?.split(" ")[0] ?? "Scholar";
   const isEmpty = messages.length === 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", flex: 1, height: "100%", overflow: "hidden", maxWidth: "860px", margin: "0 auto", width: "100%", padding: "1.5rem 1.5rem 0", position: "relative" }}>
-
-      {/* ================================================================
-          Toast Stack — fixed to the bottom-right of this container
-      ================================================================ */}
+    <div className="flex flex-col flex-1 h-full overflow-hidden max-w-5xl mx-auto w-full px-3 sm:px-6 pt-5 pb-3 relative">
+      {/* Toast Notification Container */}
       <div
         aria-label="Notifications"
-        style={{
-          position: "fixed",
-          bottom: "2rem",
-          right: "2rem",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.625rem",
-          pointerEvents: "none",
-        }}
+        className="fixed bottom-8 right-8 z-50 flex flex-col gap-2.5 pointer-events-none"
       >
         <AnimatePresence mode="popLayout">
           {toasts.map((t) => (
@@ -881,45 +815,73 @@ function TutorContent() {
         </AnimatePresence>
       </div>
 
-      {/* ---- Header ---- */}
+      {/* Header & Cybernetic Context Indicator */}
       <m.div
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: EASE }}
-        style={{ display: "flex", alignItems: "center", gap: "0.75rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(255,255,255,0.07)", flexShrink: 0 }}
+        transition={{ duration: 0.4, ease: EMIL_EASE_ARR }}
+        className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/10 shrink-0"
       >
-        <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.22)" }} aria-hidden="true">
-          <BrainCircuit size={18} style={{ color: "var(--color-gold-400)" }} />
+        <div className="flex items-center gap-3.5">
+          <div className="size-11 rounded-2xl flex items-center justify-center bg-gradient-to-br from-cyan-950 via-slate-900 to-violet-950 border border-cyan-500/40 text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+            <BrainCircuit size={22} />
+          </div>
+          <div>
+            <h1 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-tight">
+              <span className="bg-gradient-to-r from-white via-slate-100 to-cyan-400 bg-clip-text text-transparent">
+                AI Tutor Belajar
+              </span>{" "}
+              <span className="text-xs font-semibold text-cyan-400/90 font-mono">(abang ganteng)</span>
+            </h1>
+            <p className="text-xs text-slate-400 mt-0.5">Teman belajar adaptif & pembuat study plan otomatis</p>
+          </div>
         </div>
-        <div>
-          <h1 style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.125rem", color: "var(--color-silver-50)", lineHeight: 1.2 }}>AI Tutor</h1>
-          <p style={{ fontSize: "0.75rem", color: "var(--color-silver-400)" }}>Teman belajar adaptif kamu</p>
-        </div>
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+
+        <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+          {/* Active Context Indicator / Cybernetic Glass Badge */}
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#080C14]/80 border border-cyan-500/30 text-cyan-300 text-xs font-semibold backdrop-blur-md shadow-sm">
+            <Cpu size={14} className="text-cyan-400 animate-pulse" />
+            <span className="truncate max-w-[200px]">
+              {activeProfile ? `${activeProfile.subject} (${activeProfile.level})` : "Mode Adaptif General"}
+            </span>
+          </div>
+
           <button
             type="button"
             id="tutor-setup-profile-btn"
             onClick={() => setShowWizard(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/35 text-amber-300 text-xs font-bold transition-all cursor-pointer shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 sm:py-2 rounded-full bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-400/40 text-cyan-300 text-xs font-bold transition-all cursor-pointer shadow-md active:scale-95"
           >
-            <Sparkles size={13} className="text-amber-400" />
-            <span>Atur Profil Belajar</span>
+            <Sliders size={13} className="text-cyan-400" />
+            <span className="hidden sm:inline">Atur Profil Belajar</span>
+            <span className="sm:hidden">Profil</span>
           </button>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", padding: "0.25rem 0.75rem", borderRadius: "9999px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "rgba(34,197,94,0.9)", display: "inline-block", boxShadow: "0 0 6px rgba(34,197,94,0.6)", animation: "pulse-dot 2s ease-in-out infinite" }} />
-            <span style={{ fontSize: "0.6875rem", fontWeight: 600, color: "rgba(34,197,94,0.9)", letterSpacing: "0.06em" }}>ONLINE</span>
+
+          {!isEmpty && (
+            <button
+              type="button"
+              onClick={handleResetChat}
+              title="Reset Chat"
+              className="p-2 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-white/10 text-slate-400 hover:text-white transition-all cursor-pointer active:scale-95"
+            >
+              <RefreshCw size={14} />
+            </button>
+          )}
+
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+            <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest hidden sm:inline">ONLINE</span>
           </div>
         </div>
       </m.div>
 
-      {/* ---- Message Area ---- */}
+      {/* Chat Viewport: Obsidian Glass Container */}
       <div
-        style={{ flex: 1, overflowY: "auto", padding: "1.5rem 0", display: "flex", flexDirection: "column", gap: "1.25rem" }}
+        className="flex-1 overflow-y-auto py-5 px-1 sm:px-2 flex flex-col gap-4 bg-[#080C14]/90 border border-white/10 backdrop-blur-xl rounded-2xl my-3 shadow-inner space-y-2"
         role="log"
         aria-live="polite"
         aria-label="Chat messages"
       >
-        {/* Empty state */}
         <AnimatePresence>
           {isEmpty && !isTyping && (
             <m.div
@@ -928,15 +890,19 @@ function TutorContent() {
               initial="hidden"
               animate="visible"
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2rem", paddingTop: "2rem" }}
+              className="flex flex-col items-center gap-6 py-4 my-auto"
             >
-              <m.div variants={itemVariants} style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem" }}>
-                <div style={{ width: "4rem", height: "4rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(245,158,11,0.10)", border: "1px solid rgba(245,158,11,0.20)", boxShadow: "0 0 32px rgba(245,158,11,0.12)" }} aria-hidden="true">
-                  <BrainCircuit size={28} style={{ color: "var(--color-gold-400)" }} />
+              <m.div variants={itemVariants} className="text-center flex flex-col items-center gap-3">
+                <div className="size-16 rounded-3xl flex items-center justify-center bg-gradient-to-br from-cyan-950 via-slate-900 to-violet-950 border border-cyan-500/40 text-cyan-400 shadow-[0_0_40px_rgba(6,182,212,0.25)]">
+                  <BrainCircuit size={32} />
                 </div>
                 <div>
-                  <p style={{ fontFamily: "var(--font-outfit)", fontWeight: 700, fontSize: "1.25rem", color: "var(--color-silver-50)" }}>Halo, {displayName}! 👋</p>
-                  <p style={{ fontSize: "0.875rem", color: "var(--color-silver-400)", marginTop: "0.25rem" }}>Tanya apa saja ya — aku siap bantu buatkan study plan khusus buat kamu.</p>
+                  <h2 className="font-display text-2xl font-extrabold text-white">
+                    Halo, {displayName}! 👋
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-md leading-relaxed">
+                    Tanya materi apa saja — abang ganteng siap bantu buatkan study plan adaptif khusus buat kamu.
+                  </p>
                 </div>
               </m.div>
 
@@ -945,45 +911,65 @@ function TutorContent() {
                 type="button"
                 id="tutor-guided-setup-card"
                 variants={itemVariants}
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
+                whileHover={{ scale: 1.015, y: -2 }}
+                whileTap={{ scale: 0.97 }}
+                transition={EMIL_SPRING}
                 onClick={() => setShowWizard(true)}
-                className="flex items-center justify-between w-full max-w-xl p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-slate-900/40 border border-amber-400/35 hover:border-amber-400/60 shadow-lg cursor-pointer transition-all text-left"
+                className="flex items-center justify-between w-full max-w-2xl p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-slate-900/90 to-violet-950/60 border border-cyan-500/40 hover:border-cyan-400 shadow-xl cursor-pointer transition-all text-left group"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-400 shrink-0">
-                    <Sparkles size={20} />
+                <div className="flex items-center gap-4">
+                  <div className="size-11 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 shrink-0 group-hover:scale-110 transition-transform">
+                    <Sparkles size={22} />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-100">Pakai Template Prompt / Guided Setup ✨</p>
-                    <p className="text-xs text-slate-300">Atur jurusan & tingkat pendidikan kamu untuk penjelasan AI Tutor yang presisi</p>
+                    <p className="font-display text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">Pakai Template Prompt / Guided Setup ✨</p>
+                    <p className="text-xs text-slate-300 mt-0.5">Atur jurusan & tingkat pendidikan kamu untuk penjelasan AI Tutor yang presisi</p>
                   </div>
                 </div>
-                <ChevronRight size={18} className="text-amber-400 shrink-0" />
+                <ChevronRight size={20} className="text-cyan-400 shrink-0 group-hover:translate-x-1 transition-transform" />
               </m.button>
 
+              {/* Bento Quick Starter Prompt Cards */}
               <m.div
                 variants={containerVariants}
-                style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "0.75rem", width: "100%" }}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 w-full max-w-2xl"
               >
-                {SUGGESTIONS.map(({ Icon, text, color }) => (
+                {SUGGESTIONS.map(({ title, desc, text, category, Icon, gradient, accentColor }) => (
                   <m.button
-                    key={text}
+                    key={title}
                     type="button"
                     variants={itemVariants}
-                    whileHover={{ y: -3, transition: { duration: 0.18 } }}
+                    whileHover={{ scale: 1.015, y: -2 }}
                     whileTap={{ scale: 0.97 }}
+                    transition={EMIL_SPRING}
                     onClick={() => sendMessage(text)}
-                    style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.875rem 1rem", borderRadius: "12px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", cursor: "pointer", textAlign: "left", transition: "background 120ms ease, border-color 120ms ease" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.14)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.04)"; (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.08)"; }}
-                    aria-label={`Suggest: ${text}`}
+                    className={`p-4 rounded-2xl border border-white/10 hover:border-cyan-500/40 bg-gradient-to-br ${gradient} bg-[#080C14]/90 backdrop-blur-xl transition-all text-left cursor-pointer group flex flex-col justify-between gap-3 shadow-md`}
                   >
-                    <div style={{ width: "2rem", height: "2rem", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", background: `${color.replace("0.8", "0.12")}`, border: `1px solid ${color.replace("0.8", "0.22")}`, flexShrink: 0 }} aria-hidden="true">
-                      <Icon size={14} style={{ color }} />
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 bg-white/5 px-2.5 py-1 rounded-full border border-white/10">
+                        {category}
+                      </span>
+                      <div
+                        className="size-8 rounded-xl flex items-center justify-center shrink-0 border border-white/10 bg-slate-950 group-hover:scale-110 transition-transform"
+                        style={{ color: accentColor }}
+                      >
+                        <Icon size={16} />
+                      </div>
                     </div>
-                    <span style={{ fontSize: "0.8125rem", color: "var(--color-silver-200)", fontWeight: 500, lineHeight: 1.4 }}>{text}</span>
-                    <ChevronRight size={14} style={{ color: "rgba(255,255,255,0.2)", marginLeft: "auto", flexShrink: 0 }} aria-hidden="true" />
+
+                    <div>
+                      <h4 className="font-display text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
+                        {title}
+                      </h4>
+                      <p className="text-[11px] text-slate-400 mt-1 leading-relaxed line-clamp-2">
+                        {desc}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center text-[11px] font-bold text-cyan-400 group-hover:translate-x-1 transition-transform gap-1">
+                      <span>Mulai Topik</span>
+                      <ChevronRight size={13} />
+                    </div>
                   </m.button>
                 ))}
               </m.div>
@@ -991,7 +977,6 @@ function TutorContent() {
           )}
         </AnimatePresence>
 
-        {/* Messages */}
         <AnimatePresence>
           {messages.map((msg) => (
             <MessageBubble key={msg.id} msg={msg} />
@@ -1002,22 +987,14 @@ function TutorContent() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ---- Input Area ---- */}
+      {/* Floating Input Dock & Controls */}
       <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: EASE, delay: 0.15 }}
-        style={{ flexShrink: 0, padding: "1rem 0 1.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}
+        transition={{ duration: 0.4, ease: EMIL_EASE_ARR, delay: 0.1 }}
+        className="shrink-0 pt-1 pb-1 flex flex-col gap-2"
       >
-        <div
-          style={{
-            display: "flex", alignItems: "flex-end", gap: "0.75rem",
-            background: "rgba(6,16,46,0.75)", border: "1px solid rgba(255,255,255,0.10)",
-            borderRadius: "16px", padding: "0.75rem 0.75rem 0.75rem 1rem",
-            backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.03) inset",
-          }}
-        >
+        <div className="flex flex-col gap-2 bg-[#080C14]/90 border border-white/15 focus-within:border-cyan-400 focus-within:shadow-[0_0_25px_rgba(6,182,212,0.25)] rounded-3xl p-3 sm:p-3.5 backdrop-blur-2xl transition-all shadow-2xl">
           <textarea
             ref={inputRef}
             id="tutor-chat-input"
@@ -1032,41 +1009,55 @@ function TutorContent() {
             disabled={isTyping}
             rows={1}
             aria-label="Input pesan chat"
-            style={{
-              flex: 1, background: "transparent", border: "none", outline: "none",
-              resize: "none", color: "var(--color-silver-50)",
-              fontFamily: "var(--font-inter)", fontSize: "0.875rem", lineHeight: 1.6,
-              minHeight: "1.5rem", maxHeight: "140px", overflowY: "auto",
-            }}
+            className="w-full bg-transparent border-none outline-none resize-none text-white text-xs sm:text-sm font-sans leading-relaxed min-h-[1.5rem] max-h-[140px] overflow-y-auto px-2 pt-1"
           />
-          <LiquidMetalButton
-            viewMode="icon"
-            onClick={() => sendMessage(input)}
-            disabled={isTyping || !input.trim()}
-            id="tutor-send-button"
-            aria-label="Kirim pesan"
-          />
+
+          {/* Action Dock Controls Bar */}
+          <div className="flex items-center justify-between pt-2 border-t border-white/10">
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={toggleVoiceMode}
+                title={isVoiceActive ? "Matikan Voice Assistant" : "Aktifkan Voice Assistant"}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer active:scale-95 ${
+                  isVoiceActive
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/50 shadow-[0_0_12px_rgba(6,182,212,0.3)]"
+                    : "bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/10"
+                }`}
+              >
+                {isVoiceActive ? <Mic size={14} className="text-cyan-400 animate-pulse" /> : <MicOff size={14} />}
+                <span className="hidden sm:inline">{isVoiceActive ? "Voice On" : "Voice Off"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowWizard(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-semibold border border-white/10 transition-all cursor-pointer active:scale-95"
+              >
+                <Sparkles size={13} className="text-cyan-400" />
+                <span className="hidden sm:inline">Guided Setup</span>
+              </button>
+            </div>
+
+            <m.button
+              type="button"
+              id="tutor-send-button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={EMIL_SPRING}
+              onClick={() => sendMessage(input)}
+              disabled={isTyping || !input.trim()}
+              className="p-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 hover:from-cyan-400 hover:to-violet-500 text-white cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+            >
+              <Send size={15} />
+            </m.button>
+          </div>
         </div>
 
-        <p style={{ textAlign: "center", fontSize: "0.6875rem", color: "var(--color-silver-400)" }}>
-          Tekan{" "}
-          <kbd style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "4px", padding: "0 4px", fontFamily: "monospace" }}>Enter</kbd>
-          {" "}untuk kirim &nbsp;·&nbsp;{" "}
-          <kbd style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "4px", padding: "0 4px", fontFamily: "monospace" }}>Shift+Enter</kbd>
-          {" "}untuk baris baru
+        <p className="text-center text-[11px] text-slate-400">
+          Tekan <kbd className="bg-white/10 border border-white/15 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-300">Enter</kbd> untuk kirim &nbsp;·&nbsp; <kbd className="bg-white/10 border border-white/15 px-1.5 py-0.5 rounded text-[10px] font-mono text-slate-300">Shift+Enter</kbd> untuk baris baru
         </p>
       </m.div>
-
-      <style>{`
-        @keyframes typing-dot {
-          0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-          40%            { transform: scale(1);   opacity: 1;   }
-        }
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1;   }
-          50%      { opacity: 0.5; }
-        }
-      `}</style>
 
       {/* Guided Setup Modal */}
       <AnimatePresence>

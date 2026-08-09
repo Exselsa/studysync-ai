@@ -1,27 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/providers/Providers";
 import NavigationBar from "@/components/layout/NavigationBar";
 import BackgroundCanvas from "@/components/layout/BackgroundCanvas";
 
 /* ---------------------------------------------------------------
-   Font Loading — Inter (body) + Outfit (headings)
+   Font Loading — Plus Jakarta Sans (body) + Space Grotesk (headings)
    CSS variables are injected into the <html> element so both
    Tailwind utilities and raw CSS var() references work.
 --------------------------------------------------------------- */
-const inter = Inter({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-plus-jakarta",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const outfit = Outfit({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-space-grotesk",
   display: "swap",
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
 });
 
 /* ---------------------------------------------------------------
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#02071a",
+  themeColor: "#030712",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -71,7 +71,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} h-full`}
+      className={`${plusJakartaSans.variable} ${spaceGrotesk.variable} h-full`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col antialiased">

@@ -33,7 +33,7 @@ interface LiquidMetalButtonProps {
    Shader colours — deep navy + gold tint for the StudySync palette
 ------------------------------------------------------------------ */
 const SHADER_COLOR_BACK = "#0d1f52"; // navy-700
-const SHADER_COLOR_TINT = "#f59e0b"; // gold-400
+const SHADER_COLOR_TINT = "#06b6d4"; // electric cyan-500
 
 /* ------------------------------------------------------------------
    LiquidMetalButton
