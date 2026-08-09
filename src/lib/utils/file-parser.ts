@@ -1,5 +1,6 @@
 /**
- * Utility for parsing text from uploaded study material files (PDF, TXT, DOCX).
+ * Utility for parsing text from uploaded non-PDF study material files (TXT, MD, DOCX).
+ * PDF processing is handled natively via @google/genai multimodal Files API.
  */
 
 export interface ParsedFileResult {
@@ -27,14 +28,7 @@ export async function parseFileBuffer(
   if (ext === "pdf" || mimeType.includes("pdf")) {
     isPdf = true;
     fileBase64 = buffer.toString("base64");
-    const rawExtracted = extractTextFromPdf(buffer);
-    const isCleanText =
-      rawExtracted &&
-      rawExtracted.length > 20 &&
-      !rawExtracted.includes("berkas materi kamu berisikan data format biner");
-    extractedText = isCleanText
-      ? rawExtracted
-      : `[Dokumen PDF Slide Materi: ${fileName}]`;
+    extractedText = `[Dokumen PDF Slide Materi: ${fileName}]`;
   } else if (ext === "txt" || ext === "md" || mimeType.includes("text/")) {
     extractedText = buffer.toString("utf-8");
   } else if (ext === "docx" || mimeType.includes("officedocument.wordprocessingml")) {
@@ -73,43 +67,6 @@ function extractTextFromDocx(buffer: Buffer): string {
     return textParts.join(" ");
   }
 
-  // Fallback: extract clean printable ASCII/UTF-8 strings
-  return extractPrintableStrings(buffer);
-}
-
-/**
- * Text extraction helper for PDF buffer.
- * Extracts text stream objects (BT...ET) and clean readable character sequences.
- */
-function extractTextFromPdf(buffer: Buffer): string {
-  const contentStr = buffer.toString("latin1");
-  const textBlocks: string[] = [];
-
-  // Match PDF text object blocks (BT ... ET)
-  const btMatches = contentStr.match(/BT[\s\S]*?ET/g) || [];
-
-  for (const block of btMatches) {
-    // Extract literal text strings inside parentheses e.g. (Hello World) Tj or [(Hello) -10 (World)] TJ
-    const strMatches = block.match(/\(([^()\\]*(?:\\.[^()\\]*)*)\)/g) || [];
-    for (const strMatch of strMatches) {
-      const cleanStr = strMatch
-        .slice(1, -1)
-        .replace(/\\([()\\])/g, "$1")
-        .replace(/\\n/g, "\n")
-        .replace(/\\r/g, "\r")
-        .replace(/\\t/g, "\t")
-        .trim();
-      if (cleanStr.length > 1) {
-        textBlocks.push(cleanStr);
-      }
-    }
-  }
-
-  if (textBlocks.length > 0) {
-    return textBlocks.join(" ");
-  }
-
-  // Fallback: extract readable strings if stream compression obscured text tags
   return extractPrintableStrings(buffer);
 }
 
@@ -118,7 +75,6 @@ function extractTextFromPdf(buffer: Buffer): string {
  */
 function extractPrintableStrings(buffer: Buffer): string {
   const rawStr = buffer.toString("utf-8", 0, Math.min(buffer.length, 500000));
-  // Keep printable words/sentences (ASCII & Latin characters)
   const matches = rawStr.match(/[A-Za-z0-9\s.,!?;:()'\"\-–—]{4,}/g) || [];
   return matches
     .map((s) => s.trim())

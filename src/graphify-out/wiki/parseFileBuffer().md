@@ -16,11 +16,12 @@ sequenceDiagram
     participant P7 as offsetDate()
     participant P8 as buildFallback()
     participant P9 as buildFallbackExplanation()
-    participant P10 as buildFallbackExplanation()
-    participant P11 as buildFallbackStudyPlan()
-    participant P12 as extractTextFromPdf()
-    participant P13 as extractTextFromDocx()
-    participant P14 as sanitizeText()
+    participant P10 as formData
+    participant P11 as buildFallbackExplanation()
+    participant P12 as buildFallbackStudyPlan()
+    participant P13 as extractTextFromPdf()
+    participant P14 as extractTextFromDocx()
+    participant P15 as sanitizeText()
     P0->>+ P1: calls
     P1-->>- P0: return
     P1->>+ P0: calls
@@ -53,12 +54,14 @@ sequenceDiagram
     P10-->>- P1: return
     P1->>+ P11: calls
     P11-->>- P1: return
-    P0->>+ P12: calls
-    P12-->>- P0: return
+    P1->>+ P12: calls
+    P12-->>- P1: return
     P0->>+ P13: calls
     P13-->>- P0: return
     P0->>+ P14: calls
     P14-->>- P0: return
+    P0->>+ P15: calls
+    P15-->>- P0: return
 ```
 
 ## Connections by Relation

@@ -17,7 +17,7 @@
     },
     {
       "label": "handleAttack",
-      "risk": 0.226,
+      "risk": 0.225,
       "type": "FUNCTION"
     },
     {
@@ -27,10 +27,10 @@
     }
   ],
   "blast_radius": {
-    "POST()": 14,
+    "POST()": 15,
+    "data": 15,
+    "recordDailyActivity()": 6,
     "handleToggleTask": 5,
-    "normalizeStudyPlanData()": 5,
-    "recordDailyActivity()": 5,
-    "parseFileBuffer()": 5
+    "match": 5
   }
 }

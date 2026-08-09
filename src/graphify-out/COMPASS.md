@@ -4,16 +4,16 @@
 > This is a token-optimized summary. For deep logic, see GRAPH_REPORT.md.
 
 ## Core Abstractions (God Nodes)
-1. `POST()` (14 edges)
-2. `handleToggleTask` (5 edges)
-3. `normalizeStudyPlanData()` (5 edges)
-4. `recordDailyActivity()` (5 edges)
-5. `parseFileBuffer()` (5 edges)
-6. `router` (4 edges)
-7. `RESPONSE_SCHEMA` (4 edges)
-8. `EMIL_EASE_ARR` (4 edges)
-9. `containerVariants` (4 edges)
-10. `handleAttack` (4 edges)
+1. `POST()` (15 edges)
+2. `data` (15 edges)
+3. `recordDailyActivity()` (6 edges)
+4. `handleToggleTask` (5 edges)
+5. `match` (5 edges)
+6. `normalizeStudyPlanData()` (5 edges)
+7. `parseFileBuffer()` (5 edges)
+8. `router` (4 edges)
+9. `RESPONSE_SCHEMA` (4 edges)
+10. `EMIL_EASE_ARR` (4 edges)
 
 ## System Layers
 - **L0: Global/Entry**: 

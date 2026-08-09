@@ -252,47 +252,53 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
     setSavedSuccess(false);
 
     try {
-      let extractedText = pastedText.trim();
-      let fileBase64: string | undefined = undefined;
-      let mimeType: string = "text/plain";
-      let isPdf: boolean = false;
+      const isSelectedPdf = selectedFile && (selectedFile.name.toLowerCase().endsWith(".pdf") || selectedFile.type.includes("pdf"));
 
-      // Step 1: Parse file if file selected
-      if (selectedFile) {
-        setLoadingStep("Memproses & mengekstrak file...");
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-
-        const parseRes = await fetch("/api/study-materials/parse", {
-          method: "POST",
-          body: formData,
-        });
-
-        const parseData = await parseRes.json();
-        if (!parseRes.ok || !parseData.success) {
-          throw new Error(parseData.error || "Gagal mengekstrak teks materi.");
-        }
-
-        extractedText = parseData.text;
-        fileBase64 = parseData.fileBase64;
-        mimeType = parseData.fileType || selectedFile.type || "application/pdf";
-        isPdf = parseData.isPdf || false;
-      }
-
-      // Step 2: Call AI endpoint
       if (mode === "generate-plan") {
         setLoadingStep("abang ganteng sedang menyusun Study Plan adaptif kamu...");
-        const res = await fetch("/api/study-materials/generate-plan", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: extractedText,
-            days: Number(days),
-            fileBase64,
-            mimeType,
-            isPdf,
-          }),
-        });
+        let res: Response;
+
+        if (isSelectedPdf && selectedFile) {
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+          formData.append("days", String(days));
+          res = await fetch("/api/study-materials/generate-plan", {
+            method: "POST",
+            body: formData,
+          });
+        } else {
+          let extractedText = pastedText.trim();
+          let fileBase64: string | undefined;
+          let mimeType: string = "text/plain";
+
+          if (selectedFile) {
+            setLoadingStep("Memproses & mengekstrak file...");
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            const parseRes = await fetch("/api/study-materials/parse", {
+              method: "POST",
+              body: formData,
+            });
+            const parseData = await parseRes.json();
+            if (!parseRes.ok || !parseData.success) {
+              throw new Error(parseData.error || "Gagal mengekstrak teks materi.");
+            }
+            extractedText = parseData.text;
+            fileBase64 = parseData.fileBase64;
+            mimeType = parseData.fileType || selectedFile.type || "text/plain";
+          }
+
+          res = await fetch("/api/study-materials/generate-plan", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              text: extractedText,
+              days: Number(days),
+              fileBase64,
+              mimeType,
+            }),
+          });
+        }
 
         const data = await res.json();
         if (!res.ok || !data.success) {
@@ -301,17 +307,49 @@ export default function MaterialUploader({ onPlanSaved }: MaterialUploaderProps)
         setPlanResult(data.result);
       } else {
         setLoadingStep("abang ganteng sedang menyederhanakan & merangkum materi...");
-        const res = await fetch("/api/study-materials/explain", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            text: extractedText,
-            title: selectedFile?.name || "Materi Kuliah",
-            fileBase64,
-            mimeType,
-            isPdf,
-          }),
-        });
+        let res: Response;
+
+        if (isSelectedPdf && selectedFile) {
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+          formData.append("title", selectedFile.name);
+          res = await fetch("/api/study-materials/explain", {
+            method: "POST",
+            body: formData,
+          });
+        } else {
+          let extractedText = pastedText.trim();
+          let fileBase64: string | undefined;
+          let mimeType: string = "text/plain";
+
+          if (selectedFile) {
+            setLoadingStep("Memproses & mengekstrak file...");
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            const parseRes = await fetch("/api/study-materials/parse", {
+              method: "POST",
+              body: formData,
+            });
+            const parseData = await parseRes.json();
+            if (!parseRes.ok || !parseData.success) {
+              throw new Error(parseData.error || "Gagal mengekstrak teks materi.");
+            }
+            extractedText = parseData.text;
+            fileBase64 = parseData.fileBase64;
+            mimeType = parseData.fileType || selectedFile.type || "text/plain";
+          }
+
+          res = await fetch("/api/study-materials/explain", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              text: extractedText,
+              title: selectedFile?.name || "Materi Kuliah",
+              fileBase64,
+              mimeType,
+            }),
+          });
+        }
 
         const data = await res.json();
         if (!res.ok || !data.success) {
