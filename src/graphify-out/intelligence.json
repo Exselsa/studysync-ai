@@ -12,7 +12,7 @@
     },
     {
       "label": "ChallengeNotificationToast()",
-      "risk": 0.244,
+      "risk": 0.23,
       "type": "FUNCTION"
     },
     {

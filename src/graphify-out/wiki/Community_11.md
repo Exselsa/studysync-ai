@@ -4,15 +4,15 @@
 
 ## Key Concepts
 
-- [AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L1) (4 connections)
-- [useAuth()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L116) (3 connections)
-- [ChallengeNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L15) (2 connections)
-- [MeetInviteNotificationToast()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L14) (2 connections)
-- [AuthContext](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L47) (1 connections)
-- [AuthProvider()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L57) (1 connections)
-- [googleProvider](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx#L52) (1 connections)
-- [ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx#L1) (1 connections)
-- [MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx#L1) (1 connections)
+- [DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L1) (8 connections)
+- [active](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L127) (1 connections)
+- [computeActive()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L78) (1 connections)
+- [[isCollapsed, setIsCollapsed]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L332) (1 connections)
+- [navItems](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L27) (1 connections)
+- [pathname](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L75) (1 connections)
+- [saved](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L335) (1 connections)
+- [toggleCollapse](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L339) (1 connections)
+- [{ user, signOutUser }](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx#L76) (1 connections)
 
 ## Relationships
 
@@ -20,14 +20,12 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\ChallengeNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/ChallengeNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\MeetInviteNotificationToast.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/MeetInviteNotificationToast.tsx)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\contexts\AuthContext.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/contexts/AuthContext.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\layout\DashboardSidebar.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/layout/DashboardSidebar.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 12 (75%)
-- INFERRED: 4 (25%)
+- EXTRACTED: 16 (100%)
+- INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 
 ---

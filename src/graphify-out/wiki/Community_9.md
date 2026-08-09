@@ -1,31 +1,21 @@
 # Community 9
 
-> 22 nodes · cohesion 0.09
+> 12 nodes · cohesion 0.17
 
 ## Key Concepts
 
-- [page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L1) (26 connections)
-- [handleConfirmDelete()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L161) (2 connections)
-- [[showDeleteModal, setShowDeleteModal]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L139) (2 connections)
-- [[activeTab, setActiveTab]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L117) (1 connections)
-- [[aiAutoMute, setAiAutoMute]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L133) (1 connections)
-- [[aiAutoSave, setAiAutoSave]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L132) (1 connections)
-- [[aiStyle, setAiStyle]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L134) (1 connections)
-- [[bio, setBio]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L122) (1 connections)
-- [[deleteInputText, setDeleteInputText]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L140) (1 connections)
-- [[deletingAccount, setDeletingAccount]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L141) (1 connections)
-- [[displayName, setDisplayName]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L120) (1 connections)
-- [[duelNotifs, setDuelNotifs]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L131) (1 connections)
-- [[emailNotifs, setEmailNotifs]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L129) (1 connections)
-- [handleSaveAll()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L143) (1 connections)
-- [handleSendPasswordReset()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L153) (1 connections)
-- [isActive](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L219) (1 connections)
-- [[learningTarget, setLearningTarget]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L121) (1 connections)
-- [[planReminders, setPlanReminders]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L130) (1 connections)
-- [[resetSent, setResetSent]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L137) (1 connections)
-- [[savedSuccess, setSavedSuccess]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L126) (1 connections)
-- [[saving, setSaving]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L125) (1 connections)
-- [[sendingReset, setSendingReset]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx#L138) (1 connections)
+- [liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L1) (11 connections)
+- [containerRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L50) (1 connections)
+- [handleClick()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L109) (1 connections)
+- [[isHovered, setIsHovered]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L53) (1 connections)
+- [isIcon](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L120) (1 connections)
+- [mount](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L63) (1 connections)
+- [parent](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L60) (1 connections)
+- [rippleIdRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L54) (1 connections)
+- [[ripples, setRipples]](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L52) (1 connections)
+- [SHADER_COLOR_BACK](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L35) (1 connections)
+- [SHADER_COLOR_TINT](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L36) (1 connections)
+- [shaderMountRef](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx#L51) (1 connections)
 
 ## Relationships
 
@@ -33,11 +23,11 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\settings\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/settings/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\ui\liquid-metal-button.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/ui/liquid-metal-button.tsx)
 
 ## Audit Trail
 
-- EXTRACTED: 49 (100%)
+- EXTRACTED: 22 (100%)
 - INFERRED: 0 (0%)
 - AMBIGUOUS: 0 (0%)
 

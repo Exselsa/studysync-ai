@@ -51,7 +51,7 @@ export default function ChallengeNotificationToast() {
 
           // Auto-navigate challengee to live game arena
           router.push(
-            `/dashboard/game?topic=${encodeURIComponent(
+            `/dashboard/boss-fight?topic=${encodeURIComponent(
               acceptedChallenge.topic
             )}&matchId=${acceptedChallenge.id}`
           );
@@ -85,7 +85,7 @@ export default function ChallengeNotificationToast() {
 
           // Redirect both to duel arena with topic & matchId
           router.push(
-            `/dashboard/game?topic=${encodeURIComponent(
+            `/dashboard/boss-fight?topic=${encodeURIComponent(
               currentChallenge.topic
             )}&matchId=${currentChallenge.id}`
           );

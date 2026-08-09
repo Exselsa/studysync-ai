@@ -112,7 +112,7 @@ function TopicPickerModal({
         onClose();
         // Redirect to game page with matchId & topic
         router.push(
-          `/dashboard/game?topic=${encodeURIComponent(
+          `/dashboard/boss-fight?topic=${encodeURIComponent(
             challenge.topic
           )}&matchId=${challenge.id}`
         );
@@ -132,21 +132,30 @@ function TopicPickerModal({
     setError(null);
 
     try {
-      await sendMatchChallenge(
+      const generatedChallengeId = await sendMatchChallenge(
         currentUserId,
         currentUserName,
         targetFriendId,
         targetFriendName,
         finalTopic
       );
+
       onClose();
       if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("close-challenge-modals"));
         window.dispatchEvent(
           new CustomEvent("show-toast", {
-            detail: { message: "Tantangan telah dikirim!", type: "success" },
+            detail: { message: "Tantangan duel dikirim! Menunggu lawan bergabung...", type: "success" },
           })
         );
       }
+
+      // Automatically transition challenger to the active duel arena / lobby view
+      router.push(
+        `/dashboard/boss-fight?topic=${encodeURIComponent(
+          finalTopic
+        )}&matchId=${generatedChallengeId}`
+      );
     } catch (err) {
       console.error("Failed to send challenge:", err);
       setError(

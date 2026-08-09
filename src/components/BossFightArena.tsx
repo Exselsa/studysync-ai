@@ -305,7 +305,7 @@ export default function BossFightArena() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const urlTopic = searchParams.get("topic");
-  const matchId = searchParams.get("matchId");
+  const matchId = searchParams.get("matchId") || searchParams.get("duelId");
 
   // Mode & Match State
   const [gameMode, setGameMode] = useState<GameMode>(
@@ -340,10 +340,41 @@ export default function BossFightArena() {
   const [opponentInactive, setOpponentInactive] = useState(false);
   const [showSurrenderModal, setShowSurrenderModal] = useState(false);
 
+  // 3-2-1 Match Start Countdown State
+  const [startCountdown, setStartCountdown] = useState<number | null>(null);
+  const hasRunCountdownRef = useRef<string | null>(null);
+
   // Dynamic Question Weight & Turn Timer State
   const diffInfo = getQuestionDifficultyWeight(currentQuestion);
   const [turnTimeLeft, setTurnTimeLeft] = useState<number>(diffInfo.timeLimit);
   const [isTimingOut, setIsTimingOut] = useState<boolean>(false);
+
+  // Trigger 3-2-1 Countdown Animation when match status becomes in_progress
+  useEffect(() => {
+    if (
+      gameMode === "vs_player" &&
+      multiplayerMatch?.status === "in_progress" &&
+      matchId &&
+      hasRunCountdownRef.current !== matchId
+    ) {
+      hasRunCountdownRef.current = matchId;
+      setStartCountdown(3);
+    }
+  }, [gameMode, multiplayerMatch?.status, matchId]);
+
+  useEffect(() => {
+    if (startCountdown === null) return;
+    if (startCountdown <= 0) {
+      const timer = setTimeout(() => {
+        setStartCountdown(null);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+    const timer = setInterval(() => {
+      setStartCountdown((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [startCountdown]);
 
   // Taunt System State
   const [showTauntMenu, setShowTauntMenu] = useState(false);
@@ -388,7 +419,7 @@ export default function BossFightArena() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const logEndRef = useRef<HTMLDivElement>(null);
 
-  const isBusy = animPhase !== "idle" || isWaitingForOpponent;
+  const isBusy = animPhase !== "idle" || isWaitingForOpponent || startCountdown !== null;
 
   // Pulse Heartbeat loop for 1v1 match
   useEffect(() => {
@@ -1171,6 +1202,16 @@ export default function BossFightArena() {
           </m.div>
         </div>
 
+        {/* Status Indicator Banner */}
+        <div className="w-full max-w-md p-3.5 rounded-2xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-200 text-xs font-bold text-center flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(6,182,212,0.25)] backdrop-blur-xl animate-pulse">
+          <Loader2 size={16} className="animate-spin text-cyan-400 shrink-0" />
+          <span>
+            {!isOpponentReady
+              ? "Menunggu lawan bergabung & menekan SIAP / READY..."
+              : "Lawan sudah SIAP! Menunggu kamu menekan SIAP / READY untuk memulai..."}
+          </span>
+        </div>
+
         {/* Ready Button Trigger */}
         <div className="flex flex-col items-center gap-3 w-full max-w-sm">
           {!isSelfReady ? (
@@ -1213,14 +1254,57 @@ export default function BossFightArena() {
     : "Knowledge Devourer";
 
   return (
-    <section
-      id="boss-fight-arena"
-      aria-label="Feynman Boss Fight Arena"
-      className={cn(
-        "flex flex-col gap-6 w-full max-w-4xl mx-auto px-4 py-6 transition-all duration-100",
-        isScreenShaking && "animate-shake"
-      )}
-    >
+    <>
+      {/* 3-2-1 Match Start Countdown Overlay */}
+      <AnimatePresence>
+        {startCountdown !== null && (
+          <m.div
+            key={`countdown-overlay-${startCountdown}`}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-slate-950/90 backdrop-blur-2xl text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <m.div
+              className="flex flex-col items-center gap-4 max-w-md w-full"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.1, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
+              <div className="size-20 rounded-3xl bg-cyan-500/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_40px_rgba(6,182,212,0.4)] mb-2">
+                <Swords size={40} className="animate-pulse" />
+              </div>
+              <h2 className="text-2xl font-black font-display tracking-tight text-slate-100">
+                KEDUA PEMAIN SIAP! ⚔️
+              </h2>
+              <p className="text-xs text-slate-300 font-sans">
+                Pertandingan 1v1 Feynman Duel segera dimulai bersama abang ganteng...
+              </p>
+
+              <m.div
+                key={startCountdown}
+                initial={{ scale: 2, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.5, opacity: 0 }}
+                transition={{ duration: 0.5, ease: "backOut" }}
+                className="my-4 text-7xl font-black font-display tracking-widest bg-gradient-to-r from-cyan-400 via-violet-400 to-rose-500 bg-clip-text text-transparent drop-shadow-[0_0_35px_rgba(6,182,212,0.8)]"
+              >
+                {startCountdown > 0 ? startCountdown : "MULAI! ⚔️"}
+              </m.div>
+            </m.div>
+          </m.div>
+        )}
+      </AnimatePresence>
+
+      <section
+        id="boss-fight-arena"
+        aria-label="Feynman Boss Fight Arena"
+        className={cn(
+          "flex flex-col gap-6 w-full max-w-4xl mx-auto px-4 py-6 transition-all duration-100",
+          isScreenShaking && "animate-shake"
+        )}
+      >
       {/* Mode Bar Navigation */}
       <div className="flex items-center justify-between gap-2">
         <button
@@ -2268,5 +2352,6 @@ export default function BossFightArena() {
         </m.div>
       )}
     </section>
-  );
+  </>
+);
 }

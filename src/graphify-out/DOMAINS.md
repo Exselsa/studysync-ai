@@ -33,5 +33,3 @@
 | 28 | Community 28 | Unable to determine domain due to missing code entities. |
 | 29 | Community 29 | Unable to determine domain due to missing code entities. |
 | 30 | Community 30 | Unable to determine domain due to missing code entities. |
-| 31 | Community 31 | Unable to determine domain due to missing code entities. |
-| 32 | Community 32 | Unable to determine domain due to missing code entities. |

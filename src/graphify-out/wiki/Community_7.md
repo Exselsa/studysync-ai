@@ -1,32 +1,33 @@
 # Community 7
 
-> 23 nodes · cohesion 0.13
+> 24 nodes · cohesion 0.12
 
 ## Key Concepts
 
-- [POST()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L14) (14 connections)
-- [study-materials.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L1) (6 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L1) (5 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts#L1) (5 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L1) (4 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/meet/explain/route.ts#L1) (4 connections)
-- [RESPONSE_SCHEMA](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/meet/explain/route.ts#L21) (4 connections)
-- [buildFallback()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts#L70) (3 connections)
-- [buildFallbackResponse()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L122) (3 connections)
-- [SYSTEM_INSTRUCTION](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/meet/explain/route.ts#L37) (3 connections)
-- [buildFallbackExplanation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/meet/explain/route.ts#L46) (2 connections)
-- [offsetDate()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L151) (2 connections)
-- [buildFallbackExplanation()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L191) (2 connections)
-- [buildFallbackStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L175) (2 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/explain/route.ts#L1) (1 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/generate-plan/route.ts#L1) (1 connections)
-- [route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts#L1) (1 connections)
-- [BASE_SYSTEM_INSTRUCTION](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts#L107) (1 connections)
-- [FALLBACK_QUESTIONS](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts#L82) (1 connections)
-- [EXPLAIN_MATERIAL_SCHEMA](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L110) (1 connections)
-- [EXPLAIN_MATERIAL_SYSTEM_INSTRUCTION](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L155) (1 connections)
-- [GENERATE_PLAN_SCHEMA](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L39) (1 connections)
-- [GENERATE_PLAN_SYSTEM_INSTRUCTION](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts#L70) (1 connections)
+- [db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L1) (8 connections)
+- [userStats.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts#L1) (5 connections)
+- [normalizeStudyPlanData()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts#L61) (5 connections)
+- [handleToggleTask](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx#L562) (5 connections)
+- [recordDailyActivity()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts#L69) (5 connections)
+- [normalizeStudyPlan.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts#L1) (4 connections)
+- [getStudyPlans()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L76) (4 connections)
+- [saveStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L46) (4 connections)
+- [getLocalDateString()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts#L8) (4 connections)
+- [toggleTaskCompletion()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L117) (3 connections)
+- [updateStudyPlanTasks()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L160) (3 connections)
+- [userPlansCollection()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L37) (3 connections)
+- [addStudyMinutes()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts#L120) (3 connections)
+- [getYesterdayDateString()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts#L18) (3 connections)
+- [fetchPlans()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx#L573) (2 connections)
+- [loadTopics()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx#L80) (2 connections)
+- [handleSaveToFirestore()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx#L218) (2 connections)
+- [generateTaskId()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts#L6) (2 connections)
+- [getUserStats()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts#L27) (2 connections)
+- [deleteStudyPlan()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L183) (1 connections)
+- [resetStudyPlanTasks()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L191) (1 connections)
+- [updateStudyPlanStatus()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts#L172) (1 connections)
+- [extractTitle()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts#L36) (1 connections)
+- [parseDayNumber()](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts#L19) (1 connections)
 
 ## Relationships
 
@@ -34,19 +35,18 @@
 
 ## Source Files
 
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\chat\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/chat/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\evaluate-duel\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate-duel/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\evaluate\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/evaluate/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\meet\explain\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/meet/explain/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\explain\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/explain/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\generate-plan\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/generate-plan/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\api\study-materials\parse\route.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/api/study-materials/parse/route.ts)
-- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\ai\study-materials.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/ai/study-materials.ts)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\app\dashboard\plan\page.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/app/dashboard/plan/page.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\BossFightArena.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/BossFightArena.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\friends\FriendsPanel.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/friends/FriendsPanel.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\components\study\MaterialUploader.tsx](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/components/study/MaterialUploader.tsx)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\db.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/db.ts)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\firebase\userStats.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/firebase/userStats.ts)
+- [C:\Users\Asus\.gemini\antigravity\scratch\studysync-ai\src\lib\normalizeStudyPlan.ts](file:///C:/Users/Asus/.gemini/antigravity/scratch/studysync-ai/src/lib/normalizeStudyPlan.ts)
 
 ## Audit Trail
 
-- EXTRACTED: 62 (91%)
-- INFERRED: 6 (9%)
+- EXTRACTED: 55 (74%)
+- INFERRED: 19 (26%)
 - AMBIGUOUS: 0 (0%)
 
 ---
